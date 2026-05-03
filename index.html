@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>⚡ TURBO SVG → PNG | Elite Engine v3</title>
+    <title>⚡ HYPER SVG → PNG | Engine v4 NITRO</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
@@ -15,6 +15,7 @@
             --accent2: #5eead4;
             --pkg: #a78bfa;
             --pkg2: #c4b5fd;
+            --nitro: #f472b6;
             --dim: #0d9488;
             --text: #eef2ff;
             --sub: #9aaec9;
@@ -45,7 +46,7 @@
             content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
             background:
                 radial-gradient(circle at 15% 80%,rgba(45,212,191,.04) 0%,transparent 45%),
-                radial-gradient(circle at 75% 25%,rgba(167,139,250,.04) 0%,transparent 40%);
+                radial-gradient(circle at 75% 25%,rgba(244,114,182,.04) 0%,transparent 40%);
             animation:bgPulse 18s ease-in-out infinite;
         }
         @keyframes bgPulse{0%,100%{opacity:.7}50%{opacity:1}}
@@ -66,26 +67,26 @@
         h1 {
             font-size:clamp(1.2rem,2.5vw,1.7rem);
             font-weight:800; letter-spacing:-.02em;
-            background:linear-gradient(145deg,#d4f9ff 0%,#6ee7d6 50%,#2dd4bf 100%);
+            background:linear-gradient(145deg,#d4f9ff 0%,#6ee7d6 50%,#f472b6 100%);
             -webkit-background-clip:text; background-clip:text; color:transparent;
             display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; line-height:1.2;
         }
         .badge {
-            background:linear-gradient(135deg,#0f2838,#0a1a2a);
-            border:1px solid rgba(45,212,191,.5);
+            background:linear-gradient(135deg,#2d0f28,#1a0a1d);
+            border:1px solid rgba(244,114,182,.5);
             border-radius:60px; padding:.2rem .9rem;
-            font-size:.65rem; color:var(--accent); font-weight:700;
+            font-size:.65rem; color:var(--nitro); font-weight:700;
         }
         .turbo-pill {
             display:none; align-items:center; gap:6px;
-            background:#0a1a1f; border:1px solid var(--accent);
+            background:#1f0a18; border:1px solid var(--nitro);
             border-radius:50px; padding:.3rem .9rem;
-            font-size:.68rem; font-weight:700; color:var(--accent);
+            font-size:.68rem; font-weight:700; color:var(--nitro);
         }
         .turbo-pill.on{display:inline-flex;}
-        .tdot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse .7s ease-in-out infinite;}
+        .tdot{width:8px;height:8px;border-radius:50%;background:var(--nitro);animation:pulse .6s ease-in-out infinite;}
         @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.9);opacity:.3}}
-        .sub-txt {color:var(--sub);margin:.2rem 0 1.2rem;border-left:3px solid var(--accent);padding-left:.9rem;font-size:.78rem;}
+        .sub-txt {color:var(--sub);margin:.2rem 0 1.2rem;border-left:3px solid var(--nitro);padding-left:.9rem;font-size:.78rem;}
 
         .warn-banner {
             display:none;
@@ -104,9 +105,15 @@
         .engine-tag {
             background:#0f1e2d; border-radius:20px; padding:.2rem .7rem;
             color:#7fbdba; border:1px solid #1a3340; font-weight:600;
+            transition:all .3s ease;
         }
         .engine-tag.ok{color:#34d399;border-color:#1a3a28;}
         .engine-tag.warn{color:#fbbf24;border-color:#3a3010;}
+        .engine-tag.nitro{color:var(--nitro);border-color:#3d1828;background:#1f0a18;animation:nitroGlow 1.5s ease-in-out infinite;}
+        @keyframes nitroGlow {
+            0%,100%{box-shadow:0 0 0 rgba(244,114,182,.4);}
+            50%{box-shadow:0 0 12px rgba(244,114,182,.6);}
+        }
 
         .row {display:flex;flex-wrap:wrap;gap:1.2rem;margin-bottom:1.2rem;}
 
@@ -156,8 +163,8 @@
         }
         .bg-btn:hover{border-color:#3a5068;background:#1c2a3d;}
         .bg-btn.active{background:var(--accent);color:#010204;font-weight:700;border-color:var(--accent);box-shadow:0 0 18px rgba(45,212,191,.45);}
+        .bg-btn.nitro.active{background:var(--nitro);border-color:var(--nitro);box-shadow:0 0 18px rgba(244,114,182,.45);}
 
-        /* ── STATS WITH ANIMATIONS ── */
         .stats{display:flex;gap:.8rem;margin:1rem 0;flex-wrap:wrap;}
         .stat {
             background:var(--card); border-radius:var(--r-md);
@@ -177,6 +184,7 @@
         .stat-n{font-size:clamp(1.2rem,2vw,1.7rem);font-weight:800;font-family:var(--mono);transition:color .3s;}
         .stat-n.ok{color:var(--ok);}
         .stat-n.err{color:var(--danger);}
+        .stat-n.nitro{color:var(--nitro);}
         .stat-n.flash{animation:numFlash .4s ease;}
         @keyframes numFlash{
             0%{transform:scale(1)}
@@ -185,7 +193,6 @@
         }
         .stat-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 
-        /* ── PROGRESS WITH PHASE COLORS ── */
         .prog-wrap{margin:10px 0 14px; position:relative;}
         .prog-bg {
             background:var(--prog-bg); border-radius:30px;
@@ -197,13 +204,22 @@
             background:linear-gradient(90deg,#0d9488,#2dd4bf,#5eead4,#2dd4bf);
             background-size:200% 100%; border-radius:30px;
             transition:width .25s ease-out, background .5s ease;
-            animation:shimmer 2s linear infinite;
+            animation:shimmer 1.5s linear infinite;
             position:relative;
         }
         .prog-fill::after {
             content:''; position:absolute; inset:0;
             background:linear-gradient(90deg, transparent 30%, rgba(255,255,255,.4) 50%, transparent 70%);
-            animation:scan 1.8s linear infinite;
+            animation:scan 1.4s linear infinite;
+        }
+        .prog-fill.nitro {
+            background:linear-gradient(90deg,#be185d,#f472b6,#fbcfe8,#f472b6);
+            background-size:200% 100%;
+            animation:shimmer 1s linear infinite, nitroBoost .8s ease-in-out infinite;
+        }
+        @keyframes nitroBoost {
+            0%,100%{box-shadow:0 0 15px rgba(244,114,182,.5);}
+            50%{box-shadow:0 0 30px rgba(244,114,182,.8);}
         }
         .prog-fill.packaging {
             background:linear-gradient(90deg,#7c3aed,#a78bfa,#c4b5fd,#a78bfa);
@@ -227,12 +243,12 @@
             transition:color .3s ease;
         }
         .phase.conv{color:var(--accent);}
+        .phase.nitro{color:var(--nitro);}
         .phase.pkg{color:var(--pkg);}
         .phase.done{color:var(--ok);}
         .phase-icon{display:inline-block;animation:phaseIcon 2s ease-in-out infinite;}
         @keyframes phaseIcon{0%,100%{transform:rotate(0deg) scale(1)}50%{transform:rotate(180deg) scale(1.1)}}
 
-        /* ── PHASE TRACKER ── */
         .phase-track {
             display:flex; gap:.4rem; margin:.8rem 0 .4rem;
             background:#070c16; border:1px solid #151f30;
@@ -371,7 +387,27 @@
         .err-line{margin:.1rem 0;opacity:.8;cursor:pointer;}
         .err-line:hover{opacity:1;}
 
-        /* ── PARTICLE BURST CONTAINER ── */
+        /* Speedometer */
+        .speed-display {
+            display:flex; align-items:center; gap:.5rem;
+            background:#0a0f1c; border:1px solid #1a2538;
+            border-radius:var(--r-sm); padding:.4rem .8rem;
+            font-size:.7rem; margin-top:.4rem;
+            font-family:var(--mono);
+        }
+        .speed-bar {
+            flex:1; height:4px; background:#1a2538; border-radius:4px;
+            overflow:hidden; position:relative;
+        }
+        .speed-bar-fill {
+            position:absolute; left:0; top:0; height:100%;
+            background:linear-gradient(90deg,#34d399,#fbbf24,#f472b6);
+            border-radius:4px; transition:width .3s ease;
+        }
+        .speed-num {
+            color:var(--nitro); font-weight:700; min-width:60px;
+        }
+
         .burst-container {
             position:fixed; pointer-events:none;
             inset:0; z-index:9999; overflow:hidden;
@@ -381,7 +417,6 @@
             border-radius:50%; pointer-events:none;
         }
 
-        /* ── COMPLETION CHECKMARK ── */
         .complete-overlay {
             position:fixed; inset:0; pointer-events:none;
             display:flex; align-items:center; justify-content:center;
@@ -422,27 +457,27 @@
 <body>
 <div class="panel">
     <div class="hdr">
-        <h1>⚡ TURBO SVG → PNG <span class="badge">ELITE ENGINE v3</span></h1>
-        <span class="turbo-pill" id="turboPill"><span class="tdot"></span>TURBO ACTIVE</span>
+        <h1>⚡ HYPER SVG → PNG <span class="badge">v4 NITRO ENGINE</span></h1>
+        <span class="turbo-pill" id="turboPill"><span class="tdot"></span>NITRO BOOST</span>
     </div>
-    <div class="sub-txt">Konversi ribuan SVG · Worker pool + Streaming pipeline · Visual feedback v3</div>
+    <div class="sub-txt">Worker Pool · Pipelined Streaming · Adaptive Concurrency · Zero Failure Tolerance</div>
 
     <div class="engine-bar" id="engineBar">
         <span style="color:var(--muted);font-weight:600;">ENGINE:</span>
-        <span class="engine-tag" id="capImg">🖼 img+canvas</span>
-        <span class="engine-tag" id="capBitmap">⚡ ImageBitmap</span>
+        <span class="engine-tag" id="capImg">🖼 Canvas</span>
+        <span class="engine-tag" id="capBitmap">⚡ Bitmap</span>
         <span class="engine-tag" id="capWorker">🧵 Worker</span>
-        <span class="engine-tag" id="capOffscreen">🎨 Offscreen</span>
-        <span style="margin-left:auto;color:var(--muted);">Concurrency: <strong id="concDisplay" style="color:var(--accent)">-</strong></span>
+        <span class="engine-tag" id="capOffscreen">🎨 OffscreenCanvas</span>
+        <span style="margin-left:auto;color:var(--muted);">Workers: <strong id="concDisplay" style="color:var(--accent)">-</strong></span>
     </div>
 
-    <div class="warn-banner" id="warnBanner">⚠️ File sangat banyak (&gt;5000). Proses akan memakan banyak memori. Pastikan tab ini satu-satunya yang terbuka.</div>
+    <div class="warn-banner" id="warnBanner">⚠️ File sangat banyak (&gt;5000). Engine NITRO aktif - butuh memori besar.</div>
 
     <div class="row">
         <div class="drop" id="dropZone">
             <div class="drop-icon">📦</div>
             <div class="drop-title">Drag & Drop file ZIP</div>
-            <div class="drop-sub">File ZIP berisi icon .svg (support 1000+ files)</div>
+            <div class="drop-sub">File ZIP berisi icon .svg (support 10000+ files)</div>
             <label class="browse-btn" id="browseLabel">
                 📁 Pilih File ZIP
                 <input type="file" id="fileInput" accept=".zip" style="display:none">
@@ -453,7 +488,7 @@
             <div class="cfg-row">
                 <label>🎯 Skala resolusi <span id="scaleLabel">1x</span></label>
                 <input type="range" id="scaleSlider" min="0.5" max="4" step="0.25" value="1">
-                <div class="cfg-hint">1x = kecepatan & kualitas optimal · 2x = Retina display</div>
+                <div class="cfg-hint">1x = optimal · 2x = Retina · Worker render menjaga kualitas</div>
             </div>
             <div class="cfg-row">
                 <label>🎨 Background</label>
@@ -464,21 +499,22 @@
                 </div>
             </div>
             <div class="cfg-row">
-                <label>⚙️ Mode engine</label>
+                <label>⚙️ Mode Engine</label>
                 <div class="bg-grp">
-                    <div class="bg-btn active" data-engine="auto">Auto Turbo</div>
-                    <div class="bg-btn" data-engine="img">Image Only</div>
+                    <div class="bg-btn nitro active" data-engine="nitro">🔥 Nitro</div>
+                    <div class="bg-btn" data-engine="auto">Auto</div>
+                    <div class="bg-btn" data-engine="safe">Safe</div>
                 </div>
+                <div class="cfg-hint">Nitro = Worker pool · Auto = Bitmap+fallback · Safe = Image only</div>
             </div>
         </div>
     </div>
 
-    <!-- PHASE TRACKER -->
     <div class="phase-track" id="phaseTrack">
-        <div class="phase-step" id="step1"><span class="step-num">1</span> 📂 Baca ZIP</div>
-        <div class="phase-step" id="step2"><span class="step-num">2</span> 🎨 Konversi</div>
-        <div class="phase-step" id="step3"><span class="step-num">3</span> 📦 Repackaging</div>
-        <div class="phase-step" id="step4"><span class="step-num">4</span> ✅ Selesai</div>
+        <div class="phase-step" id="step1"><span class="step-num">1</span> 📂 Baca</div>
+        <div class="phase-step" id="step2"><span class="step-num">2</span> 🎨 Render</div>
+        <div class="phase-step" id="step3"><span class="step-num">3</span> 📦 Pack</div>
+        <div class="phase-step" id="step4"><span class="step-num">4</span> ✅ Done</div>
     </div>
 
     <div class="stats">
@@ -486,7 +522,8 @@
         <div class="stat"><div class="stat-n ok" id="statOk">0</div><div class="stat-l">Berhasil</div></div>
         <div class="stat"><div class="stat-n err" id="statFail">0</div><div class="stat-l">Gagal</div></div>
         <div class="stat"><div class="stat-n" id="statPct">0%</div><div class="stat-l">Progress</div></div>
-        <div class="stat"><div class="stat-n" id="statSpeed">0</div><div class="stat-l">file/detik</div></div>
+        <div class="stat"><div class="stat-n nitro" id="statSpeed">0</div><div class="stat-l">file/detik</div></div>
+        <div class="stat"><div class="stat-n" id="statEta">-</div><div class="stat-l">ETA</div></div>
     </div>
 
     <div class="prog-wrap">
@@ -506,19 +543,110 @@
         <button class="btn-primary btn-download" id="btnDownload" disabled style="width:auto;flex:1;margin:0;padding:.7rem 1.4rem;font-size:.8rem;">📦 Unduh Semua PNG (ZIP)</button>
     </div>
 
-    <footer>🔧 v3 Engine: Worker pool · Streaming pipeline · Chunked packaging · Bulletproof fallback</footer>
+    <footer>🔧 v4 NITRO: Worker pool · OffscreenCanvas · Pipelined I/O · Adaptive scheduling · Triple fallback</footer>
 </div>
 
 <div class="burst-container" id="burstContainer"></div>
 <div class="complete-overlay" id="completeOverlay"><div class="complete-check">✓</div></div>
 
+<!-- ═══════════════════════════════════════════════════════════════
+     WORKER SOURCE - Inline as blob URL (no separate file needed)
+     ═══════════════════════════════════════════════════════════════ -->
+<script id="workerSrc" type="javascript/worker">
+'use strict';
+
+// SVG sanitizer (cached regex - hot path)
+const RE_W = /\swidth\s*=/i;
+const RE_H = /\sheight\s*=/i;
+const RE_VB = /viewBox\s*=\s*["']([^"']+)["']/i;
+const RE_SVG = /<svg([^>]*?)>/i;
+
+function sanitizeSvg(txt) {
+    txt = txt.trim();
+    const hasW = RE_W.test(txt);
+    const hasH = RE_H.test(txt);
+    if (hasW && hasH) return txt;
+
+    const m = txt.match(RE_VB);
+    if (m) {
+        const p = m[1].trim().split(/[\s,]+/);
+        if (p.length === 4) {
+            const w = parseFloat(p[2]), h = parseFloat(p[3]);
+            if (w > 0 && h > 0) {
+                return txt.replace(RE_SVG, (_, a) => {
+                    let f = a;
+                    if (!hasW) f += ` width="${w}"`;
+                    if (!hasH) f += ` height="${h}"`;
+                    return `<svg${f}>`;
+                });
+            }
+        }
+    }
+    return txt.replace(RE_SVG, (_, a) => {
+        let f = a;
+        if (!hasW) f += ' width="512"';
+        if (!hasH) f += ' height="512"';
+        if (!/viewBox/i.test(a)) f += ' viewBox="0 0 512 512"';
+        return `<svg${f}>`;
+    });
+}
+
+// Render single SVG to PNG blob using OffscreenCanvas + createImageBitmap
+async function renderSvg(svgText, scale, bg) {
+    const sanitized = sanitizeSvg(svgText);
+    const blob = new Blob([sanitized], { type: 'image/svg+xml' });
+
+    let bitmap;
+    try {
+        bitmap = await createImageBitmap(blob);
+    } catch (e) {
+        throw new Error('bitmap_fail:' + e.message);
+    }
+
+    const w = Math.max(1, Math.floor(bitmap.width * scale));
+    const h = Math.max(1, Math.floor(bitmap.height * scale));
+
+    const canvas = new OffscreenCanvas(w, h);
+    const ctx = canvas.getContext('2d', { alpha: bg === 'transparent' });
+
+    if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); }
+
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = 'high';
+    ctx.drawImage(bitmap, 0, 0, w, h);
+    bitmap.close();
+
+    const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+    return pngBlob;
+}
+
+// Message handler — receives batches for efficiency
+self.onmessage = async function(e) {
+    const { id, batch, scale, bg } = e.data;
+    const results = [];
+    for (const job of batch) {
+        try {
+            const blob = await renderSvg(job.svg, scale, bg);
+            results.push({ idx: job.idx, ok: true, blob });
+        } catch (err) {
+            results.push({ idx: job.idx, ok: false, err: String(err.message || err) });
+        }
+    }
+    self.postMessage({ id, results });
+};
+</script>
+
 <script>
 /* ═══════════════════════════════════════════════════════════════════
-   TURBO SVG → PNG ELITE ENGINE v3
-   - Worker pool with OffscreenCanvas (parallel rendering)
-   - Streaming pipeline (read + render overlap)
-   - Chunked ZIP packaging (no UI freeze)
-   - Separate progress phases with visual transitions
+   HYPER SVG → PNG NITRO ENGINE v4
+   Architecture:
+   ┌─────────────┐    ┌──────────────┐    ┌─────────────┐
+   │ ZIP Reader  │───>│ Worker Pool  │───>│ ZIP Packer  │
+   │ (streaming) │    │ (Offscreen)  │    │ (chunked)   │
+   └─────────────┘    └──────────────┘    └─────────────┘
+        async              parallel            streaming
+   All 3 phases overlap = max throughput
    ═══════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -551,6 +679,9 @@
                       (navigator.maxTouchPoints > 1 && window.innerWidth < 768),
     };
 
+    // Worker support requires both OffscreenCanvas AND createImageBitmap in worker
+    CAP.workerRender = CAP.worker && CAP.offscreen && CAP.imageBitmap;
+
     ['capImg','capBitmap','capWorker','capOffscreen'].forEach((id, i) => {
         const el = $(id);
         if (!el) return;
@@ -559,10 +690,22 @@
         el.classList.toggle('warn', !caps[i]);
     });
 
-    function calcConcurrency(total) {
+    // Aggressive concurrency tuning
+    function calcWorkerCount(total) {
+        if (!CAP.workerRender) return 0;
         const base = CAP.mobile
-            ? Math.min(6, Math.max(2, Math.floor(CAP.cores / 2)))
-            : Math.min(16, Math.max(6, CAP.cores * 2));
+            ? Math.max(2, Math.min(4, CAP.cores))
+            : Math.max(4, Math.min(CAP.cores, 12));
+        // Big batch = more workers (until memory becomes issue)
+        if (total > 5000) return Math.min(base + 2, 16);
+        if (total > 1000) return base;
+        return Math.max(2, Math.min(base, 6));
+    }
+
+    function calcMainConcurrency(total) {
+        const base = CAP.mobile
+            ? Math.max(2, Math.min(6, Math.floor(CAP.cores / 2)))
+            : Math.min(20, Math.max(8, CAP.cores * 2));
         return total > 1000 ? Math.min(base + 8, 24) : base;
     }
 
@@ -573,15 +716,69 @@
         running    : false,
         bg         : 'transparent',
         scale      : 1,
-        engine     : 'auto',
+        engine     : 'nitro',
         timestamps : [],
         errors     : [],
-        phase      : 'idle', // idle | reading | converting | packaging | done
+        phase      : 'idle',
+        startTime  : 0,
+        completed  : 0,
     };
 
-    // ─── PHASE TRACKER ─────────────────────────────────────────────
-    function setPhaseStep(step, status) {
-        // status: 'active' | 'done' | ''
+    // ═══ WORKER POOL ════════════════════════════════════════════════
+    let workerPool = null;
+    let workerBlobUrl = null;
+
+    function createWorkerPool(count) {
+        // Build worker source from inline script tag
+        if (!workerBlobUrl) {
+            const src = document.getElementById('workerSrc').textContent;
+            const blob = new Blob([src], { type: 'application/javascript' });
+            workerBlobUrl = URL.createObjectURL(blob);
+        }
+
+        const workers = [];
+        for (let i = 0; i < count; i++) {
+            const w = new Worker(workerBlobUrl);
+            w.busy = false;
+            w.taskMap = new Map(); // id -> resolve fn
+            w.onmessage = (e) => {
+                const resolve = w.taskMap.get(e.data.id);
+                if (resolve) {
+                    w.taskMap.delete(e.data.id);
+                    resolve(e.data.results);
+                }
+                w.busy = w.taskMap.size > 0;
+            };
+            w.onerror = (err) => {
+                // Reject all pending tasks on this worker
+                w.taskMap.forEach(r => r([{ ok: false, err: 'worker_crash:' + err.message }]));
+                w.taskMap.clear();
+                w.busy = false;
+            };
+            workers.push(w);
+        }
+        return workers;
+    }
+
+    function destroyWorkerPool() {
+        if (workerPool) {
+            workerPool.forEach(w => w.terminate());
+            workerPool = null;
+        }
+    }
+
+    let nextTaskId = 0;
+    function dispatchToWorker(worker, batch, scale, bg) {
+        return new Promise(resolve => {
+            const id = ++nextTaskId;
+            worker.taskMap.set(id, resolve);
+            worker.busy = true;
+            worker.postMessage({ id, batch, scale, bg });
+        });
+    }
+
+    // ═══ PHASE TRACKER ═══════════════════════════════════════════════
+    function setPhaseStep(step) {
         for (let i = 1; i <= 4; i++) {
             const el = $('step' + i);
             if (!el) continue;
@@ -596,17 +793,16 @@
 
     function setPhase(msg, type = 'conv') {
         phaseLabel.textContent = msg;
-        phaseText.classList.remove('conv', 'pkg', 'done');
+        phaseText.classList.remove('conv', 'pkg', 'done', 'nitro');
         phaseText.classList.add(type);
     }
 
     function setProgressMode(mode) {
-        progBar.classList.remove('packaging', 'complete');
-        if (mode === 'packaging') progBar.classList.add('packaging');
-        else if (mode === 'complete') progBar.classList.add('complete');
+        progBar.classList.remove('packaging', 'complete', 'nitro');
+        if (mode) progBar.classList.add(mode);
     }
 
-    // ─── ANIMATED COUNTERS ─────────────────────────────────────────
+    // ═══ ANIMATED COUNTERS ══════════════════════════════════════════
     const counterCache = {};
     function animateCounter(id, target, suffix = '') {
         const el = $(id);
@@ -616,7 +812,7 @@
         counterCache[id] = target;
 
         const diff = target - cur;
-        const steps = Math.min(20, Math.max(1, Math.abs(diff)));
+        const steps = Math.min(15, Math.max(1, Math.abs(diff)));
         const stepSize = diff / steps;
         let frame = 0;
 
@@ -627,8 +823,6 @@
             if (frame < steps) requestAnimationFrame(tick);
         };
         requestAnimationFrame(tick);
-
-        // Flash effect on change
         el.classList.remove('flash');
         void el.offsetWidth;
         el.classList.add('flash');
@@ -639,10 +833,10 @@
         setTimeout(() => statEl.classList.remove('bump'), 400);
     }
 
-    // ─── PARTICLE BURST ────────────────────────────────────────────
+    // ═══ CELEBRATION ════════════════════════════════════════════════
     function celebrate() {
-        const colors = ['#34d399', '#2dd4bf', '#a78bfa', '#fbbf24', '#5eead4'];
-        const count = 60;
+        const colors = ['#34d399', '#2dd4bf', '#a78bfa', '#fbbf24', '#5eead4', '#f472b6'];
+        const count = 80;
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
 
@@ -656,14 +850,14 @@
             burstContainer.appendChild(p);
 
             const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
-            const velocity = 200 + Math.random() * 300;
+            const velocity = 250 + Math.random() * 350;
             const dx = Math.cos(angle) * velocity;
             const dy = Math.sin(angle) * velocity;
-            const duration = 1200 + Math.random() * 600;
+            const duration = 1200 + Math.random() * 800;
 
             p.animate([
                 { transform: 'translate(0,0) scale(1)', opacity: 1 },
-                { transform: `translate(${dx}px, ${dy + 200}px) scale(0)`, opacity: 0 }
+                { transform: `translate(${dx}px, ${dy + 250}px) scale(0)`, opacity: 0 }
             ], { duration, easing: 'cubic-bezier(0.2, 0.8, 0.4, 1)' }).onfinish = () => p.remove();
         }
 
@@ -671,28 +865,40 @@
         setTimeout(() => completeOverlay.classList.remove('show'), 1200);
     }
 
-    // ─── STATS UPDATE ──────────────────────────────────────────────
-    function updateStats() {
+    // ═══ STATS UPDATE ═══════════════════════════════════════════════
+    function updateStats(forceProgress = true) {
         const ok   = state.results.filter(r => r?.ok).length;
         const fail = state.results.filter(r => r && !r.ok).length;
         const done = ok + fail;
-        const pct  = state.items.length ? Math.floor(done / state.items.length * 100) : 0;
+        const total = state.items.length;
+        const pct  = total ? Math.floor(done / total * 100) : 0;
 
-        animateCounter('statTotal', state.items.length);
+        animateCounter('statTotal', total);
         animateCounter('statOk', ok);
         animateCounter('statFail', fail);
         animateCounter('statPct', pct, '%');
 
-        if (state.phase !== 'packaging') {
+        if (forceProgress && state.phase !== 'packaging') {
             progBar.style.width = pct + '%';
         }
 
         const now = performance.now();
-        state.timestamps = state.timestamps.filter(t => now - t < 3000);
+        state.timestamps = state.timestamps.filter(t => now - t < 2500);
         if (state.timestamps.length >= 2) {
             const span = (now - state.timestamps[0]) / 1000;
-            const speed = span > 0 ? (state.timestamps.length / span).toFixed(1) : '0';
-            $('statSpeed').textContent = speed;
+            const speed = span > 0 ? (state.timestamps.length / span) : 0;
+            $('statSpeed').textContent = speed.toFixed(1);
+
+            // ETA
+            const remaining = total - done;
+            if (speed > 0 && remaining > 0) {
+                const etaSec = Math.ceil(remaining / speed);
+                $('statEta').textContent = etaSec > 60
+                    ? Math.floor(etaSec / 60) + 'm' + (etaSec % 60) + 's'
+                    : etaSec + 's';
+            } else if (remaining === 0) {
+                $('statEta').textContent = '✓';
+            }
         }
     }
 
@@ -710,7 +916,7 @@
             row.innerHTML =
                 `<div class="tname" title="${item.path}">📄 ${item.name.length > 40 ? item.name.slice(0,37)+'…' : item.name}</div>` +
                 `<div class="tbar"><div class="tbar-fill" id="tf${i}"></div></div>` +
-                `<div class="tst" id="ts${i}">⏳ antri</div>`;
+                `<div class="tst" id="ts${i}">⏳</div>`;
             frag.appendChild(row);
         }
 
@@ -740,6 +946,7 @@
     }
 
     function logError(msg) {
+        if (state.errors.length > 100) return; // cap
         state.errors.push(msg);
         errPanel.classList.add('show');
         const line = document.createElement('div');
@@ -752,15 +959,18 @@
     }
 
     function reset() {
-        state = { ...state, items:[], results:[], running:false, timestamps:[], errors:[], phase:'idle' };
+        destroyWorkerPool();
+        state = { ...state, items:[], results:[], running:false, timestamps:[], errors:[], phase:'idle', startTime:0, completed:0 };
         Object.keys(counterCache).forEach(k => delete counterCache[k]);
         ['statTotal','statOk','statFail','statSpeed'].forEach(id => $(id).textContent = '0');
         $('statPct').textContent = '0%';
+        $('statEta').textContent = '-';
         progBar.style.width = '0%';
         setProgressMode('');
         setPhaseStep(0);
         btnStart.disabled = btnDownload.disabled = btnRetry.disabled = true;
         btnDownload.classList.remove('ready');
+        btnDownload.textContent = '📦 Unduh Semua PNG (ZIP)';
         errPanel.innerHTML = '';
         errPanel.classList.remove('show');
         turboPill.classList.remove('on');
@@ -769,7 +979,7 @@
         taskGrid.innerHTML = '<div style="padding:1.5rem;text-align:center;color:#7c8fb0;">▲ Upload ZIP untuk melihat daftar file</div>';
     }
 
-    // ─── LOAD ZIP ──────────────────────────────────────────────────
+    // ═══ LOAD ZIP ═══════════════════════════════════════════════════
     async function loadZip(file) {
         reset();
         setPhaseStep(1);
@@ -795,19 +1005,23 @@
             state.items   = svgs;
             state.results = new Array(svgs.length).fill(null);
 
-            const conc = calcConcurrency(svgs.length);
-            $('concDisplay').textContent = svgs.length > 1000 ? conc + ' ⚡TURBO' : conc;
+            const useWorker = state.engine === 'nitro' && CAP.workerRender;
+            const workerCount = useWorker ? calcWorkerCount(svgs.length) : 0;
+            const mainConc = calcMainConcurrency(svgs.length);
+            const display = useWorker
+                ? `${workerCount} workers + ${mainConc} I/O 🔥NITRO`
+                : `${mainConc} (main thread)`;
+            $('concDisplay').textContent = display;
 
             if (svgs.length > 1000)  turboPill.classList.add('on');
             if (svgs.length > 5000)  warnBanner.classList.add('show');
 
             buildTaskGrid();
             updateStats();
-            setPhaseStep(1);
             $('step1').classList.add('done');
             $('step1').classList.remove('active');
             btnStart.disabled = false;
-            setPhase(`📦 ${svgs.length} file SVG siap · klik mulai konversi`, 'conv');
+            setPhase(`📦 ${svgs.length} file SVG siap · klik mulai`, 'conv');
         } catch (e) {
             taskGrid.innerHTML = `<div style="padding:1rem;color:#f87171;">❌ Gagal baca ZIP: ${e.message}</div>`;
             setPhase('Error baca ZIP', 'conv');
@@ -815,29 +1029,25 @@
         }
     }
 
-    // ─── SVG SANITIZER (CACHED REGEX) ──────────────────────────────
-    const RE_WIDTH    = /\swidth\s*=/i;
-    const RE_HEIGHT   = /\sheight\s*=/i;
-    const RE_VIEWBOX  = /viewBox\s*=\s*["']([^"']+)["']/i;
-    const RE_SVG_TAG  = /<svg([^>]*?)>/i;
+    // ═══ MAIN-THREAD SANITIZER (for fallback) ═══════════════════════
+    const RE_W = /\swidth\s*=/i;
+    const RE_H = /\sheight\s*=/i;
+    const RE_VB = /viewBox\s*=\s*["']([^"']+)["']/i;
+    const RE_SVG = /<svg([^>]*?)>/i;
 
-    function sanitizeSvg(svgText) {
-        const txt = svgText.trim();
-        const hasW = RE_WIDTH.test(txt);
-        const hasH = RE_HEIGHT.test(txt);
-
-        // Fast path: already has dimensions
+    function sanitizeSvg(txt) {
+        txt = txt.trim();
+        const hasW = RE_W.test(txt);
+        const hasH = RE_H.test(txt);
         if (hasW && hasH) return txt;
-
-        const vbMatch = txt.match(RE_VIEWBOX);
-        if (vbMatch) {
-            const parts = vbMatch[1].trim().split(/[\s,]+/);
-            if (parts.length === 4) {
-                const w = parseFloat(parts[2]);
-                const h = parseFloat(parts[3]);
+        const m = txt.match(RE_VB);
+        if (m) {
+            const p = m[1].trim().split(/[\s,]+/);
+            if (p.length === 4) {
+                const w = parseFloat(p[2]), h = parseFloat(p[3]);
                 if (w > 0 && h > 0) {
-                    return txt.replace(RE_SVG_TAG, (m, attrs) => {
-                        let f = attrs;
+                    return txt.replace(RE_SVG, (_, a) => {
+                        let f = a;
                         if (!hasW) f += ` width="${w}"`;
                         if (!hasH) f += ` height="${h}"`;
                         return `<svg${f}>`;
@@ -845,148 +1055,244 @@
                 }
             }
         }
-        // Fallback: inject default
-        return txt.replace(RE_SVG_TAG, (m, attrs) => {
-            let f = attrs;
+        return txt.replace(RE_SVG, (_, a) => {
+            let f = a;
             if (!hasW) f += ' width="512"';
             if (!hasH) f += ' height="512"';
-            if (!/viewBox/i.test(attrs)) f += ' viewBox="0 0 512 512"';
+            if (!/viewBox/i.test(a)) f += ' viewBox="0 0 512 512"';
             return `<svg${f}>`;
         });
     }
 
-    // ─── RENDER VIA IMAGE (Tier 1 - bulletproof) ──────────────────
+    // ═══ MAIN-THREAD FALLBACK RENDERERS ═════════════════════════════
     function renderViaImage(svgText, scale, bg) {
         return new Promise((resolve, reject) => {
             const sanitized = sanitizeSvg(svgText);
-            const blob      = new Blob([sanitized], { type: 'image/svg+xml;charset=utf-8' });
-            const url       = URL.createObjectURL(blob);
-            const img       = new Image();
+            const blob = new Blob([sanitized], { type: 'image/svg+xml;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const img = new Image();
             img.crossOrigin = 'anonymous';
-
             const cleanup = () => URL.revokeObjectURL(url);
 
             img.onload = () => {
                 try {
-                    const w = Math.max(1, Math.floor((img.naturalWidth  || 64) * scale));
+                    const w = Math.max(1, Math.floor((img.naturalWidth || 64) * scale));
                     const h = Math.max(1, Math.floor((img.naturalHeight || 64) * scale));
-
                     const canvas = document.createElement('canvas');
-                    canvas.width  = w; canvas.height = h;
-                    const ctx = canvas.getContext('2d', { alpha: true });
-
-                    if (bg === 'white')      { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
-                    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); }
-
-                    ctx.imageSmoothingEnabled  = true;
-                    ctx.imageSmoothingQuality  = 'high';
+                    canvas.width = w; canvas.height = h;
+                    const ctx = canvas.getContext('2d', { alpha: bg === 'transparent' });
+                    if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h); }
+                    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h); }
+                    ctx.imageSmoothingEnabled = true;
+                    ctx.imageSmoothingQuality = 'high';
                     ctx.drawImage(img, 0, 0, w, h);
                     cleanup();
-
-                    canvas.toBlob(pngBlob => {
-                        if (pngBlob) resolve(pngBlob);
-                        else         reject(new Error('canvas.toBlob returned null'));
-                    }, 'image/png');
-                } catch (err) { cleanup(); reject(err); }
+                    canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob null')), 'image/png');
+                } catch (e) { cleanup(); reject(e); }
             };
-            img.onerror = () => { cleanup(); reject(new Error('Image load failed')); };
+            img.onerror = () => { cleanup(); reject(new Error('img load failed')); };
             img.src = url;
         });
     }
 
-    // ─── RENDER VIA IMAGEBITMAP (Tier 2 - fast path) ──────────────
     async function renderViaBitmap(svgText, scale, bg) {
         const sanitized = sanitizeSvg(svgText);
-        const blob      = new Blob([sanitized], { type: 'image/svg+xml' });
-        const bitmap    = await createImageBitmap(blob);
-
-        const w = Math.max(1, Math.floor(bitmap.width  * scale));
+        const blob = new Blob([sanitized], { type: 'image/svg+xml' });
+        const bitmap = await createImageBitmap(blob);
+        const w = Math.max(1, Math.floor(bitmap.width * scale));
         const h = Math.max(1, Math.floor(bitmap.height * scale));
 
-        const canvas = document.createElement('canvas');
-        canvas.width = w; canvas.height = h;
-        const ctx = canvas.getContext('2d', { alpha: true });
-
-        if (bg === 'white')      { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h); }
+        // Use OffscreenCanvas if available (faster, no DOM)
+        const canvas = CAP.offscreen
+            ? new OffscreenCanvas(w, h)
+            : Object.assign(document.createElement('canvas'), { width: w, height: h });
+        const ctx = canvas.getContext('2d', { alpha: bg === 'transparent' });
+        if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h); }
         else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h); }
-
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
         ctx.drawImage(bitmap, 0, 0, w, h);
         bitmap.close();
 
-        return new Promise((resolve, reject) => {
-            canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob null')), 'image/png');
-        });
+        if (canvas.convertToBlob) return await canvas.convertToBlob({ type: 'image/png' });
+        return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob null')), 'image/png'));
     }
 
-    async function convertSvg(svgText, scale, bg, engineMode) {
-        if (engineMode === 'auto' && CAP.imageBitmap) {
+    async function convertSvgFallback(svgText, scale, bg, mode) {
+        if (mode !== 'safe' && CAP.imageBitmap) {
             try { return await renderViaBitmap(svgText, scale, bg); }
-            catch { /* fallthrough */ }
+            catch { /* fall through */ }
         }
         return await renderViaImage(svgText, scale, bg);
     }
 
-    // ─── STREAMING CONVERSION RUNNER ──────────────────────────────
-    async function runConversion(retryFailed = false) {
-        if (state.running || !state.items.length) return;
-        state.running = true;
-        state.phase = 'converting';
-        btnStart.disabled = btnRetry.disabled = btnDownload.disabled = true;
-        btnDownload.classList.remove('ready');
-        state.timestamps = [];
+    // ═══ NITRO PIPELINE: Worker pool + streaming reader ═════════════
+    async function runNitroConversion(retryFailed) {
+        const workerCount = calcWorkerCount(state.items.length);
+        if (workerCount === 0) return runMainThreadConversion(retryFailed);
 
-        setPhaseStep(2);
-        setProgressMode('');
-        setPhase('⚡ Konversi paralel berjalan...', 'conv');
+        workerPool = createWorkerPool(workerCount);
+        const scale = state.scale;
+        const bg = state.bg;
 
-        const scale  = state.scale;
-        const bg     = state.bg;
-        const engine = state.engine;
+        // Build job queue
+        const jobs = [];
+        state.items.forEach((item, idx) => {
+            const prev = state.results[idx];
+            if (retryFailed && prev && prev.ok) return;
+            jobs.push({ idx, item });
+            markTask(idx, 0, '⏳', '');
+        });
+
+        if (!retryFailed) state.results = new Array(state.items.length).fill(null);
+
+        // Reader concurrency (separate from worker count)
+        const READER_CONC = CAP.mobile ? 4 : Math.min(12, CAP.cores * 2);
+        const BATCH_SIZE = state.items.length > 2000 ? 8 : 4; // bigger batches = less worker overhead
+
+        // Pending queue between reader and workers
+        const readyQueue = [];
+        let readerDone = false;
+        let readCursor = 0;
+        let lastUiUpdate = 0;
+
+        // Reader workers (read SVG text from ZIP in parallel)
+        async function readerLoop() {
+            while (readCursor < jobs.length) {
+                const myIdx = readCursor++;
+                const job = jobs[myIdx];
+                try {
+                    const svg = await job.item.entry.async('string');
+                    markTask(job.idx, 40, '📂', 'running');
+                    readyQueue.push({ idx: job.idx, svg });
+                } catch (err) {
+                    state.results[job.idx] = {
+                        path: job.item.path.replace(/\.svg$/i, '.png'),
+                        ok: false, err: 'read_fail: ' + err.message
+                    };
+                    markTask(job.idx, 100, '❌', 'fail');
+                    logError(`[${job.item.name}] read: ${err.message}`);
+                }
+            }
+        }
+
+        // Spawn N reader threads
+        const readerPromises = Array.from({ length: Math.min(READER_CONC, jobs.length) }, () => readerLoop());
+        const readerDonePromise = Promise.all(readerPromises).then(() => { readerDone = true; });
+
+        // Worker dispatcher — batches jobs to free workers
+        const workerPromises = workerPool.map(async (worker) => {
+            while (true) {
+                // Wait for items in queue (or reader to finish)
+                while (readyQueue.length === 0 && !readerDone) {
+                    await new Promise(r => setTimeout(r, 4));
+                }
+                if (readyQueue.length === 0 && readerDone) break;
+
+                // Grab batch
+                const batchSize = Math.min(BATCH_SIZE, readyQueue.length);
+                const batch = readyQueue.splice(0, batchSize);
+
+                batch.forEach(b => markTask(b.idx, 70, '🎨', 'running'));
+
+                try {
+                    const results = await dispatchToWorker(worker, batch, scale, bg);
+                    for (let i = 0; i < results.length; i++) {
+                        const r = results[i];
+                        const orig = batch[i];
+                        const path = state.items[orig.idx].path.replace(/\.svg$/i, '.png');
+                        if (r.ok) {
+                            state.results[orig.idx] = { path, blob: r.blob, ok: true };
+                            markTask(orig.idx, 100, '✅', 'done');
+                            state.timestamps.push(performance.now());
+                        } else {
+                            // Worker failed — try main-thread fallback (last resort)
+                            try {
+                                const blob = await convertSvgFallback(orig.svg, scale, bg, 'auto');
+                                state.results[orig.idx] = { path, blob, ok: true };
+                                markTask(orig.idx, 100, '✅↻', 'done');
+                                state.timestamps.push(performance.now());
+                            } catch (fbErr) {
+                                state.results[orig.idx] = { path, ok: false, err: r.err + ' | fb: ' + fbErr.message };
+                                markTask(orig.idx, 100, '❌', 'fail');
+                                logError(`[${state.items[orig.idx].name}] ${r.err}`);
+                            }
+                        }
+                    }
+                } catch (err) {
+                    // Whole worker batch crashed — fallback all to main thread
+                    for (const orig of batch) {
+                        const path = state.items[orig.idx].path.replace(/\.svg$/i, '.png');
+                        try {
+                            const blob = await convertSvgFallback(orig.svg, scale, bg, 'auto');
+                            state.results[orig.idx] = { path, blob, ok: true };
+                            markTask(orig.idx, 100, '✅↻', 'done');
+                            state.timestamps.push(performance.now());
+                        } catch (fbErr) {
+                            state.results[orig.idx] = { path, ok: false, err: fbErr.message };
+                            markTask(orig.idx, 100, '❌', 'fail');
+                            logError(`[${state.items[orig.idx].name}] ${fbErr.message}`);
+                        }
+                    }
+                }
+
+                const now = performance.now();
+                if (now - lastUiUpdate > 100) {
+                    lastUiUpdate = now;
+                    updateStats();
+                }
+            }
+        });
+
+        await readerDonePromise;
+        await Promise.all(workerPromises);
+        destroyWorkerPool();
+    }
+
+    // ═══ MAIN-THREAD CONVERSION (fallback / safe mode) ══════════════
+    async function runMainThreadConversion(retryFailed) {
+        const scale = state.scale;
+        const bg = state.bg;
+        const engineMode = state.engine === 'safe' ? 'safe' : 'auto';
 
         const queue = [];
         state.items.forEach((item, idx) => {
             const prev = state.results[idx];
             if (retryFailed && prev && prev.ok) return;
             queue.push({ idx, item });
-            markTask(idx, 0, '⏳ antri', '');
+            markTask(idx, 0, '⏳', '');
         });
 
         if (!retryFailed) state.results = new Array(state.items.length).fill(null);
 
         let cursor = 0;
-        const concurrency = calcConcurrency(state.items.length);
+        const concurrency = calcMainConcurrency(state.items.length);
         let lastUiUpdate = 0;
 
         async function worker() {
             while (cursor < queue.length) {
                 const { idx, item } = queue[cursor++];
                 markTask(idx, 25, '📂', 'running');
-
                 try {
-                    // Pipeline: read + render are awaited per item but workers run parallel
                     const svgText = await item.entry.async('string');
                     markTask(idx, 60, '🎨', 'running');
-                    const pngBlob = await convertSvg(svgText, scale, bg, engine);
-
+                    const blob = await convertSvgFallback(svgText, scale, bg, engineMode);
                     state.results[idx] = {
-                        path : item.path.replace(/\.svg$/i, '.png'),
-                        blob : pngBlob,
-                        ok   : true,
+                        path: item.path.replace(/\.svg$/i, '.png'),
+                        blob, ok: true
                     };
                     markTask(idx, 100, '✅', 'done');
                     state.timestamps.push(performance.now());
                 } catch (err) {
-                    const msg = `[${item.name}] ${err.message}`;
-                    state.results[idx] = { path: item.path.replace(/\.svg$/i, '.png'), ok: false, err: msg };
+                    state.results[idx] = {
+                        path: item.path.replace(/\.svg$/i, '.png'),
+                        ok: false, err: err.message
+                    };
                     markTask(idx, 100, '❌', 'fail');
-                    logError(msg);
+                    logError(`[${item.name}] ${err.message}`);
                 }
-
-                // Throttle UI updates (avoid jank with thousands of files)
                 const now = performance.now();
-                if (now - lastUiUpdate > 80) {
+                if (now - lastUiUpdate > 100) {
                     lastUiUpdate = now;
                     updateStats();
                 }
@@ -995,19 +1301,52 @@
 
         const pool = Array.from({ length: Math.min(concurrency, queue.length) }, () => worker());
         await Promise.all(pool);
+    }
 
-        updateStats(); // final
+    // ═══ MAIN RUNNER ═════════════════════════════════════════════════
+    async function runConversion(retryFailed = false) {
+        if (state.running || !state.items.length) return;
+        state.running = true;
+        state.phase = 'converting';
+        state.startTime = performance.now();
+        btnStart.disabled = btnRetry.disabled = btnDownload.disabled = true;
+        btnDownload.classList.remove('ready');
+        state.timestamps = [];
+
+        setPhaseStep(2);
+        const useNitro = state.engine === 'nitro' && CAP.workerRender;
+        if (useNitro) {
+            setProgressMode('nitro');
+            setPhase('🔥 NITRO mode: Worker pool aktif...', 'nitro');
+        } else {
+            setProgressMode('');
+            setPhase('⚡ Konversi paralel berjalan...', 'conv');
+        }
+
+        try {
+            if (useNitro) {
+                await runNitroConversion(retryFailed);
+            } else {
+                await runMainThreadConversion(retryFailed);
+            }
+        } catch (err) {
+            logError('Fatal: ' + err.message);
+        }
+
+        updateStats();
         state.running = false;
 
         const okCount = state.results.filter(r => r?.ok).length;
         const failCount = state.results.filter(r => r && !r.ok).length;
+        const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(1);
 
-        // ───── AUTO-TRANSITION TO PACKAGING ─────
         $('step2').classList.add('done');
         $('step2').classList.remove('active');
 
         if (okCount > 0) {
-            await packageAndDownload(true); // auto-package after conversion
+            const avgSpeed = (okCount / parseFloat(elapsed)).toFixed(1);
+            setPhase(`✓ Render selesai: ${okCount} file dalam ${elapsed}s (${avgSpeed}/s) → packaging...`, 'nitro');
+            await packageAndDownload(true);
         } else {
             setPhase(`Selesai · 0 berhasil dari ${state.items.length}`, 'conv');
             btnStart.disabled = false;
@@ -1015,7 +1354,7 @@
         }
     }
 
-    // ─── CHUNKED PACKAGING (no UI freeze) ─────────────────────────
+    // ═══ PACKAGING (chunked + streaming + dual fallback) ═══════════
     async function packageAndDownload(autoTriggered = false) {
         if (state.phase === 'packaging') return;
 
@@ -1028,9 +1367,8 @@
         state.phase = 'packaging';
         setPhaseStep(3);
         setProgressMode('packaging');
-        setPhase(`📦 Mengemas ${okResults.length} file PNG ke ZIP...`, 'pkg');
+        setPhase(`📦 Mengemas ${okResults.length} file PNG...`, 'pkg');
 
-        // Reset progress bar to 0 for packaging phase
         progBar.style.width = '0%';
         animateCounter('statPct', 0, '%');
 
@@ -1038,34 +1376,30 @@
 
         try {
             const out = new JSZip();
-
-            // ── PHASE A: Add files in chunks (yield to UI) ──
-            const CHUNK = 100;
             const total = okResults.length;
+            // Add files in chunks (yield to UI every CHUNK files)
+            const CHUNK = total > 5000 ? 200 : 100;
+
             for (let i = 0; i < total; i++) {
                 out.file(okResults[i].path, okResults[i].blob);
-
-                if (i % CHUNK === 0) {
-                    const pctAdd = Math.floor((i / total) * 30); // first 30% = adding
+                if ((i + 1) % CHUNK === 0 || i === total - 1) {
+                    const pctAdd = Math.floor(((i + 1) / total) * 25);
                     progBar.style.width = pctAdd + '%';
                     animateCounter('statPct', pctAdd, '%');
-                    setPhase(`📥 Menambahkan file ${i+1}/${total}...`, 'pkg');
-                    // Yield to event loop so UI doesn't freeze
+                    setPhase(`📥 ${i + 1}/${total} files...`, 'pkg');
                     await new Promise(r => setTimeout(r, 0));
                 }
             }
 
-            // ── PHASE B: Generate ZIP with streaming progress ──
-            setPhase('🗜️ Kompresi ZIP...', 'pkg');
+            setPhase('🗜️ Streaming compression...', 'pkg');
 
             const zipBlob = await out.generateAsync({
                 type: 'blob',
                 compression: 'DEFLATE',
-                compressionOptions: { level: 5 }, // 5 is sweet spot for speed/size
+                compressionOptions: { level: 4 }, // 4 = fast & still small for PNG
                 streamFiles: true,
             }, (meta) => {
-                // 30-100% = compression
-                const pct = 30 + Math.floor(meta.percent * 0.7);
+                const pct = 25 + Math.floor(meta.percent * 0.75);
                 progBar.style.width = pct + '%';
                 animateCounter('statPct', pct, '%');
                 if (meta.currentFile) {
@@ -1078,23 +1412,44 @@
 
             progBar.style.width = '100%';
             animateCounter('statPct', 100, '%');
-            setPhase(`💾 Menyimpan file (${formatBytes(zipBlob.size)})...`, 'pkg');
+            setPhase(`💾 Menyimpan (${formatBytes(zipBlob.size)})...`, 'pkg');
 
-            // ── PHASE C: Trigger download ──
             await new Promise(r => setTimeout(r, 200));
 
+            // Triple-fallback save
+            const filename = `svg_to_png_${Date.now()}.zip`;
+            let saved = false;
+
+            // Method 1: FileSaver
             try {
-                saveAs(zipBlob, `svg_to_png_${Date.now()}.zip`);
-            } catch (saveErr) {
-                // Fallback: manual anchor download
+                if (typeof saveAs === 'function') {
+                    saveAs(zipBlob, filename);
+                    saved = true;
+                }
+            } catch (e1) { /* fall through */ }
+
+            // Method 2: Manual anchor
+            if (!saved) {
+                try {
+                    const url = URL.createObjectURL(zipBlob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename;
+                    a.style.display = 'none';
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(() => {
+                        a.remove();
+                        URL.revokeObjectURL(url);
+                    }, 1500);
+                    saved = true;
+                } catch (e2) { /* fall through */ }
+            }
+
+            // Method 3: window.open as last resort
+            if (!saved) {
                 const url = URL.createObjectURL(zipBlob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `svg_to_png_${Date.now()}.zip`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                setTimeout(() => URL.revokeObjectURL(url), 1000);
+                window.open(url, '_blank');
             }
 
             // ── COMPLETE ──
@@ -1106,14 +1461,13 @@
             setProgressMode('complete');
 
             const failCount = state.results.filter(r => r && !r.ok).length;
-            setPhase(`✅ Selesai! ${okResults.length} PNG berhasil diunduh${failCount ? ` · ${failCount} gagal` : ''}`, 'done');
+            const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(1);
+            const speed = (okResults.length / parseFloat(elapsed)).toFixed(1);
+            setPhase(`✅ ${okResults.length} PNG · ${elapsed}s · ${speed}/s${failCount ? ` · ${failCount} gagal` : ''}`, 'done');
 
-            // Visual celebration
             celebrate();
-
-            // Bump all stat cards
             document.querySelectorAll('.stat').forEach((s, i) => {
-                setTimeout(() => bumpStat(s), i * 80);
+                setTimeout(() => bumpStat(s), i * 70);
             });
 
             btnDownload.disabled = false;
@@ -1138,7 +1492,7 @@
         return (b/1024/1024/1024).toFixed(2) + ' GB';
     }
 
-    // ─── EVENT WIRING ──────────────────────────────────────────────
+    // ═══ EVENT WIRING ═══════════════════════════════════════════════
     fileInput.addEventListener('change', e => {
         const f = e.target.files[0];
         if (f) loadZip(f);
@@ -1177,6 +1531,15 @@
             document.querySelectorAll('.bg-btn[data-engine]').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             state.engine = btn.dataset.engine;
+            // Update display
+            if (state.items.length) {
+                const useWorker = state.engine === 'nitro' && CAP.workerRender;
+                const wc = useWorker ? calcWorkerCount(state.items.length) : 0;
+                const mc = calcMainConcurrency(state.items.length);
+                $('concDisplay').textContent = useWorker
+                    ? `${wc} workers + ${mc} I/O 🔥NITRO`
+                    : `${mc} (main thread)`;
+            }
         });
     });
 
@@ -1184,11 +1547,23 @@
     btnRetry.addEventListener('click',    () => runConversion(true));
     btnDownload.addEventListener('click', () => packageAndDownload(false));
 
-    // ─── INIT ──────────────────────────────────────────────────────
+    // ═══ INIT ═══════════════════════════════════════════════════════
     reset();
     state.scale = parseFloat(scaleSlider.value);
-    $('concDisplay').textContent = calcConcurrency(0);
+    if (CAP.workerRender) {
+        $('capWorker').classList.add('nitro');
+        $('capOffscreen').classList.add('nitro');
+    }
+    $('concDisplay').textContent = CAP.workerRender
+        ? `~${calcWorkerCount(2000)} workers ready 🔥`
+        : `~${calcMainConcurrency(0)} (main)`;
     scaleLabel.textContent = '1x ✓';
+
+    // Cleanup on unload
+    window.addEventListener('beforeunload', () => {
+        destroyWorkerPool();
+        if (workerBlobUrl) URL.revokeObjectURL(workerBlobUrl);
+    });
 
 })();
 </script>
