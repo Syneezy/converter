@@ -1,895 +1,1721 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>ULTRA SVG Converter | Performance Edition</title>
-  <!-- Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #030712;
-      --card-bg: rgba(17, 24, 39, 0.7);
-      --accent: #2dd4bf;
-      --accent-glow: rgba(45, 212, 191, 0.4);
-      --text: #f3f4f6;
-      --text-dim: #9ca3af;
-      --error: #ef4444;
-      --success: #10b981;
-      --turbo: #f59e0b;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>⚡ TURBO SVG → PNG | Massal 1000+ File · Extreme Performance</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js">
+    </script>
+    <style>
+        :root {
+            --bg-deep: #04070f;
+            --panel-bg: rgba(10, 15, 28, 0.88);
+            --border-glow: rgba(45, 212, 191, 0.35);
+            --accent: #2dd4bf;
+            --accent-bright: #5eead4;
+            --accent-dim: #0d9488;
+            --text-primary: #eef2ff;
+            --text-secondary: #9aaec9;
+            --text-muted: #5b6e8c;
+            --card-bg: #0c1322;
+            --progress-bg: #1a2538;
+            --danger: #f87171;
+            --warning: #fbbf24;
+            --success: #34d399;
+            --radius-lg: 1.6rem;
+            --radius-md: 1rem;
+            --radius-sm: 0.6rem;
+            --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      background-color: var(--bg);
-      background-image: 
-        radial-gradient(circle at 0% 0%, rgba(45, 212, 191, 0.15) 0%, transparent 50%),
-        radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.15) 0%, transparent 50%);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 1rem;
-      overflow-x: hidden;
-    }
+        body {
+            background: radial-gradient(ellipse at 25% 20%, #0a1628 0%, #020408 55%, #010204 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            padding: 1rem;
+            color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    /* Glassmorphism Panel */
-    .container {
-      width: 100%;
-      max-width: 1100px;
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 24px;
-      padding: 2rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-      margin-top: 1rem;
-      position: relative;
-      overflow: hidden;
-    }
+        /* Subtle animated background particles */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background:
+                radial-gradient(circle at 15% 80%, rgba(45, 212, 191, 0.04) 0%, transparent 45%),
+                radial-gradient(circle at 75% 25%, rgba(94, 234, 212, 0.03) 0%, transparent 40%),
+                radial-gradient(circle at 50% 55%, rgba(45, 212, 191, 0.02) 0%, transparent 50%);
+            animation: bgPulse 18s ease-in-out infinite;
+        }
 
-    /* Turbo Mode Glow Effect */
-    .container.turbo-active::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, transparent, var(--turbo), transparent);
-      animation: turbo-glow 2s infinite linear;
-    }
+        @keyframes bgPulse {
+            0%,
+            100% {
+                opacity: 0.7;
+            }
+            30% {
+                opacity: 1;
+            }
+            60% {
+                opacity: 0.5;
+            }
+            85% {
+                opacity: 0.9;
+            }
+        }
 
-    @keyframes turbo-glow {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
+        .glass-panel {
+            position: relative;
+            z-index: 1;
+            max-width: 1340px;
+            margin: 0 auto;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px) saturate(130%);
+            -webkit-backdrop-filter: blur(16px) saturate(130%);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-glow);
+            padding: 1.6rem 1.8rem;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(45, 212, 191, 0.08) inset,
+                0 8px 0 rgba(0, 0, 0, 0.25);
+            transition: box-shadow var(--transition-smooth);
+        }
 
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
+        .glass-panel:hover {
+            box-shadow: 0 28px 70px rgba(0, 0, 0, 0.75), 0 0 0 1px rgba(45, 212, 191, 0.14) inset,
+                0 8px 0 rgba(0, 0, 0, 0.25), 0 0 80px rgba(45, 212, 191, 0.06);
+        }
 
-    .title-area h1 {
-      font-size: 2rem;
-      font-weight: 800;
-      letter-spacing: -0.025em;
-      background: linear-gradient(to right, #fff, #94a3b8);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 0.25rem;
-    }
+        /* Header */
+        .header-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.8rem;
+            margin-bottom: 0.4rem;
+        }
 
-    .title-area p {
-      color: var(--text-dim);
-      font-size: 0.9rem;
-    }
+        h1 {
+            font-size: clamp(1.3rem, 2.5vw, 1.75rem);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #d4f9ff 0%, #6ee7d6 50%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            line-height: 1.2;
+        }
 
-    .badge {
-      padding: 0.4rem 0.8rem;
-      border-radius: 9999px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.3s ease;
-    }
+        .badge-turbo {
+            background: linear-gradient(135deg, #0f2838, #0a1a2a);
+            border: 1px solid rgba(45, 212, 191, 0.5);
+            border-radius: 60px;
+            padding: 0.25rem 1rem;
+            font-size: 0.68rem;
+            color: #2dd4bf;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+            animation: badgeShimmer 3s ease-in-out infinite;
+            box-shadow: 0 0 18px rgba(45, 212, 191, 0.18);
+        }
 
-    .badge-mode {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-dim);
-    }
+        @keyframes badgeShimmer {
+            0%,
+            100% {
+                box-shadow: 0 0 18px rgba(45, 212, 191, 0.18);
+            }
+            50% {
+                box-shadow: 0 0 32px rgba(45, 212, 191, 0.4);
+            }
+        }
 
-    .badge-mode.active-turbo {
-      background: rgba(245, 158, 11, 0.1);
-      border-color: var(--turbo);
-      color: var(--turbo);
-      box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
-    }
+        .turbo-indicator {
+            display: none;
+            align-items: center;
+            gap: 6px;
+            background: #0a1a1f;
+            border: 1px solid #2dd4bf;
+            border-radius: 50px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #2dd4bf;
+            animation: turboPulse 1.2s ease-in-out infinite;
+            white-space: nowrap;
+        }
+        .turbo-indicator.active {
+            display: inline-flex;
+        }
+        @keyframes turboPulse {
+            0%,
+            100% {
+                box-shadow: 0 0 10px rgba(45, 212, 191, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 28px rgba(45, 212, 191, 0.7);
+            }
+        }
+        .turbo-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #2dd4bf;
+            animation: dotBurst 0.7s ease-in-out infinite;
+        }
+        @keyframes dotBurst {
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.9);
+                opacity: 0.3;
+            }
+        }
 
-    /* Main Grid Layout */
-    .main-grid {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: 1.5rem;
-      margin-bottom: 2rem;
-    }
+        .sub {
+            color: var(--text-secondary);
+            margin: 0.2rem 0 1.2rem 0;
+            border-left: 3px solid var(--accent);
+            padding-left: 0.9rem;
+            font-size: 0.8rem;
+            letter-spacing: 0.01em;
+            animation: fadeSlideIn 0.5s ease-out;
+        }
 
-    @media (max-width: 768px) {
-      .main-grid {
-        grid-template-columns: 1fr;
-      }
-    }
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    /* Dropzone Styling */
-    .dropzone {
-      border: 2px dashed rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 3rem 2rem;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      background: rgba(255, 255, 255, 0.02);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 1rem;
-    }
+        /* Main layout */
+        .flex-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            margin-bottom: 1.4rem;
+        }
 
-    .dropzone:hover, .dropzone.drag-over {
-      border-color: var(--accent);
-      background: rgba(45, 212, 191, 0.05);
-      transform: translateY(-2px);
-    }
+        .dropzone {
+            flex: 2;
+            min-width: 260px;
+            background: var(--card-bg);
+            border: 2px dashed #2a3650;
+            border-radius: var(--radius-lg);
+            padding: 1.4rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+        .dropzone::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(45, 212, 191, 0.06) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        .dropzone:hover::after {
+            opacity: 1;
+        }
+        .dropzone.drag-over {
+            border-color: var(--accent-bright);
+            background: #111d30;
+            box-shadow: 0 0 40px rgba(45, 212, 191, 0.2), inset 0 0 30px rgba(45, 212, 191, 0.04);
+            transform: scale(1.01);
+        }
+        .dropzone.drag-over::after {
+            opacity: 1;
+        }
+        .dropzone-icon {
+            font-size: 2.5rem;
+            transition: transform var(--transition-fast);
+            display: inline-block;
+        }
+        .dropzone.drag-over .dropzone-icon {
+            animation: bounceIcon 0.4s ease-out;
+        }
+        @keyframes bounceIcon {
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-14px);
+            }
+            50% {
+                transform: translateY(0);
+            }
+            70% {
+                transform: translateY(-6px);
+            }
+        }
 
-    .dropzone .icon {
-      font-size: 3rem;
-      filter: drop-shadow(0 0 10px var(--accent-glow));
-      transition: transform 0.3s ease;
-    }
+        .config-card {
+            flex: 1.2;
+            min-width: 240px;
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 1.1rem 1.2rem;
+            border: 1px solid #20293c;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+        .config-row {
+            margin-bottom: 0.9rem;
+        }
+        .config-row label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        input[type="range"] {
+            width: 100%;
+            background: #1f2a3c;
+            height: 5px;
+            border-radius: 5px;
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 0 14px rgba(45, 212, 191, 0.5);
+            transition: box-shadow var(--transition-fast);
+        }
+        input[type="range"]::-webkit-slider-thumb:hover {
+            box-shadow: 0 0 24px rgba(45, 212, 191, 0.8);
+        }
 
-    .dropzone:hover .icon {
-      transform: scale(1.1) rotate(5deg);
-    }
+        .bg-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+            flex-wrap: wrap;
+        }
+        .bg-btn {
+            background: #151f2d;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            color: #b0c4d8;
+            user-select: none;
+        }
+        .bg-btn:hover {
+            border-color: #3a5068;
+            background: #1c2a3d;
+        }
+        .bg-btn.active {
+            background: var(--accent);
+            color: #010204;
+            font-weight: 700;
+            border-color: var(--accent);
+            box-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
+        }
+        .bg-btn:active {
+            transform: scale(0.94);
+        }
 
-    /* Config Card */
-    .config-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      border-radius: 20px;
-      padding: 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.25rem;
-    }
+        .turbo-note {
+            background: #07121e;
+            border-radius: var(--radius-sm);
+            padding: 0.4rem 0.8rem;
+            color: #7fbdba;
+            font-size: 0.68rem;
+            display: inline-block;
+            border: 1px solid #1a3340;
+            letter-spacing: 0.01em;
+        }
 
-    .config-item label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: var(--text-dim);
-      margin-bottom: 0.75rem;
-    }
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1rem 0;
+            flex-wrap: wrap;
+        }
+        .stat {
+            background: var(--card-bg);
+            border-radius: var(--radius-md);
+            padding: 0.5rem 1rem;
+            text-align: center;
+            flex: 1;
+            min-width: 80px;
+            border: 1px solid #1e2b3d;
+            transition: all var(--transition-fast);
+        }
+        .stat:hover {
+            border-color: #3a5068;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        .stat-number {
+            font-size: clamp(1.3rem, 2vw, 1.8rem);
+            font-weight: 800;
+            color: #eef2ff;
+            font-family: var(--font-mono);
+            letter-spacing: -0.02em;
+            transition: color var(--transition-fast);
+        }
+        .stat-number.highlight {
+            color: var(--accent-bright);
+        }
+        .stat-label {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .speed-indicator {
+            color: var(--accent);
+            font-weight: 700;
+            font-size: 0.7rem;
+            margin-left: 4px;
+        }
 
-    .config-item label span {
-      color: var(--accent);
-    }
+        /* Global progress */
+        .global-progress-wrap {
+            position: relative;
+            margin: 10px 0 14px 0;
+        }
+        .global-progress {
+            background: var(--progress-bg);
+            border-radius: 30px;
+            height: 11px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+        .global-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #0d9488, #2dd4bf, #5eead4, #2dd4bf);
+            background-size: 200% 100%;
+            border-radius: 30px;
+            transition: width 0.2s ease-out;
+            animation: shimmerProgress 2s linear infinite;
+            position: relative;
+        }
+        .global-fill::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 30px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3));
+            border-radius: 30px;
+        }
+        @keyframes shimmerProgress {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+        .phase-label {
+            font-size: 0.65rem;
+            color: var(--accent);
+            text-align: right;
+            margin-top: 3px;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            transition: all var(--transition-fast);
+        }
 
-    input[type="range"] {
-      width: 100%;
-      height: 6px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 3px;
-      appearance: none;
-      outline: none;
-    }
+        /* Task grid */
+        .task-grid {
+            max-height: 340px;
+            overflow-y: auto;
+            background: #070c16;
+            border-radius: var(--radius-md);
+            padding: 0.5rem;
+            font-size: 0.7rem;
+            scroll-behavior: smooth;
+            border: 1px solid #141e2d;
+            position: relative;
+        }
+        .task-grid::-webkit-scrollbar {
+            width: 5px;
+        }
+        .task-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .task-grid::-webkit-scrollbar-thumb {
+            background: #2a3a50;
+            border-radius: 20px;
+        }
+        .task-row {
+            background: #0e1624;
+            margin: 0.25rem 0;
+            padding: 0.45rem 0.7rem;
+            border-radius: 0.7rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all var(--transition-fast);
+            border: 1px solid transparent;
+            animation: rowFadeIn 0.3s ease-out;
+        }
+        @keyframes rowFadeIn {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .task-row.wave-glow {
+            border-color: rgba(45, 212, 191, 0.6);
+            box-shadow: 0 0 16px rgba(45, 212, 191, 0.25);
+            background: #111d2e;
+        }
+        .task-row.completed {
+            background: #0b1a15;
+            border-color: rgba(52, 211, 153, 0.3);
+        }
+        .task-row.error-row {
+            background: #1a0f0f;
+            border-color: rgba(248, 113, 113, 0.3);
+        }
+        .task-name {
+            flex: 2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: var(--font-mono);
+            font-size: 0.66rem;
+            color: #c9d9f0;
+            min-width: 0;
+        }
+        .task-progress {
+            flex: 2;
+            height: 5px;
+            background: #1e2a3d;
+            border-radius: 10px;
+            overflow: hidden;
+            min-width: 40px;
+        }
+        .task-progress-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #2dd4bf, #5eead4);
+            border-radius: 10px;
+            transition: width 0.15s ease-out;
+        }
+        .task-status {
+            width: 80px;
+            text-align: right;
+            font-size: 0.62rem;
+            font-weight: 600;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+            color: #8ca3c0;
+        }
+        .task-status.phase-read {
+            color: #fbbf24;
+        }
+        .task-status.phase-render {
+            color: #60a5fa;
+        }
+        .task-status.phase-encode {
+            color: #a78bfa;
+        }
+        .task-status.phase-done {
+            color: #34d399;
+        }
+        .task-status.phase-error {
+            color: #f87171;
+        }
 
-    input[type="range"]::-webkit-slider-thumb {
-      appearance: none;
-      width: 18px;
-      height: 18px;
-      background: var(--accent);
-      border-radius: 50%;
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--accent-glow);
-    }
+        /* Buttons */
+        button.primary {
+            width: 100%;
+            background: linear-gradient(100deg, #152238, #0b1424);
+            border: 1.5px solid rgba(45, 212, 191, 0.55);
+            padding: 0.85rem;
+            border-radius: 2.5rem;
+            font-weight: 700;
+            color: #e0f7ff;
+            margin: 0.9rem 0;
+            cursor: pointer;
+            transition: all var(--transition-smooth);
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            position: relative;
+            overflow: hidden;
+        }
+        button.primary:hover:not(:disabled) {
+            background: linear-gradient(100deg, #1d3250, #121d35);
+            border-color: var(--accent-bright);
+            box-shadow: 0 0 30px rgba(45, 212, 191, 0.35);
+            transform: translateY(-1px);
+        }
+        button.primary:active:not(:disabled) {
+            transform: scale(0.97);
+            transition: transform 0.08s ease;
+        }
+        button.primary:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            filter: grayscale(30%);
+        }
+        button.primary .btn-ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(0);
+            animation: ripple 0.6s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
 
-    .bg-options {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.5rem;
-    }
+        .download-btn {
+            background: #0f1a28;
+            border: 1px solid #2d405c;
+            padding: 0.55rem 1.3rem;
+            border-radius: 2rem;
+            color: #c9e9ff;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.78rem;
+            transition: all var(--transition-fast);
+            letter-spacing: 0.01em;
+        }
+        .download-btn:hover:not(:disabled) {
+            background: #162334;
+            border-color: var(--accent);
+            box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
+        }
+        .download-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .download-btn:active:not(:disabled) {
+            transform: scale(0.95);
+        }
 
-    .bg-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 0.6rem;
-      border-radius: 12px;
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      cursor: pointer;
-      transition: all 0.2s ease;
-      text-align: center;
-    }
+        footer {
+            font-size: 0.62rem;
+            text-align: center;
+            margin-top: 1rem;
+            color: #416079;
+            letter-spacing: 0.02em;
+        }
 
-    .bg-btn.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-      font-weight: 700;
-    }
+        /* Warning banner */
+        .warning-banner {
+            display: none;
+            background: #1a0f08;
+            border: 1px solid #fbbf24;
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 0.9rem;
+            color: #fbbf24;
+            font-size: 0.7rem;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            animation: fadeSlideIn 0.4s ease-out;
+        }
+        .warning-banner.show {
+            display: block;
+        }
 
-    /* Stats & Progress */
-    .stats-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-    }
+        /* CPU meter */
+        .cpu-meter {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+        }
+        .cpu-bar {
+            width: 60px;
+            height: 6px;
+            background: #1e2a3d;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .cpu-fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 10px;
+            transition: width 0.5s ease-out;
+            width: 0%;
+        }
 
-    .stat-box {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 1rem;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      text-align: center;
-    }
-
-    .stat-value {
-      display: block;
-      font-size: 1.5rem;
-      font-weight: 800;
-      color: #fff;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .stat-label {
-      font-size: 0.7rem;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .progress-section {
-      margin-bottom: 2rem;
-    }
-
-    .progress-header {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
-    }
-
-    .progress-bar-container {
-      height: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 6px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      width: 0%;
-      background: linear-gradient(90deg, var(--accent), #6366f1);
-      border-radius: 6px;
-      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-    }
-
-    .progress-bar-fill::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      animation: shine 2s infinite linear;
-    }
-
-    @keyframes shine {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* Task List */
-    .task-list {
-      max-height: 250px;
-      overflow-y: auto;
-      background: rgba(0, 0, 0, 0.2);
-      border-radius: 16px;
-      padding: 0.5rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.7rem;
-      margin-bottom: 2rem;
-      scrollbar-width: thin;
-      scrollbar-color: var(--accent) transparent;
-    }
-
-    .task-list::-webkit-scrollbar { width: 4px; }
-    .task-list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
-
-    .task-item {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      padding: 0.5rem 0.75rem;
-      border-radius: 8px;
-      margin-bottom: 0.25rem;
-      background: rgba(255, 255, 255, 0.02);
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .task-name { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .task-status { width: 80px; text-align: right; font-weight: 700; }
-    .status-reading { color: #38bdf8; }
-    .status-processing { color: var(--turbo); }
-    .status-done { color: var(--success); }
-
-    /* Action Buttons */
-    .actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn {
-      flex: 1;
-      min-width: 200px;
-      padding: 1rem;
-      border-radius: 16px;
-      font-weight: 700;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      border: none;
-      outline: none;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: var(--bg);
-      box-shadow: 0 10px 15px -3px var(--accent-glow);
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 20px 25px -5px var(--accent-glow);
-      filter: brightness(1.1);
-    }
-
-    .btn-secondary {
-      background: rgba(255, 255, 255, 0.05);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      filter: grayscale(1);
-    }
-
-    footer {
-      margin-top: 2rem;
-      color: var(--text-dim);
-      font-size: 0.75rem;
-      text-align: center;
-    }
-
-    /* Processing Wave Animation */
-    .wave-active {
-      position: relative;
-    }
-    .wave-active::after {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(45, 212, 191, 0.1), transparent);
-      animation: wave 1.5s infinite linear;
-    }
-    @keyframes wave {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-  </style>
+        /* Responsive */
+        @media (max-width: 768px) {
+            .glass-panel {
+                padding: 1rem 1rem;
+                border-radius: 1.2rem;
+            }
+            .flex-row {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .dropzone {
+                padding: 1rem 0.8rem;
+                min-width: auto;
+            }
+            .config-card {
+                padding: 0.8rem;
+            }
+            .task-grid {
+                max-height: 220px;
+            }
+            .task-name {
+                font-size: 0.6rem;
+            }
+            .task-status {
+                width: 60px;
+                font-size: 0.55rem;
+            }
+            .stats-bar {
+                gap: 0.4rem;
+            }
+            .stat {
+                padding: 0.35rem 0.6rem;
+            }
+            button.primary {
+                font-size: 0.8rem;
+                padding: 0.7rem;
+            }
+            h1 {
+                font-size: 1.1rem;
+            }
+        }
+        @media (max-width: 420px) {
+            body {
+                padding: 0.4rem;
+            }
+            .glass-panel {
+                padding: 0.7rem 0.6rem;
+                border-radius: 0.9rem;
+            }
+            .task-grid {
+                max-height: 160px;
+                font-size: 0.6rem;
+            }
+            .task-row {
+                padding: 0.3rem 0.4rem;
+                gap: 4px;
+            }
+            .task-name {
+                font-size: 0.55rem;
+            }
+            .task-status {
+                width: 50px;
+                font-size: 0.5rem;
+            }
+            .bg-btn {
+                padding: 4px 8px;
+                font-size: 0.6rem;
+            }
+        }
+    </style>
 </head>
 <body>
-
-  <div class="container" id="mainContainer">
-    <header>
-      <div class="title-area">
-        <h1>ULTRA SVG → PNG</h1>
-        <p>Professional Batch Processing Engine</p>
-      </div>
-      <div id="turboBadge" class="badge badge-mode">
-        <span>⚡ Balanced Mode</span>
-      </div>
-    </header>
-
-    <div class="main-grid">
-      <div class="dropzone" id="dropzone">
-        <div class="icon">📦</div>
-        <div>
-          <h3 style="margin-bottom: 0.25rem;">Drop ZIP file here</h3>
-          <p style="font-size: 0.8rem; color: var(--text-dim);">or click to browse from device</p>
+    <div class="glass-panel" id="mainPanel">
+        <div class="header-row">
+            <h1>
+                ⚡ TURBO SVG → PNG
+                <span class="badge-turbo">EXTREME PERF</span>
+            </h1>
+            <span class="turbo-indicator" id="turboIndicator">
+                <span class="turbo-dot"></span> Turbo Mode Active
+            </span>
         </div>
-        <input type="file" id="fileInput" accept=".zip" hidden>
-      </div>
+        <div class="sub">Proses ribuan file SVG sekaligus · Kualitas HDR tajam · Multi-threaded engine</div>
 
-      <div class="config-card">
-        <div class="config-item">
-          <label>Resolution Scale <span id="scaleLabel">1.0x</span></label>
-          <input type="range" id="scaleSlider" min="0.5" max="5" step="0.1" value="1">
+        <!-- Warning for extreme file counts -->
+        <div class="warning-banner" id="warningBanner">
+            ⚠️ Jumlah file sangat tinggi (>5000). Proses mungkin memakan memori besar. Disarankan memecah ZIP menjadi batch lebih kecil.
         </div>
-        <div class="config-item">
-          <label>Background Color</label>
-          <div class="bg-options">
-            <button class="bg-btn active" data-bg="transparent">None</button>
-            <button class="bg-btn" data-bg="white">White</button>
-            <button class="bg-btn" data-bg="black">Black</button>
-          </div>
+
+        <div class="flex-row">
+            <!-- Drop zone -->
+            <div class="dropzone" id="zipDrop">
+                <div class="dropzone-icon">📦</div>
+                <div style="font-weight:700; margin:4px 0;">Drag & drop ZIP (berisi .svg)</div>
+                <div style="font-size:0.7rem; color:#7c8fb0; margin:4px;">atau klik untuk pilih file</div>
+                <button class="download-btn" id="browseZipBtn" style="margin-top:8px; background:#1e2a3a;">📁 Pilih ZIP</button>
+                <input type="file" id="zipInput" accept=".zip" hidden />
+            </div>
+
+            <!-- Config card -->
+            <div class="config-card">
+                <div class="config-row">
+                    <label>🎯 Skala resolusi <span id="scaleValLabel">1x (Rekomendasi Turbo)</span></label>
+                    <input type="range" id="scaleSlider" min="0.5" max="3" step="0.25" value="1">
+                    <div style="font-size:0.62rem; color:#6d86a3;">↑ 1x = kecepatan maksimal & tetap tajam</div>
+                </div>
+                <div class="config-row">
+                    <label>🎨 Background PNG</label>
+                    <div class="bg-group" id="bgGroup">
+                        <div data-bg="transparent" class="bg-btn active">Transparan</div>
+                        <div data-bg="white" class="bg-btn">Putih</div>
+                        <div data-bg="black" class="bg-btn">Hitam</div>
+                    </div>
+                </div>
+                <div class="turbo-note" id="turboNote">
+                    ⚡ Concurrency: <span id="concurrencyDisplay">auto</span> · Smart queue · Zero delay
+                </div>
+                <div class="cpu-meter" style="margin-top:8px;">
+                    <span>🖥️ CPU Est:</span>
+                    <div class="cpu-bar"><div class="cpu-fill" id="cpuFill"></div></div>
+                    <span id="cpuLabel">idle</span>
+                </div>
+            </div>
         </div>
-        <div id="concurrencyInfo" style="font-size: 0.7rem; color: var(--text-dim); text-align: center;">
-          Detected Threads: <span id="threadCount" style="color: var(--accent);">--</span>
+
+        <!-- Stats -->
+        <div class="stats-bar">
+            <div class="stat">
+                <div class="stat-number" id="totalSvg">0</div>
+                <div class="stat-label">SVG ditemukan</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="doneCount">0</div>
+                <div class="stat-label">Berhasil</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="globalPercent">0%</div>
+                <div class="stat-label">Selesai</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="speedDisplay">0</div>
+                <div class="stat-label">file/detik <span class="speed-indicator" id="speedTrend"></span></div>
+            </div>
         </div>
-      </div>
+
+        <!-- Global progress -->
+        <div class="global-progress-wrap">
+            <div class="global-progress"><div class="global-fill" id="globalBar"></div></div>
+            <div class="phase-label" id="phaseLabel">🔄 Menunggu input...</div>
+        </div>
+
+        <!-- Task list -->
+        <div class="task-grid" id="taskList">
+            <div style="padding:1.2rem; text-align:center; color:#7c8fb0;">▲ Upload file ZIP untuk memulai konversi super cepat</div>
+        </div>
+
+        <!-- Action buttons -->
+        <button class="primary" id="startConvert" disabled>🔥 Mulai Konversi MASSAL (Parallel Turbo)</button>
+        <div style="display: flex; justify-content: flex-end; margin-top: 0.4rem; flex-wrap: wrap; gap: 0.5rem;">
+            <button class="download-btn" id="downloadZipResult" disabled>📦 Unduh Semua PNG (ZIP)</button>
+        </div>
+        <footer>✅ Optimasi ekstrim: Web Workers · OffscreenCanvas · createImageBitmap · Dynamic Concurrency</footer>
     </div>
 
-    <div class="stats-container">
-      <div class="stat-box">
-        <span class="stat-value" id="statTotal">0</span>
-        <span class="stat-label">Files Found</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-value" id="statSpeed">0.0</span>
-        <span class="stat-label">Files/Sec</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-value" id="statDone">0</span>
-        <span class="stat-label">Converted</span>
-      </div>
-      <div class="stat-box">
-        <span class="stat-value" id="statCPU">0%</span>
-        <span class="stat-label">CPU Usage</span>
-      </div>
-    </div>
+    <script>
+        (function() {
+            // ──────────────────────────────────────
+            // DOM REFERENCES
+            // ──────────────────────────────────────
+            const dropZone = document.getElementById('zipDrop');
+            const browseBtn = document.getElementById('browseZipBtn');
+            const zipFileInput = document.getElementById('zipInput');
+            const startBtn = document.getElementById('startConvert');
+            const downloadBtn = document.getElementById('downloadZipResult');
+            const totalSpan = document.getElementById('totalSvg');
+            const doneSpan = document.getElementById('doneCount');
+            const globalPercentSpan = document.getElementById('globalPercent');
+            const globalBar = document.getElementById('globalBar');
+            const taskContainer = document.getElementById('taskList');
+            const scaleSlider = document.getElementById('scaleSlider');
+            const scaleValLabel = document.getElementById('scaleValLabel');
+            const turboIndicator = document.getElementById('turboIndicator');
+            const turboNote = document.getElementById('turboNote');
+            const concurrencyDisplay = document.getElementById('concurrencyDisplay');
+            const cpuFill = document.getElementById('cpuFill');
+            const cpuLabel = document.getElementById('cpuLabel');
+            const phaseLabel = document.getElementById('phaseLabel');
+            const speedDisplay = document.getElementById('speedDisplay');
+            const speedTrend = document.getElementById('speedTrend');
+            const warningBanner = document.getElementById('warningBanner');
 
-    <div class="progress-section">
-      <div class="progress-header">
-        <span id="progressPhase">Waiting for input...</span>
-        <span id="progressPercent">0%</span>
-      </div>
-      <div class="progress-bar-container">
-        <div class="progress-bar-fill" id="progressBar"></div>
-      </div>
-    </div>
+            // ──────────────────────────────────────
+            // FEATURE DETECTION & CAPABILITIES
+            // ──────────────────────────────────────
+            const supportsOffscreenCanvas = typeof OffscreenCanvas !== 'undefined';
+            const supportsCreateImageBitmap = typeof createImageBitmap !== 'undefined';
+            const supportsWorker = typeof Worker !== 'undefined';
+            const hardwareConcurrency = navigator.hardwareConcurrency || 4;
+            const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) ||
+                (navigator.maxTouchPoints > 1 && window.innerWidth < 768);
+            const deviceMemory = navigator.deviceMemory || 4; // GB, approximate
 
-    <div class="task-list" id="taskList">
-      <div style="padding: 2rem; text-align: center; color: var(--text-dim);">
-        Ready to process your SVG assets.
-      </div>
-    </div>
-
-    <div class="actions">
-      <button class="btn btn-primary" id="startBtn" disabled>
-        🚀 Start Processing
-      </button>
-      <button class="btn btn-secondary" id="downloadBtn" disabled>
-        📥 Download ZIP
-      </button>
-    </div>
-
-    <footer>
-      Built for extreme performance using Web Workers & OffscreenCanvas.
-    </footer>
-  </div>
-
-  <script>
-    /**
-     * WORKER SCRIPT (Inline for portability)
-     */
-    const workerCode = `
-      self.onmessage = async function(e) {
-        const { id, svgText, scale, background, width, height } = e.data;
-        
-        try {
-          // 1. Create OffscreenCanvas
-          const canvas = new OffscreenCanvas(width * scale, height * scale);
-          const ctx = canvas.getContext('2d');
-          
-          // 2. Draw background if needed
-          if (background !== 'transparent') {
-            ctx.fillStyle = background;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-          }
-          
-          // 3. Render SVG via ImageBitmap (Modern approach)
-          const blob = new Blob([svgText], { type: 'image/svg+xml' });
-          const url = URL.createObjectURL(blob);
-          
-          try {
-            // Using fetch to get a blob then createImageBitmap
-            const response = await fetch(url);
-            const imageBlob = await response.blob();
-            const bitmap = await createImageBitmap(imageBlob, {
-              resizeWidth: width * scale,
-              resizeHeight: height * scale,
-              resizeQuality: 'high'
-            });
-            
-            ctx.drawImage(bitmap, 0, 0);
-            bitmap.close();
-            
-            // 4. Encode to PNG
-            const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
-            
-            self.postMessage({ id, success: true, blob: pngBlob });
-          } finally {
-            URL.revokeObjectURL(url);
-          }
-        } catch (err) {
-          self.postMessage({ id, success: false, error: err.message });
-        }
-      };
-    `;
-
-    /**
-     * MAIN APPLICATION LOGIC
-     */
-    (function() {
-      // State
-      const state = {
-        files: [],
-        results: [],
-        isProcessing: false,
-        scale: 1.0,
-        background: 'transparent',
-        startTime: 0,
-        doneCount: 0,
-        concurrency: navigator.hardwareConcurrency || 4,
-        isTurbo: false,
-        workers: []
-      };
-
-      // UI Elements
-      const elements = {
-        container: document.getElementById('mainContainer'),
-        dropzone: document.getElementById('dropzone'),
-        fileInput: document.getElementById('fileInput'),
-        scaleSlider: document.getElementById('scaleSlider'),
-        scaleLabel: document.getElementById('scaleLabel'),
-        bgBtns: document.querySelectorAll('.bg-btn'),
-        startBtn: document.getElementById('startBtn'),
-        downloadBtn: document.getElementById('downloadBtn'),
-        progressBar: document.getElementById('progressBar'),
-        progressPercent: document.getElementById('progressPercent'),
-        progressPhase: document.getElementById('progressPhase'),
-        taskList: document.getElementById('taskList'),
-        statTotal: document.getElementById('statTotal'),
-        statDone: document.getElementById('statDone'),
-        statSpeed: document.getElementById('statSpeed'),
-        statCPU: document.getElementById('statCPU'),
-        threadCount: document.getElementById('threadCount'),
-        turboBadge: document.getElementById('turboBadge')
-      };
-
-      // Initialize
-      function init() {
-        elements.threadCount.textContent = state.concurrency;
-        setupEventListeners();
-        setupWorkers();
-      }
-
-      function setupWorkers() {
-        const blob = new Blob([workerCode], { type: 'application/javascript' });
-        const workerUrl = URL.createObjectURL(blob);
-        for (let i = 0; i < state.concurrency; i++) {
-          state.workers.push(new Worker(workerUrl));
-        }
-      }
-
-      function setupEventListeners() {
-        // File Input
-        elements.dropzone.onclick = () => elements.fileInput.click();
-        elements.fileInput.onchange = (e) => handleFiles(e.target.files[0]);
-
-        // Drag & Drop
-        elements.dropzone.ondragover = (e) => {
-          e.preventDefault();
-          elements.dropzone.classList.add('drag-over');
-        };
-        elements.dropzone.ondragleave = () => elements.dropzone.classList.remove('drag-over');
-        elements.dropzone.ondrop = (e) => {
-          e.preventDefault();
-          elements.dropzone.classList.remove('drag-over');
-          handleFiles(e.dataTransfer.files[0]);
-        };
-
-        // Config
-        elements.scaleSlider.oninput = (e) => {
-          state.scale = parseFloat(e.target.value);
-          elements.scaleLabel.textContent = state.scale.toFixed(1) + 'x';
-        };
-
-        elements.bgBtns.forEach(btn => {
-          btn.onclick = () => {
-            elements.bgBtns.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            state.background = btn.dataset.bg;
-          };
-        });
-
-        // Actions
-        elements.startBtn.onclick = startProcessing;
-        elements.downloadBtn.onclick = downloadZip;
-      }
-
-      async function handleFiles(zipFile) {
-        if (!zipFile || !zipFile.name.endsWith('.zip')) {
-          alert('Please select a valid ZIP file.');
-          return;
-        }
-
-        resetState();
-        elements.progressPhase.textContent = 'Reading ZIP content...';
-        
-        try {
-          const zip = await JSZip.loadAsync(zipFile);
-          const svgFiles = [];
-          
-          zip.forEach((path, entry) => {
-            if (!entry.dir && path.toLowerCase().endsWith('.svg')) {
-              svgFiles.push({ path, entry });
+            // ──────────────────────────────────────
+            // DYNAMIC CONCURRENCY CALCULATION
+            // ──────────────────────────────────────
+            function getBaseConcurrency() {
+                if (isMobile) return Math.min(4, Math.max(2, Math.floor(hardwareConcurrency / 2)));
+                return Math.min(16, Math.max(6, hardwareConcurrency));
             }
-          });
 
-          state.files = svgFiles;
-          elements.statTotal.textContent = svgFiles.length;
-          
-          // Auto Turbo Mode Detection
-          if (svgFiles.length > 1000) {
-            enableTurboMode();
-          } else {
-            disableTurboMode();
-          }
+            function getTurboConcurrency() {
+                if (isMobile) return Math.min(8, Math.max(4, hardwareConcurrency));
+                return Math.min(24, Math.max(12, hardwareConcurrency * 2));
+            }
 
-          if (svgFiles.length > 5000) {
-            alert(`⚠️ Large batch detected (${svgFiles.length} files). Processing may take a moment.`);
-          }
+            // ──────────────────────────────────────
+            // STATE
+            // ──────────────────────────────────────
+            let selectedBg = 'transparent';
+            let currentZipFile = null;
+            let svgItems = []; // { path, entry, name }
+            let conversionResults = []; // { path, pngBlob, success }
+            let processing = false;
+            let isTurboMode = false;
+            let MAX_CONCURRENT = getBaseConcurrency();
+            let completionTimestamps = []; // for speed calculation
+            let speedWindowMs = 4000; // rolling window for speed calc
+            let activeWorkerCount = 0;
+            let waveInterval = null;
 
-          elements.startBtn.disabled = false;
-          elements.progressPhase.textContent = `Ready: ${svgFiles.length} SVGs found.`;
-          updateTaskList('Files loaded. Ready to convert.');
+            // ──────────────────────────────────────
+            // WEB WORKER (OffscreenCanvas + createImageBitmap)
+            // ──────────────────────────────────────
+            let workerPool = [];
+            let workerBusy = [];
+            let workerReady = false;
 
-        } catch (err) {
-          alert('Error reading ZIP: ' + err.message);
-        }
-      }
+            // Worker code as string → Blob URL
+            const workerCode = `
+            // ─── Turbo SVG→PNG Worker ───
+            const hasOffscreen = typeof OffscreenCanvas !== 'undefined';
+            const hasCreateBitmap = typeof createImageBitmap !== 'undefined';
 
-      function enableTurboMode() {
-        state.isTurbo = true;
-        elements.container.classList.add('turbo-active');
-        elements.turboBadge.classList.add('active-turbo');
-        elements.turboBadge.innerHTML = '<span>⚡ TURBO MODE ACTIVE</span>';
-        // Aggressive concurrency for turbo mode
-        state.concurrency = Math.max(state.concurrency, 8);
-        elements.threadCount.textContent = state.concurrency + ' (Maximized)';
-      }
-
-      function disableTurboMode() {
-        state.isTurbo = false;
-        elements.container.classList.remove('turbo-active');
-        elements.turboBadge.classList.remove('active-turbo');
-        elements.turboBadge.innerHTML = '<span>⚡ Balanced Mode</span>';
-        state.concurrency = navigator.hardwareConcurrency || 4;
-        elements.threadCount.textContent = state.concurrency;
-      }
-
-      async function startProcessing() {
-        if (state.isProcessing) return;
-        state.isProcessing = true;
-        state.startTime = performance.now();
-        state.doneCount = 0;
-        state.results = [];
-        
-        elements.startBtn.disabled = true;
-        elements.downloadBtn.disabled = true;
-        elements.taskList.innerHTML = '';
-        elements.progressPhase.textContent = 'Initializing pipeline...';
-
-        // Chunking strategy to prevent memory spikes
-        const CHUNK_SIZE = state.isTurbo ? 100 : 50;
-        const total = state.files.length;
-
-        // Start CPU Simulation
-        const cpuInterval = setInterval(() => {
-          const base = state.isTurbo ? 80 : 40;
-          const jitter = Math.random() * 15;
-          elements.statCPU.textContent = Math.min(99, Math.round(base + jitter)) + '%';
-        }, 500);
-
-        // Process in chunks
-        for (let i = 0; i < total; i += CHUNK_SIZE) {
-          const chunk = state.files.slice(i, i + CHUNK_SIZE);
-          elements.progressPhase.textContent = `Processing: ${i} to ${Math.min(i + CHUNK_SIZE, total)} of ${total}`;
-          await processChunk(chunk);
-        }
-
-        clearInterval(cpuInterval);
-        finishProcessing();
-      }
-
-      async function processChunk(chunk) {
-        const promises = chunk.map((fileObj, idx) => {
-          return new Promise(async (resolve) => {
-            try {
-              const svgText = await fileObj.entry.async('string');
-              
-              // Get SVG dimensions
-              const parser = new DOMParser();
-              const doc = parser.parseFromString(svgText, 'image/svg+xml');
-              const svgEl = doc.querySelector('svg');
-              
-              let width = 300, height = 300;
-              if (svgEl) {
-                if (svgEl.viewBox.baseVal.width) {
-                  width = svgEl.viewBox.baseVal.width;
-                  height = svgEl.viewBox.baseVal.height;
-                } else if (svgEl.width.baseVal.value) {
-                  width = svgEl.width.baseVal.value;
-                  height = svgEl.height.baseVal.value;
+            self.onmessage = async function(e) {
+              const { id, svgString, scale, bgType } = e.data;
+              try {
+                // Validate SVG content
+                if (!svgString || svgString.trim().length === 0) {
+                  throw new Error('SVG string kosong');
                 }
-              }
 
-              // Use worker from pool
-              const workerIdx = (state.doneCount + idx) % state.workers.length;
-              const worker = state.workers[workerIdx];
+                // Create Blob from SVG string
+                const svgBlob = new Blob([svgString], { type: 'image/svg+xml' });
 
-              const onMsg = (e) => {
-                if (e.data.id === fileObj.path) {
-                  worker.removeEventListener('message', onMsg);
-                  if (e.data.success) {
-                    state.results.push({ path: fileObj.path.replace('.svg', '.png'), blob: e.data.blob });
-                    updateProgress();
+                // Use createImageBitmap for fast decoding (available in workers)
+                let bitmap;
+                if (hasCreateBitmap) {
+                  bitmap = await createImageBitmap(svgBlob, { premultiplyAlpha: 'premultiply' });
+                } else {
+                  // Fallback: use ImageBitmap from fetch-like approach (rare)
+                  throw new Error('createImageBitmap not available in worker');
+                }
+
+                const naturalW = bitmap.width || 300;
+                const naturalH = bitmap.height || 300;
+                const targetW = Math.max(1, Math.floor(naturalW * scale));
+                const targetH = Math.max(1, Math.floor(naturalH * scale));
+
+                let pngBlob;
+
+                if (hasOffscreen) {
+                  // ─── OffscreenCanvas path (GPU-accelerated in supporting browsers) ───
+                  const offscreen = new OffscreenCanvas(targetW, targetH);
+                  const ctx = offscreen.getContext('2d', { alpha: true, willReadFrequently: false });
+
+                  // Background handling
+                  if (bgType === 'white') {
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, targetW, targetH);
+                  } else if (bgType === 'black') {
+                    ctx.fillStyle = '#000000';
+                    ctx.fillRect(0, 0, targetW, targetH);
+                  } else {
+                    ctx.clearRect(0, 0, targetW, targetH);
                   }
-                  resolve();
+
+                  // High quality rendering
+                  ctx.imageSmoothingEnabled = true;
+                  ctx.imageSmoothingQuality = 'high';
+                  ctx.drawImage(bitmap, 0, 0, targetW, targetH);
+
+                  // Convert to PNG blob
+                  if (typeof offscreen.convertToBlob === 'function') {
+                    pngBlob = await offscreen.convertToBlob({ type: 'image/png', quality: 1.0 });
+                  } else {
+                    // Fallback for older browsers with OffscreenCanvas but no convertToBlob
+                    throw new Error('convertToBlob not available on OffscreenCanvas');
+                  }
+                } else {
+                  // Should not reach here if feature detection worked, but handle gracefully
+                  throw new Error('OffscreenCanvas not supported in worker');
                 }
-              };
 
-              worker.addEventListener('message', onMsg);
-              worker.postMessage({
-                id: fileObj.path,
-                svgText,
-                scale: state.scale,
-                background: state.background,
-                width,
-                height
-              });
+                // Clean up bitmap
+                bitmap.close();
 
-              // Update task list (limit for performance)
-              if (state.doneCount % 10 === 0 || state.files.length < 50) {
-                addTaskItem(fileObj.path, 'processing');
+                // Send result back (transfer the blob)
+                self.postMessage({ id, success: true, pngBlob }, [pngBlob]);
+              } catch (err) {
+                self.postMessage({ id, success: false, error: err.message || 'Unknown worker error' });
               }
+            };
 
-            } catch (err) {
-              console.error(err);
-              resolve();
+            // Signal ready
+            self.postMessage({ type: 'ready', capabilities: {
+              offscreenCanvas: hasOffscreen,
+              createImageBitmap: hasCreateBitmap
+            }});
+          `;
+
+            function createWorkerBlobURL() {
+                const blob = new Blob([workerCode], { type: 'application/javascript' });
+                return URL.createObjectURL(blob);
             }
-          });
-        });
 
-        await Promise.all(promises);
-      }
+            function initializeWorkers(count) {
+                // Terminate existing workers
+                workerPool.forEach(w => w.terminate());
+                workerPool = [];
+                workerBusy = [];
+                const workerURL = createWorkerBlobURL();
+                let readyCount = 0;
+                const totalToCreate = count;
 
-      function updateProgress() {
-        state.doneCount++;
-        const percent = Math.round((state.doneCount / state.files.length) * 100);
-        elements.progressBar.style.width = percent + '%';
-        elements.progressPercent.textContent = percent + '%';
-        elements.statDone.textContent = state.doneCount;
+                return new Promise((resolve) => {
+                    for (let i = 0; i < totalToCreate; i++) {
+                        const worker = new Worker(workerURL);
+                        workerBusy.push(false);
+                        workerPool.push(worker);
 
-        // Calculate Speed
-        const elapsed = (performance.now() - state.startTime) / 1000;
-        const speed = (state.doneCount / elapsed).toFixed(1);
-        elements.statSpeed.textContent = speed;
-      }
+                        worker.onmessage = function(e) {
+                            if (e.data && e.data.type === 'ready') {
+                                readyCount++;
+                                if (readyCount >= totalToCreate) {
+                                    workerReady = true;
+                                    // Update capabilities based on first worker response
+                                    const caps = e.data.capabilities || {};
+                                    if (!caps.offscreenCanvas || !caps.createImageBitmap) {
+                                        console.warn(
+                                            'Worker lacks full capabilities. Falling back to main thread for some operations.'
+                                            );
+                                    }
+                                    resolve(true);
+                                }
+                            }
+                        };
 
-      function addTaskItem(name, status) {
-        if (elements.taskList.children.length > 20) {
-          elements.taskList.removeChild(elements.taskList.firstChild);
-        }
-        const item = document.createElement('div');
-        item.className = 'task-item';
-        item.innerHTML = `
-          <span class="task-name">${name}</span>
-          <span class="task-status status-${status}">${status.toUpperCase()}</span>
-        `;
-        elements.taskList.appendChild(item);
-        elements.taskList.scrollTop = elements.taskList.scrollHeight;
-      }
+                        worker.onerror = function(err) {
+                            console.error('Worker init error:', err);
+                            readyCount++;
+                            if (readyCount >= totalToCreate && !workerReady) {
+                                workerReady = false;
+                                resolve(false);
+                            }
+                        };
+                    }
 
-      function updateTaskList(msg) {
-        elements.taskList.innerHTML = `<div style="padding: 1rem; text-align: center;">${msg}</div>`;
-      }
+                    // Timeout fallback
+                    setTimeout(() => {
+                        if (!workerReady && readyCount < totalToCreate) {
+                            workerReady = false;
+                            resolve(false);
+                        }
+                    }, 3000);
+                });
+            }
 
-      function finishProcessing() {
-        state.isProcessing = false;
-        elements.progressPhase.textContent = 'Conversion Complete!';
-        elements.statCPU.textContent = '0%';
-        elements.downloadBtn.disabled = false;
-        elements.startBtn.disabled = false;
-        
-        const totalTime = ((performance.now() - state.startTime) / 1000).toFixed(2);
-        updateTaskList(`Successfully converted ${state.results.length} files in ${totalTime}s.`);
-      }
+            function getAvailableWorker() {
+                for (let i = 0; i < workerPool.length; i++) {
+                    if (!workerBusy[i]) {
+                        workerBusy[i] = true;
+                        activeWorkerCount++;
+                        updateCPUMeter();
+                        return i;
+                    }
+                }
+                return -1; // All busy
+            }
 
-      async function downloadZip() {
-        elements.downloadBtn.disabled = true;
-        elements.progressPhase.textContent = 'Generating ZIP...';
-        
-        const outZip = new JSZip();
-        state.results.forEach(res => {
-          outZip.file(res.path, res.blob);
-        });
+            function releaseWorker(index) {
+                if (index >= 0 && index < workerBusy.length) {
+                    workerBusy[index] = false;
+                    activeWorkerCount = Math.max(0, activeWorkerCount - 1);
+                    updateCPUMeter();
+                }
+            }
 
-        const content = await outZip.generateAsync({ type: 'blob' });
-        saveAs(content, `converted_pngs_${Date.now()}.zip`);
-        
-        elements.downloadBtn.disabled = false;
-        elements.progressPhase.textContent = 'Download ready.';
-      }
+            function processInWorker(workerIndex, id, svgString, scale, bgType) {
+                return new Promise((resolve, reject) => {
+                    const worker = workerPool[workerIndex];
+                    const handler = function(e) {
+                        worker.removeEventListener('message', handler);
+                        releaseWorker(workerIndex);
+                        if (e.data && e.data.id === id) {
+                            resolve(e.data);
+                        } else {
+                            reject(new Error('Worker response mismatch'));
+                        }
+                    };
+                    worker.addEventListener('message', handler);
+                    worker.postMessage({ id, svgString, scale, bgType });
+                });
+            }
 
-      function resetState() {
-        state.files = [];
-        state.results = [];
-        state.doneCount = 0;
-        elements.statTotal.textContent = '0';
-        elements.statDone.textContent = '0';
-        elements.statSpeed.textContent = '0.0';
-        elements.progressBar.style.width = '0%';
-        elements.progressPercent.textContent = '0%';
-        elements.downloadBtn.disabled = true;
-        elements.startBtn.disabled = true;
-      }
+            // ──────────────────────────────────────
+            // MAIN THREAD FALLBACK (createImageBitmap + Canvas)
+            // ──────────────────────────────────────
+            async function svgToPngMainThread(svgString, scale, bgType) {
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                let bitmap;
+                if (supportsCreateImageBitmap) {
+                    bitmap = await createImageBitmap(blob, { premultiplyAlpha: 'premultiply' });
+                } else {
+                    // Legacy fallback using Image()
+                    bitmap = await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => resolve(img);
+                        img.onerror = () => reject(new Error('Image decode failed'));
+                        img.src = URL.createObjectURL(blob);
+                    });
+                }
 
-      init();
-    })();
-  </script>
+                const naturalW = bitmap.width || bitmap.naturalWidth || 300;
+                const naturalH = bitmap.height || bitmap.naturalHeight || 300;
+                const targetW = Math.max(1, Math.floor(naturalW * scale));
+                const targetH = Math.max(1, Math.floor(naturalH * scale));
+
+                const canvas = document.createElement('canvas');
+                canvas.width = targetW;
+                canvas.height = targetH;
+                const ctx = canvas.getContext('2d', { alpha: true, willReadFrequently: false });
+
+                if (bgType === 'white') {
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, targetW, targetH);
+                } else if (bgType === 'black') {
+                    ctx.fillStyle = '#000000';
+                    ctx.fillRect(0, 0, targetW, targetH);
+                } else {
+                    ctx.clearRect(0, 0, targetW, targetH);
+                }
+
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = 'high';
+                ctx.drawImage(bitmap, 0, 0, targetW, targetH);
+
+                // Clean up bitmap if it's an ImageBitmap
+                if (bitmap.close && typeof bitmap.close === 'function') {
+                    bitmap.close();
+                }
+
+                return new Promise((resolve, reject) => {
+                    canvas.toBlob((pngBlob) => {
+                        if (pngBlob) resolve(pngBlob);
+                        else reject(new Error('Canvas toBlob failed'));
+                    }, 'image/png', 1.0);
+                });
+            }
+
+            // ──────────────────────────────────────
+            // ANIMATED COUNTER
+            // ──────────────────────────────────────
+            function animateCounter(element, targetValue, duration = 400) {
+                const start = parseFloat(element.innerText.replace(/[^0-9.]/g, '')) || 0;
+                if (start === targetValue) return;
+                const startTime = performance.now();
+                const isInteger = Number.isInteger(targetValue) && !element.innerText.includes('%');
+                const suffix = element.innerText.includes('%') ? '%' : '';
+
+                function step(now) {
+                    const elapsed = now - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    // Ease-out cubic
+                    const eased = 1 - Math.pow(1 - progress, 3);
+                    const current = start + (targetValue - start) * eased;
+                    element.innerText = isInteger ? Math.round(current) + suffix : current.toFixed(0) +
+                        suffix;
+                    if (progress < 1) {
+                        requestAnimationFrame(step);
+                    } else {
+                        element.innerText = isInteger ? targetValue + suffix : targetValue.toFixed(0) + suffix;
+                    }
+                }
+                requestAnimationFrame(step);
+            }
+
+            // ──────────────────────────────────────
+            // CPU METER UPDATE
+            // ──────────────────────────────────────
+            function updateCPUMeter() {
+                const ratio = MAX_CONCURRENT > 0 ? activeWorkerCount / MAX_CONCURRENT : 0;
+                const percentage = Math.round(ratio * 100);
+                cpuFill.style.width = percentage + '%';
+                if (percentage > 70) {
+                    cpuLabel.innerText = 'high';
+                    cpuFill.style.background = '#fbbf24';
+                } else if (percentage > 30) {
+                    cpuLabel.innerText = 'active';
+                    cpuFill.style.background = 'var(--accent)';
+                } else if (percentage > 0) {
+                    cpuLabel.innerText = 'low';
+                    cpuFill.style.background = 'var(--accent)';
+                } else {
+                    cpuLabel.innerText = 'idle';
+                    cpuFill.style.background = 'var(--accent)';
+                }
+            }
+
+            // ──────────────────────────────────────
+            // SPEED CALCULATION
+            // ──────────────────────────────────────
+            function recordCompletion() {
+                completionTimestamps.push(performance.now());
+                // Prune old entries
+                const cutoff = performance.now() - speedWindowMs;
+                completionTimestamps = completionTimestamps.filter(t => t > cutoff);
+                updateSpeedDisplay();
+            }
+
+            function updateSpeedDisplay() {
+                const now = performance.now();
+                const cutoff = now - speedWindowMs;
+                const recent = completionTimestamps.filter(t => t > cutoff);
+                if (recent.length < 2) {
+                    speedDisplay.innerText = '0';
+                    speedTrend.innerText = '';
+                    return;
+                }
+                const durationSec = (now - recent[0]) / 1000;
+                const rate = durationSec > 0 ? recent.length / durationSec : 0;
+                speedDisplay.innerText = rate.toFixed(1);
+                if (rate > 20) speedTrend.innerText = '🔥';
+                else if (rate > 8) speedTrend.innerText = '⚡';
+                else if (rate > 3) speedTrend.innerText = '🚀';
+                else speedTrend.innerText = '';
+            }
+
+            // ──────────────────────────────────────
+            // UI HELPERS
+            // ──────────────────────────────────────
+            function resetUI() {
+                svgItems = [];
+                conversionResults = [];
+                completionTimestamps = [];
+                totalSpan.innerText = '0';
+                doneSpan.innerText = '0';
+                globalPercentSpan.innerText = '0%';
+                globalBar.style.width = '0%';
+                speedDisplay.innerText = '0';
+                speedTrend.innerText = '';
+                startBtn.disabled = true;
+                downloadBtn.disabled = true;
+                phaseLabel.innerText = '🔄 Menunggu input...';
+                taskContainer.innerHTML =
+                    '<div style="padding:1.2rem; text-align:center; color:#7c8fb0;">▲ Upload file ZIP untuk memulai konversi super cepat</div>';
+                turboIndicator.classList.remove('active');
+                isTurboMode = false;
+                MAX_CONCURRENT = getBaseConcurrency();
+                concurrencyDisplay.innerText = MAX_CONCURRENT;
+                updateCPUMeter();
+                warningBanner.classList.remove('show');
+                if (waveInterval) clearInterval(waveInterval);
+                waveInterval = null;
+            }
+
+            async function loadZipAndExtract(zipFile) {
+                resetUI();
+                try {
+                    const zip = new JSZip();
+                    const data = await zip.loadAsync(zipFile);
+                    const allPaths = Object.keys(data.files);
+                    const svgList = [];
+                    for (let p of allPaths) {
+                        const entry = data.files[p];
+                        if (entry.dir) continue;
+                        if (p.toLowerCase().endsWith('.svg')) {
+                            svgList.push({
+                                path: p,
+                                entry: entry,
+                                name: p.split('/').pop(),
+                            });
+                        }
+                    }
+                    if (svgList.length === 0) {
+                        taskContainer.innerHTML =
+                            '<div style="padding:1rem; color:#f9a8a8;">⚠️ ZIP tidak mengandung file .svg</div>';
+                        return false;
+                    }
+                    svgItems = svgList;
+                    totalSpan.innerText = svgItems.length;
+
+                    // Auto Turbo Mode detection
+                    if (svgItems.length > 1000) {
+                        isTurboMode = true;
+                        MAX_CONCURRENT = getTurboConcurrency();
+                        turboIndicator.classList.add('active');
+                        concurrencyDisplay.innerText = MAX_CONCURRENT + ' (TURBO)';
+                        phaseLabel.innerText = '⚡ Turbo Mode otomatis aktif · ' + svgItems.length + ' file terdeteksi';
+                    } else {
+                        isTurboMode = false;
+                        MAX_CONCURRENT = getBaseConcurrency();
+                        turboIndicator.classList.remove('active');
+                        concurrencyDisplay.innerText = MAX_CONCURRENT;
+                        phaseLabel.innerText = '📂 ' + svgItems.length + ' file SVG siap diproses';
+                    }
+
+                    // Warning for extreme counts
+                    if (svgItems.length > 5000) {
+                        warningBanner.classList.add('show');
+                    } else {
+                        warningBanner.classList.remove('show');
+                    }
+
+                    // Initialize worker pool based on concurrency
+                    if (supportsWorker && supportsOffscreenCanvas && supportsCreateImageBitmap) {
+                        const workerCount = Math.min(MAX_CONCURRENT, svgItems.length, 24);
+                        const success = await initializeWorkers(workerCount);
+                        if (success) {
+                            concurrencyDisplay.innerText = workerCount + (isTurboMode ? ' (TURBO)' : '') +
+                                ' · Workers';
+                            workerReady = true;
+                        } else {
+                            workerReady = false;
+                            concurrencyDisplay.innerText = 'MainThread' + (isTurboMode ? ' (TURBO)' : '');
+                            console.warn('Worker init failed, using main thread fallback');
+                        }
+                    } else {
+                        workerReady = false;
+                        concurrencyDisplay.innerText = 'MainThread' + (isTurboMode ? ' (TURBO)' : '');
+                    }
+
+                    renderTaskList();
+                    startBtn.disabled = false;
+                    downloadBtn.disabled = true;
+                    return true;
+                } catch (err) {
+                    taskContainer.innerHTML =
+                        `<div style="padding:1rem; color:#f87171;">❌ Error baca ZIP: ${err.message}</div>`;
+                    return false;
+                }
+            }
+
+            function renderTaskList() {
+                if (!svgItems.length) return;
+                const fragment = document.createDocumentFragment();
+                const maxDisplay = Math.min(svgItems.length, 500); // Virtualize for extreme counts
+                svgItems.forEach((item, idx) => {
+                    if (idx >= maxDisplay) return;
+                    const row = document.createElement('div');
+                    row.className = 'task-row';
+                    row.id = `task-${idx}`;
+                    row.style.animationDelay = `${Math.min(idx * 3, 300)}ms`;
+                    row.innerHTML = `
+                <div class="task-name" title="${item.path}">📄 ${item.name.length > 38 ? item.name.slice(0, 35) + '...' : item.name}</div>
+                <div class="task-progress"><div class="task-progress-fill" id="fill-${idx}" style="width:0%"></div></div>
+                <div class="task-status" id="status-${idx}">⏳ antri</div>
+              `;
+                    fragment.appendChild(row);
+                });
+                if (svgItems.length > maxDisplay) {
+                    const overflowRow = document.createElement('div');
+                    overflowRow.className = 'task-row';
+                    overflowRow.style.opacity = '0.6';
+                    overflowRow.innerHTML = `
+                <div class="task-name">... dan ${svgItems.length - maxDisplay} file lainnya</div>
+                <div class="task-progress"></div>
+                <div class="task-status">📋</div>
+              `;
+                    fragment.appendChild(overflowRow);
+                }
+                taskContainer.innerHTML = '';
+                taskContainer.appendChild(fragment);
+            }
+
+            function updateTask(idx, percent, statusText, phaseClass = '') {
+                if (idx >= 500) return; // Beyond virtualized display
+                const fillEl = document.getElementById(`fill-${idx}`);
+                if (fillEl) fillEl.style.width = `${percent}%`;
+                const statusEl = document.getElementById(`status-${idx}`);
+                if (statusEl) {
+                    statusEl.innerText = statusText;
+                    statusEl.className = 'task-status ' + phaseClass;
+                }
+                const rowEl = document.getElementById(`task-${idx}`);
+                if (rowEl) {
+                    if (phaseClass === 'phase-done') {
+                        rowEl.classList.add('completed');
+                    } else if (phaseClass === 'phase-error') {
+                        rowEl.classList.add('error-row');
+                    }
+                }
+            }
+
+            function updateGlobalProgress() {
+                const total = svgItems.length;
+                const completed = conversionResults.filter(r => r && r.success).length;
+                const failed = conversionResults.filter(r => r && r !== null && !r.success).length;
+                const percent = total === 0 ? 0 : ((completed + failed) / total) * 100;
+                animateCounter(doneSpan, completed, 300);
+                const percentRounded = Math.floor(percent);
+                globalPercentSpan.innerText = percentRounded + '%';
+                globalBar.style.width = `${percent}%`;
+
+                if (processing && completed + failed < total) {
+                    const remaining = total - completed - failed;
+                    if (isTurboMode) {
+                        phaseLabel.innerText =
+                            `⚡ Turbo · ${completed} selesai · ${remaining} tersisa · ${activeWorkerCount} worker aktif`;
+                    } else {
+                        phaseLabel.innerText =
+                            `🔄 Memproses · ${completed} selesai · ${remaining} tersisa · ${activeWorkerCount} worker aktif`;
+                    }
+                } else if (completed + failed >= total && total > 0) {
+                    phaseLabel.innerText = `✅ Selesai! ${completed} berhasil, ${failed} gagal dari ${total} file`;
+                    downloadBtn.disabled = completed === 0;
+                    startBtn.disabled = false;
+                }
+            }
+
+            function setPhaseLabel(text) {
+                phaseLabel.innerText = text;
+            }
+
+            // ──────────────────────────────────────
+            // WAVE EFFECT ON TASK LIST
+            // ──────────────────────────────────────
+            function startWaveEffect() {
+                if (waveInterval) clearInterval(waveInterval);
+                if (svgItems.length === 0) return;
+                const maxVisible = Math.min(svgItems.length, 500);
+                let wavePos = 0;
+                const waveWidth = 8; // How many rows glow at once
+                waveInterval = setInterval(() => {
+                    // Clear all glows
+                    for (let i = 0; i < maxVisible; i++) {
+                        const row = document.getElementById(`task-${i}`);
+                        if (row) row.classList.remove('wave-glow');
+                    }
+                    // Apply glow to current wave window
+                    for (let i = wavePos; i < wavePos + waveWidth && i < maxVisible; i++) {
+                        const row = document.getElementById(`task-${i}`);
+                        if (row && !row.classList.contains('completed') && !row.classList.contains(
+                                'error-row')) {
+                            row.classList.add('wave-glow');
+                        }
+                    }
+                    wavePos = (wavePos + 1) % (maxVisible + waveWidth);
+                }, 120);
+            }
+
+            function stopWaveEffect() {
+                if (waveInterval) {
+                    clearInterval(waveInterval);
+                    waveInterval = null;
+                }
+                const allRows = taskContainer.querySelectorAll('.task-row.wave-glow');
+                allRows.forEach(row => row.classList.remove('wave-glow'));
+            }
+
+            // ──────────────────────────────────────
+            // CORE CONVERSION ENGINE
+            // ──────────────────────────────────────
+            async function runTurboConversion() {
+                if (!svgItems.length || processing) return;
+                processing = true;
+                startBtn.disabled = true;
+                downloadBtn.disabled = true;
+                completionTimestamps = [];
+                speedDisplay.innerText = '0';
+                speedTrend.innerText = '';
+
+                const scale = parseFloat(scaleSlider.value);
+                const bg = selectedBg;
+                conversionResults = new Array(svgItems.length).fill(null);
+
+                // Initialize all task rows
+                for (let i = 0; i < Math.min(svgItems.length, 500); i++) {
+                    updateTask(i, 0, '⏳ antri', '');
+                }
+                updateGlobalProgress();
+                setPhaseLabel(isTurboMode ? '⚡ Turbo Mode · Memulai pemrosesan...' : '🔄 Memulai pemrosesan...');
+                startWaveEffect();
+
+                const useWorker = workerReady && workerPool.length > 0 && supportsOffscreenCanvas &&
+                    supportsCreateImageBitmap;
+
+                // Build queue
+                const queue = svgItems.map((item, idx) => ({ idx, item }));
+                let cursor = 0;
+                let activePromises = [];
+                const total = queue.length;
+
+                // For main thread fallback, limit concurrent operations
+                const effectiveConcurrency = useWorker ? Math.min(workerPool.length, total) : Math.min(MAX_CONCURRENT,
+                    total, isMobile ? 4 : 12);
+
+                async function processNext() {
+                    while (cursor < total) {
+                        const task = queue[cursor++];
+                        const idx = task.idx;
+                        const svgEntry = task.item;
+
+                        try {
+                            updateTask(idx, 8, '📂 baca', 'phase-read');
+                            const svgBlob = await svgEntry.entry.async('blob');
+                            const svgString = await svgBlob.text();
+
+                            updateTask(idx, 30, '🎨 render', 'phase-render');
+
+                            let pngBlob;
+                            if (useWorker) {
+                                // Wait for available worker
+                                let workerIndex = getAvailableWorker();
+                                while (workerIndex === -1 && processing) {
+                                    await new Promise(r => setTimeout(r, 5));
+                                    workerIndex = getAvailableWorker();
+                                }
+                                if (!processing) return;
+
+                                updateTask(idx, 45, '🔧 encode', 'phase-encode');
+                                const result = await processInWorker(workerIndex, idx, svgString, scale, bg);
+                                if (result.success) {
+                                    pngBlob = result.pngBlob;
+                                } else {
+                                    throw new Error(result.error || 'Worker conversion failed');
+                                }
+                            } else {
+                                // Main thread fallback
+                                updateTask(idx, 45, '🔧 encode', 'phase-encode');
+                                pngBlob = await svgToPngMainThread(svgString, scale, bg);
+                            }
+
+                            conversionResults[idx] = {
+                                path: svgEntry.path.replace(/\.svg$/i, '.png'),
+                                pngBlob: pngBlob,
+                                success: true,
+                            };
+                            updateTask(idx, 100, '✅ selesai', 'phase-done');
+                            recordCompletion();
+                        } catch (err) {
+                            console.error(`Gagal ${svgEntry.path}:`, err.message || err);
+                            conversionResults[idx] = {
+                                path: svgEntry.path.replace(/\.svg$/i, '.png'),
+                                success: false,
+                            };
+                            updateTask(idx, 100, '❌ error', 'phase-error');
+                            recordCompletion();
+                        }
+                        updateGlobalProgress();
+                    }
+                }
+
+                // Launch concurrent processors
+                const workers = [];
+                for (let i = 0; i < effectiveConcurrency; i++) {
+                    workers.push(processNext());
+                }
+
+                await Promise.all(workers);
+                processing = false;
+                stopWaveEffect();
+                startBtn.disabled = false;
+                updateCPUMeter();
+                const anySuccess = conversionResults.some(r => r && r.success);
+                if (anySuccess) downloadBtn.disabled = false;
+                const successCount = conversionResults.filter(r => r && r.success).length;
+                const failCount = conversionResults.filter(r => r && !r.success).length;
+                setPhaseLabel(
+                    `✅ Selesai! ${successCount} berhasil, ${failCount} gagal dari ${total} file · ${isTurboMode ? 'TURBO' : 'Normal'} mode`
+                    );
+                updateGlobalProgress();
+            }
+
+            // ──────────────────────────────────────
+            // ZIP PACKAGING
+            // ──────────────────────────────────────
+            async function packToZip() {
+                if (!conversionResults.length) return null;
+                const outZip = new JSZip();
+                let added = 0;
+                for (let res of conversionResults) {
+                    if (res && res.success && res.pngBlob) {
+                        outZip.file(res.path, res.pngBlob);
+                        added++;
+                    }
+                }
+                if (added === 0) return null;
+                const zipBlob = await outZip.generateAsync({
+                    type: 'blob',
+                    compression: 'DEFLATE',
+                    compressionOptions: { level: 6 },
+                });
+                return zipBlob;
+            }
+
+            async function downloadAllAsZip() {
+                setPhaseLabel('📦 Mengemas ZIP...');
+                const zipBlob = await packToZip();
+                if (zipBlob) {
+                    const name = currentZipFile ? currentZipFile.name.replace(/\.zip$/i, '') : 'svg_output';
+                    saveAs(zipBlob, `${name}_TURBO_PNG.zip`);
+                    setPhaseLabel('✅ ZIP berhasil diunduh!');
+                } else {
+                    alert('Tidak ada PNG yang berhasil dikonversi.');
+                    setPhaseLabel('⚠️ Tidak ada file untuk diunduh');
+                }
+            }
+
+            // ──────────────────────────────────────
+            // EVENT HANDLERS
+            // ──────────────────────────────────────
+            function handleZipFile(file) {
+                if (!file || !file.name.toLowerCase().endsWith('.zip')) {
+                    alert('Harap pilih file .zip');
+                    return;
+                }
+                currentZipFile = file;
+                loadZipAndExtract(currentZipFile);
+            }
+
+            // Drag & drop with animation feedback
+            function setupDragDrop() {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev =>
+                    dropZone.addEventListener(ev, (e) => { e.preventDefault();
+                        e.stopPropagation(); })
+                );
+                ['dragenter', 'dragover'].forEach(ev =>
+                    dropZone.addEventListener(ev, () => dropZone.classList.add('drag-over'))
+                );
+                ['dragleave', 'drop'].forEach(ev =>
+                    dropZone.addEventListener(ev, () => dropZone.classList.remove('drag-over'))
+                );
+                dropZone.addEventListener('drop', (e) => {
+                    const files = e.dataTransfer.files;
+                    if (files.length && files[0].name.endsWith('.zip')) {
+                        handleZipFile(files[0]);
+                    } else {
+                        alert('Hanya file ZIP yang didukung');
+                    }
+                });
+            }
+
+            // Button ripple effect
+            function addRippleEffect(button) {
+                button.addEventListener('click', function(e) {
+                    const ripple = document.createElement('span');
+                    ripple.className = 'btn-ripple';
+                    const rect = button.getBoundingClientRect();
+                    const size = Math.max(rect.width, rect.height);
+                    ripple.style.width = ripple.style.height = size + 'px';
+                    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                    button.appendChild(ripple);
+                    ripple.addEventListener('animationend', () => ripple.remove());
+                });
+            }
+
+            browseBtn.addEventListener('click', () => zipFileInput.click());
+            zipFileInput.addEventListener('change', (e) => {
+                if (e.target.files.length) handleZipFile(e.target.files[0]);
+                zipFileInput.value = '';
+            });
+            startBtn.addEventListener('click', runTurboConversion);
+            downloadBtn.addEventListener('click', downloadAllAsZip);
+
+            // Background selector
+            const bgBtns = document.querySelectorAll('.bg-btn');
+            bgBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    bgBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    selectedBg = btn.getAttribute('data-bg');
+                });
+            });
+
+            // Scale slider
+            scaleSlider.addEventListener('input', () => {
+                let val = parseFloat(scaleSlider.value);
+                scaleValLabel.innerText = val.toFixed(2) + 'x' + (val === 1 ? ' (Rekomendasi Turbo)' :
+                    val > 1.5 ? ' (Kualitas tinggi, lebih lambat)' : '');
+            });
+
+            // Add ripple to buttons
+            addRippleEffect(startBtn);
+            addRippleEffect(downloadBtn);
+
+            // Initialize
+            setupDragDrop();
+            resetUI();
+            scaleValLabel.innerText = '1x (Rekomendasi Turbo)';
+            concurrencyDisplay.innerText = getBaseConcurrency();
+            updateCPUMeter();
+
+            // ──────────────────────────────────────
+            // CLEANUP ON PAGE UNLOAD
+            // ──────────────────────────────────────
+            window.addEventListener('beforeunload', () => {
+                stopWaveEffect();
+                workerPool.forEach(w => w.terminate());
+                workerPool = [];
+                processing = false;
+            });
+
+            console.log('%c⚡ Turbo SVG→PNG Converter Ready %c| %cWorkers: ' + (supportsWorker && supportsOffscreenCanvas &&
+                supportsCreateImageBitmap ? 'Enabled' : 'MainThread') +
+                ' | Concurrency: ' + getBaseConcurrency() +
+                ' | OffscreenCanvas: ' + (supportsOffscreenCanvas ? '✅' : '❌') +
+                ' | createImageBitmap: ' + (supportsCreateImageBitmap ? '✅' : '❌') +
+                ' | Mobile: ' + (isMobile ? 'Yes' : 'No'),
+                'color:#2dd4bf; font-weight:bold;',
+                '',
+                'color:#9aaec9;');
+        })();
+    </script>
 </body>
 </html>
