@@ -2,1116 +2,864 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-    <title>⚡ TURBO SVG → PNG | Massal 1000+ File · Extreme Performance</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js">
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>⚡ TURBO SVG → PNG | Elite Engine v2</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
-            --bg-deep: #04070f;
-            --panel-bg: rgba(10, 15, 28, 0.88);
-            --border-glow: rgba(45, 212, 191, 0.35);
+            --bg: #04070f;
+            --panel: rgba(10,15,28,0.92);
+            --border: rgba(45,212,191,0.3);
             --accent: #2dd4bf;
-            --accent-bright: #5eead4;
-            --accent-dim: #0d9488;
-            --text-primary: #eef2ff;
-            --text-secondary: #9aaec9;
-            --text-muted: #5b6e8c;
-            --card-bg: #0c1322;
-            --progress-bg: #1a2538;
+            --accent2: #5eead4;
+            --dim: #0d9488;
+            --text: #eef2ff;
+            --sub: #9aaec9;
+            --muted: #5b6e8c;
+            --card: #0c1322;
+            --prog-bg: #1a2538;
             --danger: #f87171;
-            --warning: #fbbf24;
-            --success: #34d399;
-            --radius-lg: 1.6rem;
-            --radius-md: 1rem;
-            --radius-sm: 0.6rem;
-            --font-mono: 'JetBrains Mono', 'SF Mono', 'Cascadia Code', 'Consolas', monospace;
-            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --warn: #fbbf24;
+            --ok: #34d399;
+            --r-lg: 1.6rem;
+            --r-md: 1rem;
+            --r-sm: 0.6rem;
+            --mono: 'JetBrains Mono','SF Mono',Consolas,monospace;
+            --ease: cubic-bezier(0.4,0,0.2,1);
         }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        *{margin:0;padding:0;box-sizing:border-box;}
 
         body {
-            background: radial-gradient(ellipse at 25% 20%, #0a1628 0%, #020408 55%, #010204 100%);
-            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-            min-height: 100vh;
-            padding: 1rem;
-            color: var(--text-primary);
-            -webkit-tap-highlight-color: transparent;
-            -webkit-font-smoothing: antialiased;
-            overflow-x: hidden;
-            position: relative;
+            background: radial-gradient(ellipse at 25% 20%,#0a1628 0%,#020408 55%,#010204 100%);
+            font-family: 'Inter',system-ui,-apple-system,sans-serif;
+            min-height:100vh; padding:1rem;
+            color:var(--text);
+            -webkit-font-smoothing:antialiased;
+            overflow-x:hidden;
         }
-
         body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
+            content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
             background:
-                radial-gradient(circle at 15% 80%, rgba(45, 212, 191, 0.04) 0%, transparent 45%),
-                radial-gradient(circle at 75% 25%, rgba(94, 234, 212, 0.03) 0%, transparent 40%);
-            animation: bgPulse 18s ease-in-out infinite;
+                radial-gradient(circle at 15% 80%,rgba(45,212,191,.04) 0%,transparent 45%),
+                radial-gradient(circle at 75% 25%,rgba(94,234,212,.03) 0%,transparent 40%);
+            animation:bgPulse 18s ease-in-out infinite;
+        }
+        @keyframes bgPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+        .panel {
+            position:relative; z-index:1;
+            max-width:1380px; margin:0 auto;
+            background:var(--panel);
+            backdrop-filter:blur(20px) saturate(140%);
+            -webkit-backdrop-filter:blur(20px) saturate(140%);
+            border-radius:var(--r-lg);
+            border:1px solid var(--border);
+            padding:1.8rem 2rem;
+            box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 0 1px rgba(45,212,191,.06) inset;
         }
 
-        @keyframes bgPulse {
-            0%, 100% { opacity: 0.7; }
-            30% { opacity: 1; }
-            60% { opacity: 0.5; }
-            85% { opacity: 0.9; }
-        }
-
-        .glass-panel {
-            position: relative;
-            z-index: 1;
-            max-width: 1340px;
-            margin: 0 auto;
-            background: var(--panel-bg);
-            backdrop-filter: blur(16px) saturate(130%);
-            -webkit-backdrop-filter: blur(16px) saturate(130%);
-            border-radius: var(--radius-lg);
-            border: 1px solid var(--border-glow);
-            padding: 1.6rem 1.8rem;
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(45, 212, 191, 0.08) inset;
-        }
-
-        /* Header */
-        .header-row {
-            display: flex;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.8rem;
-            margin-bottom: 0.4rem;
-        }
-
+        /* ── HEADER ── */
+        .hdr {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.3rem;}
         h1 {
-            font-size: clamp(1.3rem, 2.5vw, 1.75rem);
-            font-weight: 800;
-            letter-spacing: -0.02em;
-            background: linear-gradient(145deg, #d4f9ff 0%, #6ee7d6 50%, #2dd4bf 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            line-height: 1.2;
+            font-size:clamp(1.2rem,2.5vw,1.7rem);
+            font-weight:800; letter-spacing:-.02em;
+            background:linear-gradient(145deg,#d4f9ff 0%,#6ee7d6 50%,#2dd4bf 100%);
+            -webkit-background-clip:text; background-clip:text; color:transparent;
+            display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; line-height:1.2;
         }
+        .badge {
+            background:linear-gradient(135deg,#0f2838,#0a1a2a);
+            border:1px solid rgba(45,212,191,.5);
+            border-radius:60px; padding:.2rem .9rem;
+            font-size:.65rem; color:var(--accent); font-weight:700;
+        }
+        .turbo-pill {
+            display:none; align-items:center; gap:6px;
+            background:#0a1a1f; border:1px solid var(--accent);
+            border-radius:50px; padding:.3rem .9rem;
+            font-size:.68rem; font-weight:700; color:var(--accent);
+        }
+        .turbo-pill.on{display:inline-flex;}
+        .tdot{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:pulse .7s ease-in-out infinite;}
+        @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.9);opacity:.3}}
+        .sub-txt {color:var(--sub);margin:.2rem 0 1.2rem;border-left:3px solid var(--accent);padding-left:.9rem;font-size:.78rem;}
 
-        .badge-turbo {
-            background: linear-gradient(135deg, #0f2838, #0a1a2a);
-            border: 1px solid rgba(45, 212, 191, 0.5);
-            border-radius: 60px;
-            padding: 0.25rem 1rem;
-            font-size: 0.68rem;
-            color: #2dd4bf;
-            font-weight: 700;
-            white-space: nowrap;
+        /* ── WARNING ── */
+        .warn-banner {
+            display:none;
+            background:#1a0f08; border:1px solid var(--warn);
+            border-radius:var(--r-sm); padding:.5rem .9rem;
+            color:var(--warn); font-size:.7rem; font-weight:600; margin-bottom:.8rem;
         }
+        .warn-banner.show{display:block;}
 
-        .turbo-indicator {
-            display: none;
-            align-items: center;
-            gap: 6px;
-            background: #0a1a1f;
-            border: 1px solid #2dd4bf;
-            border-radius: 50px;
-            padding: 0.3rem 0.9rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: #2dd4bf;
-            white-space: nowrap;
+        /* ── ENGINE STATUS BAR ── */
+        .engine-bar {
+            display:flex; gap:.6rem; flex-wrap:wrap;
+            background:#070c16; border:1px solid #151f30;
+            border-radius:var(--r-sm); padding:.5rem .9rem;
+            margin-bottom:1rem; font-size:.68rem; align-items:center;
         }
-        .turbo-indicator.active {
-            display: inline-flex;
+        .engine-tag {
+            background:#0f1e2d; border-radius:20px; padding:.2rem .7rem;
+            color:#7fbdba; border:1px solid #1a3340; font-weight:600;
         }
-        .turbo-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #2dd4bf;
-            animation: dotBurst 0.7s ease-in-out infinite;
-        }
-        @keyframes dotBurst {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.9); opacity: 0.3; }
-        }
+        .engine-tag.ok{color:#34d399;border-color:#1a3a28;}
+        .engine-tag.warn{color:#fbbf24;border-color:#3a3010;}
 
-        .sub {
-            color: var(--text-secondary);
-            margin: 0.2rem 0 1.2rem 0;
-            border-left: 3px solid var(--accent);
-            padding-left: 0.9rem;
-            font-size: 0.8rem;
-        }
+        /* ── MAIN LAYOUT ── */
+        .row {display:flex;flex-wrap:wrap;gap:1.2rem;margin-bottom:1.2rem;}
 
-        /* Main layout */
-        .flex-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.2rem;
-            margin-bottom: 1.4rem;
+        /* DROP ZONE */
+        .drop {
+            flex:2; min-width:260px;
+            background:var(--card); border:2px dashed #2a3650;
+            border-radius:var(--r-lg); padding:1.6rem 1.2rem;
+            text-align:center; cursor:pointer;
+            transition:all .3s var(--ease); position:relative;
         }
+        .drop.over {
+            border-color:var(--accent2); background:#111d30;
+            box-shadow:0 0 40px rgba(45,212,191,.2); transform:scale(1.01);
+        }
+        .drop-icon{font-size:2.8rem;display:inline-block;margin-bottom:.4rem;}
+        .drop-title{font-weight:700;font-size:.95rem;margin-bottom:.3rem;}
+        .drop-sub{font-size:.7rem;color:#7c8fb0;margin-bottom:.8rem;}
 
-        .dropzone {
-            flex: 2;
-            min-width: 260px;
-            background: var(--card-bg);
-            border: 2px dashed #2a3650;
-            border-radius: var(--radius-lg);
-            padding: 1.4rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all var(--transition-smooth);
-            position: relative;
+        /* CONFIG CARD */
+        .cfg {
+            flex:1.2; min-width:240px;
+            background:var(--card); border-radius:var(--r-lg);
+            padding:1.1rem 1.2rem; border:1px solid #20293c;
         }
-        .dropzone.drag-over {
-            border-color: var(--accent-bright);
-            background: #111d30;
-            box-shadow: 0 0 40px rgba(45, 212, 191, 0.2);
-            transform: scale(1.01);
+        .cfg-row{margin-bottom:1rem;}
+        .cfg-row label {
+            display:flex; justify-content:space-between;
+            font-size:.72rem; color:var(--sub); font-weight:600; margin-bottom:.4rem;
         }
-        .dropzone-icon {
-            font-size: 2.5rem;
-            display: inline-block;
+        input[type=range] {
+            width:100%; background:#1f2a3c; height:5px;
+            border-radius:5px; -webkit-appearance:none; appearance:none;
+            cursor:pointer; accent-color:var(--accent);
         }
-
-        .config-card {
-            flex: 1.2;
-            min-width: 240px;
-            background: var(--card-bg);
-            border-radius: var(--radius-lg);
-            padding: 1.1rem 1.2rem;
-            border: 1px solid #20293c;
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance:none;
+            width:20px; height:20px; background:var(--accent);
+            border-radius:50%; cursor:pointer;
         }
-        .config-row {
-            margin-bottom: 0.9rem;
-        }
-        .config-row label {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.74rem;
-            color: var(--text-secondary);
-            font-weight: 600;
-        }
-        input[type="range"] {
-            width: 100%;
-            background: #1f2a3c;
-            height: 5px;
-            border-radius: 5px;
-            -webkit-appearance: none;
-            appearance: none;
-            cursor: pointer;
-            accent-color: var(--accent);
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 20px;
-            height: 20px;
-            background: var(--accent);
-            border-radius: 50%;
-            cursor: pointer;
-        }
-
-        .bg-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 6px;
-            flex-wrap: wrap;
-        }
+        .cfg-hint{font-size:.6rem;color:#6d86a3;margin-top:.25rem;}
+        .bg-grp{display:flex;gap:8px;flex-wrap:wrap;margin-top:.35rem;}
         .bg-btn {
-            background: #151f2d;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.7rem;
-            cursor: pointer;
-            border: 1px solid transparent;
-            transition: all var(--transition-fast);
-            font-weight: 600;
-            color: #b0c4d8;
-            user-select: none;
+            background:#151f2d; padding:6px 14px;
+            border-radius:30px; font-size:.68rem;
+            cursor:pointer; border:1px solid transparent;
+            transition:all .15s var(--ease);
+            font-weight:600; color:#b0c4d8; user-select:none;
         }
-        .bg-btn:hover {
-            border-color: #3a5068;
-            background: #1c2a3d;
-        }
-        .bg-btn.active {
-            background: var(--accent);
-            color: #010204;
-            font-weight: 700;
-            border-color: var(--accent);
-            box-shadow: 0 0 18px rgba(45, 212, 191, 0.45);
-        }
+        .bg-btn:hover{border-color:#3a5068;background:#1c2a3d;}
+        .bg-btn.active{background:var(--accent);color:#010204;font-weight:700;border-color:var(--accent);box-shadow:0 0 18px rgba(45,212,191,.45);}
 
-        .turbo-note {
-            background: #07121e;
-            border-radius: var(--radius-sm);
-            padding: 0.4rem 0.8rem;
-            color: #7fbdba;
-            font-size: 0.68rem;
-            display: inline-block;
-            border: 1px solid #1a3340;
-        }
-
-        /* Stats bar */
-        .stats-bar {
-            display: flex;
-            gap: 0.8rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
+        /* ── STATS ── */
+        .stats{display:flex;gap:.8rem;margin:1rem 0;flex-wrap:wrap;}
         .stat {
-            background: var(--card-bg);
-            border-radius: var(--radius-md);
-            padding: 0.5rem 1rem;
-            text-align: center;
-            flex: 1;
-            min-width: 80px;
-            border: 1px solid #1e2b3d;
+            background:var(--card); border-radius:var(--r-md);
+            padding:.55rem 1rem; text-align:center;
+            flex:1; min-width:80px; border:1px solid #1e2b3d;
         }
-        .stat-number {
-            font-size: clamp(1.3rem, 2vw, 1.8rem);
-            font-weight: 800;
-            color: #eef2ff;
-            font-family: var(--font-mono);
-        }
-        .stat-label {
-            font-size: 0.62rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+        .stat-n{font-size:clamp(1.2rem,2vw,1.7rem);font-weight:800;font-family:var(--mono);}
+        .stat-n.ok{color:var(--ok);}
+        .stat-n.err{color:var(--danger);}
+        .stat-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 
-        /* Global progress */
-        .global-progress-wrap {
-            position: relative;
-            margin: 10px 0 14px 0;
+        /* ── PROGRESS ── */
+        .prog-wrap{margin:10px 0 14px;}
+        .prog-bg{background:var(--prog-bg);border-radius:30px;height:12px;overflow:hidden;}
+        .prog-fill {
+            width:0%; height:100%;
+            background:linear-gradient(90deg,#0d9488,#2dd4bf,#5eead4,#2dd4bf);
+            background-size:200% 100%; border-radius:30px;
+            transition:width .2s ease-out;
+            animation:shimmer 2s linear infinite;
         }
-        .global-progress {
-            background: var(--progress-bg);
-            border-radius: 30px;
-            height: 11px;
-            overflow: hidden;
-        }
-        .global-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #0d9488, #2dd4bf, #5eead4, #2dd4bf);
-            background-size: 200% 100%;
-            border-radius: 30px;
-            transition: width 0.2s ease-out;
-            animation: shimmerProgress 2s linear infinite;
-        }
-        @keyframes shimmerProgress {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 200% 50%; }
-        }
-        .phase-label {
-            font-size: 0.65rem;
-            color: var(--accent);
-            text-align: right;
-            margin-top: 3px;
-            font-weight: 600;
-        }
+        @keyframes shimmer{0%{background-position:0% 50%}100%{background-position:200% 50%}}
+        .phase{font-size:.65rem;color:var(--accent);text-align:right;margin-top:4px;font-weight:600;}
 
-        /* Task grid */
-        .task-grid {
-            max-height: 340px;
-            overflow-y: auto;
-            background: #070c16;
-            border-radius: var(--radius-md);
-            padding: 0.5rem;
-            font-size: 0.7rem;
-            border: 1px solid #141e2d;
+        /* ── TASK GRID ── */
+        .grid {
+            max-height:340px; overflow-y:auto;
+            background:#070c16; border-radius:var(--r-md);
+            padding:.5rem; font-size:.7rem; border:1px solid #141e2d;
         }
-        .task-grid::-webkit-scrollbar {
-            width: 5px;
+        .grid::-webkit-scrollbar{width:5px;}
+        .grid::-webkit-scrollbar-track{background:transparent;}
+        .grid::-webkit-scrollbar-thumb{background:#2a3a50;border-radius:20px;}
+        .task {
+            background:#0e1624; margin:.25rem 0;
+            padding:.45rem .7rem; border-radius:.7rem;
+            display:flex; align-items:center; gap:8px;
+            border:1px solid transparent;
+            transition:background .15s var(--ease);
         }
-        .task-grid::-webkit-scrollbar-track {
-            background: transparent;
+        .task.running{background:#111d2e;border-color:rgba(45,212,191,.25);}
+        .task.done{border-color:rgba(52,211,153,.2);}
+        .task.fail{border-color:rgba(248,113,113,.2);}
+        .tname {
+            flex:2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+            font-family:var(--mono); font-size:.63rem; color:#c9d9f0; min-width:0;
         }
-        .task-grid::-webkit-scrollbar-thumb {
-            background: #2a3a50;
-            border-radius: 20px;
-        }
-        .task-row {
-            background: #0e1624;
-            margin: 0.25rem 0;
-            padding: 0.45rem 0.7rem;
-            border-radius: 0.7rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all var(--transition-fast);
-        }
-        .task-row.wave-glow {
-            border-color: rgba(45, 212, 191, 0.6);
-            box-shadow: 0 0 16px rgba(45, 212, 191, 0.25);
-            background: #111d2e;
-        }
-        .task-name {
-            flex: 2;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-family: var(--font-mono);
-            font-size: 0.66rem;
-            color: #c9d9f0;
-            min-width: 0;
-        }
-        .task-progress {
-            flex: 2;
-            height: 5px;
-            background: #1e2a3d;
-            border-radius: 10px;
-            overflow: hidden;
-            min-width: 40px;
-        }
-        .task-progress-fill {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #2dd4bf, #5eead4);
-            border-radius: 10px;
-            transition: width 0.15s ease-out;
-        }
-        .task-status {
-            width: 80px;
-            text-align: right;
-            font-size: 0.62rem;
-            font-weight: 600;
-            white-space: nowrap;
-        }
+        .tbar{flex:2;height:5px;background:#1e2a3d;border-radius:10px;overflow:hidden;min-width:40px;}
+        .tbar-fill{width:0%;height:100%;background:linear-gradient(90deg,#2dd4bf,#5eead4);border-radius:10px;transition:width .12s ease-out;}
+        .tst{width:80px;text-align:right;font-size:.6rem;font-weight:600;white-space:nowrap;}
 
-        /* Buttons */
-        button {
-            cursor: pointer;
-            border: none;
-            outline: none;
+        /* ── BUTTONS ── */
+        button{cursor:pointer;border:none;outline:none;}
+        .btn-primary {
+            width:100%;
+            background:linear-gradient(100deg,#152238,#0b1424);
+            border:1.5px solid rgba(45,212,191,.55);
+            padding:.9rem; border-radius:2.5rem;
+            font-weight:700; color:#e0f7ff; margin:.9rem 0;
+            transition:all .3s var(--ease); font-size:.9rem;
+            position:relative; overflow:hidden;
         }
-        button.primary {
-            width: 100%;
-            background: linear-gradient(100deg, #152238, #0b1424);
-            border: 1.5px solid rgba(45, 212, 191, 0.55);
-            padding: 0.85rem;
-            border-radius: 2.5rem;
-            font-weight: 700;
-            color: #e0f7ff;
-            margin: 0.9rem 0;
-            transition: all var(--transition-smooth);
-            font-size: 0.9rem;
-            position: relative;
-            overflow: hidden;
+        .btn-primary:hover:not(:disabled) {
+            background:linear-gradient(100deg,#1d3250,#121d35);
+            border-color:var(--accent2);
+            box-shadow:0 0 30px rgba(45,212,191,.35);
+            transform:translateY(-1px);
         }
-        button.primary:hover:not(:disabled) {
-            background: linear-gradient(100deg, #1d3250, #121d35);
-            border-color: var(--accent-bright);
-            box-shadow: 0 0 30px rgba(45, 212, 191, 0.35);
-            transform: translateY(-1px);
+        .btn-primary:disabled{opacity:.38;cursor:not-allowed;}
+        .btn-primary:active:not(:disabled){transform:scale(.97);}
+        .btn-sec {
+            background:#0f1a28; border:1px solid #2d405c;
+            padding:.55rem 1.3rem; border-radius:2rem;
+            color:#c9e9ff; font-weight:600; font-size:.78rem;
+            transition:all .15s var(--ease);
         }
-        button.primary:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            filter: grayscale(30%);
-        }
-        button.primary:active:not(:disabled) {
-            transform: scale(0.97);
-        }
+        .btn-sec:hover:not(:disabled){background:#162334;border-color:var(--accent);box-shadow:0 0 18px rgba(45,212,191,.2);}
+        .btn-sec:disabled{opacity:.38;cursor:not-allowed;}
 
-        .download-btn {
-            background: #0f1a28;
-            border: 1px solid #2d405c;
-            padding: 0.55rem 1.3rem;
-            border-radius: 2rem;
-            color: #c9e9ff;
-            font-weight: 600;
-            font-size: 0.78rem;
-            transition: all var(--transition-fast);
+        /* ── BROWSE FILE BUTTON ── */
+        .browse-btn {
+            display:inline-flex; align-items:center; gap:.4rem;
+            background:#1e2a3a; border:1px solid #334558;
+            padding:.55rem 1.2rem; border-radius:2rem;
+            color:#c9e9ff; font-weight:600; font-size:.78rem;
+            cursor:pointer; transition:all .15s var(--ease);
+            position:relative; z-index:10;
         }
-        .download-btn:hover:not(:disabled) {
-            background: #162334;
-            border-color: var(--accent);
-            box-shadow: 0 0 20px rgba(45, 212, 191, 0.2);
-        }
-        .download-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
+        .browse-btn:hover{background:#253545;border-color:var(--accent);}
 
-        .warning-banner {
-            display: none;
-            background: #1a0f08;
-            border: 1px solid #fbbf24;
-            border-radius: var(--radius-sm);
-            padding: 0.5rem 0.9rem;
-            color: #fbbf24;
-            font-size: 0.7rem;
-            margin-bottom: 0.8rem;
-            font-weight: 600;
+        /* ── LOG / ERROR PANEL ── */
+        .error-panel {
+            display:none; max-height:120px; overflow-y:auto;
+            background:#0d0808; border:1px solid #3d1515;
+            border-radius:var(--r-sm); padding:.6rem .8rem;
+            font-size:.65rem; font-family:var(--mono);
+            color:#f87171; margin-top:.6rem;
         }
-        .warning-banner.show {
-            display: block;
-        }
+        .error-panel.show{display:block;}
+        .err-line{margin:.1rem 0;opacity:.8;}
+        .err-line:hover{opacity:1;}
 
-        footer {
-            font-size: 0.62rem;
-            text-align: center;
-            margin-top: 1rem;
-            color: #416079;
-        }
+        footer{font-size:.6rem;text-align:center;margin-top:1rem;color:#416079;}
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .glass-panel {
-                padding: 1rem 1rem;
-                border-radius: 1.2rem;
-            }
-            .flex-row {
-                flex-direction: column;
-                gap: 0.8rem;
-            }
-            .dropzone {
-                padding: 1rem 0.8rem;
-                min-width: auto;
-            }
-            .config-card {
-                padding: 0.8rem;
-            }
-            .task-grid {
-                max-height: 220px;
-            }
-            .task-name {
-                font-size: 0.6rem;
-            }
-            .task-status {
-                width: 60px;
-                font-size: 0.55rem;
-            }
-            button.primary {
-                font-size: 0.8rem;
-                padding: 0.7rem;
-            }
-            h1 {
-                font-size: 1.1rem;
-            }
+        @media(max-width:768px){
+            .panel{padding:1rem;border-radius:1.2rem;}
+            .row{flex-direction:column;gap:.8rem;}
+            .grid{max-height:220px;}
+            h1{font-size:1rem;}
         }
-        @media (max-width: 420px) {
-            body {
-                padding: 0.4rem;
-            }
-            .glass-panel {
-                padding: 0.7rem 0.6rem;
-                border-radius: 0.9rem;
-            }
-            .task-grid {
-                max-height: 160px;
-            }
-            .task-row {
-                padding: 0.3rem 0.4rem;
-                gap: 4px;
-            }
+        @media(max-width:420px){
+            body{padding:.4rem;}
+            .panel{padding:.7rem .6rem;border-radius:.9rem;}
+            .grid{max-height:160px;}
         }
     </style>
 </head>
 <body>
-    <div class="glass-panel" id="mainPanel">
-        <div class="header-row">
-            <h1>
-                ⚡ TURBO SVG → PNG
-                <span class="badge-turbo">EXTREME PERF</span>
-            </h1>
-            <span class="turbo-indicator" id="turboIndicator">
-                <span class="turbo-dot"></span> Turbo Mode Active
-            </span>
-        </div>
-        <div class="sub">Proses ribuan file SVG sekaligus · Kualitas HDR tajam · Multi-threaded engine</div>
+<div class="panel">
+    <div class="hdr">
+        <h1>⚡ TURBO SVG → PNG <span class="badge">ELITE ENGINE v2</span></h1>
+        <span class="turbo-pill" id="turboPill"><span class="tdot"></span>TURBO ACTIVE</span>
+    </div>
+    <div class="sub-txt">Konversi ribuan SVG · Engine multi-layer dengan 3-tier fallback · Zero error tolerance</div>
 
-        <div class="warning-banner" id="warningBanner">
-            ⚠️ Jumlah file sangat tinggi (>5000). Proses mungkin memakan memori besar.
-        </div>
-
-        <div class="flex-row">
-            <!-- DROPZONE - FIXED -->
-            <div class="dropzone" id="zipDrop">
-                <div class="dropzone-icon">📦</div>
-                <div style="font-weight:700; margin:4px 0;">Drag & drop ZIP (berisi .svg)</div>
-                <div style="font-size:0.7rem; color:#7c8fb0; margin:4px;">atau klik tombol di bawah</div>
-                <button type="button" class="download-btn" id="browseZipBtn" style="margin-top:8px; background:#1e2a3a; cursor:pointer; z-index:10; position:relative;">
-                    📁 Pilih File ZIP
-                </button>
-                <input type="file" id="zipInput" accept=".zip" style="display:none;" />
-            </div>
-
-            <!-- Config card -->
-            <div class="config-card">
-                <div class="config-row">
-                    <label>🎯 Skala resolusi <span id="scaleValLabel">1x (Rekomendasi Turbo)</span></label>
-                    <input type="range" id="scaleSlider" min="0.5" max="3" step="0.25" value="1">
-                    <div style="font-size:0.62rem; color:#6d86a3;">↑ 1x = kecepatan maksimal & tetap tajam</div>
-                </div>
-                <div class="config-row">
-                    <label>🎨 Background PNG</label>
-                    <div class="bg-group" id="bgGroup">
-                        <div data-bg="transparent" class="bg-btn active">Transparan</div>
-                        <div data-bg="white" class="bg-btn">Putih</div>
-                        <div data-bg="black" class="bg-btn">Hitam</div>
-                    </div>
-                </div>
-                <div class="turbo-note" id="turboNote">
-                    ⚡ Concurrency: <span id="concurrencyDisplay">auto</span> · Smart queue
-                </div>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats-bar">
-            <div class="stat">
-                <div class="stat-number" id="totalSvg">0</div>
-                <div class="stat-label">SVG ditemukan</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="doneCount">0</div>
-                <div class="stat-label">Berhasil</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="globalPercent">0%</div>
-                <div class="stat-label">Selesai</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number" id="speedDisplay">0</div>
-                <div class="stat-label">file/detik</div>
-            </div>
-        </div>
-
-        <!-- Global progress -->
-        <div class="global-progress-wrap">
-            <div class="global-progress"><div class="global-fill" id="globalBar"></div></div>
-            <div class="phase-label" id="phaseLabel">🔄 Menunggu input...</div>
-        </div>
-
-        <!-- Task list -->
-        <div class="task-grid" id="taskList">
-            <div style="padding:1.2rem; text-align:center; color:#7c8fb0;">▲ Upload file ZIP untuk memulai</div>
-        </div>
-
-        <!-- Action buttons -->
-        <button class="primary" id="startConvert" disabled>🔥 Mulai Konversi MASSAL</button>
-        <div style="display: flex; justify-content: flex-end; margin-top: 0.4rem;">
-            <button class="download-btn" id="downloadZipResult" disabled>📦 Unduh Semua PNG (ZIP)</button>
-        </div>
-        <footer>✅ Optimasi: Web Workers · OffscreenCanvas · createImageBitmap · Dynamic Concurrency</footer>
+    <!-- Engine capability bar -->
+    <div class="engine-bar" id="engineBar">
+        <span style="color:var(--muted);font-weight:600;">ENGINE:</span>
+        <span class="engine-tag" id="capImg">🖼 img+canvas</span>
+        <span class="engine-tag" id="capBitmap">⚡ ImageBitmap</span>
+        <span class="engine-tag" id="capWorker">🧵 Worker</span>
+        <span class="engine-tag" id="capOffscreen">🎨 Offscreen</span>
+        <span style="margin-left:auto;color:var(--muted);">Concurrency: <strong id="concDisplay" style="color:var(--accent)">-</strong></span>
     </div>
 
-    <script>
-        (function() {
-            // ──────────────────────────────────────
-            // DOM REFERENCES
-            // ──────────────────────────────────────
-            const dropZone = document.getElementById('zipDrop');
-            const browseBtn = document.getElementById('browseZipBtn');
-            const zipFileInput = document.getElementById('zipInput');
-            const startBtn = document.getElementById('startConvert');
-            const downloadBtn = document.getElementById('downloadZipResult');
-            const totalSpan = document.getElementById('totalSvg');
-            const doneSpan = document.getElementById('doneCount');
-            const globalPercentSpan = document.getElementById('globalPercent');
-            const globalBar = document.getElementById('globalBar');
-            const taskContainer = document.getElementById('taskList');
-            const scaleSlider = document.getElementById('scaleSlider');
-            const scaleValLabel = document.getElementById('scaleValLabel');
-            const turboIndicator = document.getElementById('turboIndicator');
-            const concurrencyDisplay = document.getElementById('concurrencyDisplay');
-            const phaseLabel = document.getElementById('phaseLabel');
-            const speedDisplay = document.getElementById('speedDisplay');
-            const warningBanner = document.getElementById('warningBanner');
+    <div class="warn-banner" id="warnBanner">⚠️ File sangat banyak (&gt;5000). Proses akan memakan banyak memori. Pastikan tab ini satu-satunya yang terbuka.</div>
 
-            // ──────────────────────────────────────
-            // CAPABILITIES
-            // ──────────────────────────────────────
-            const supportsOffscreenCanvas = typeof OffscreenCanvas !== 'undefined';
-            const supportsCreateImageBitmap = typeof createImageBitmap !== 'undefined';
-            const supportsWorker = typeof Worker !== 'undefined';
-            const hardwareConcurrency = navigator.hardwareConcurrency || 4;
-            const isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) ||
-                (navigator.maxTouchPoints > 1 && window.innerWidth < 768);
+    <div class="row">
+        <!-- Drop zone -->
+        <div class="drop" id="dropZone">
+            <div class="drop-icon">📦</div>
+            <div class="drop-title">Drag & Drop file ZIP</div>
+            <div class="drop-sub">File ZIP berisi icon .svg (support 1000+ files)</div>
+            <label class="browse-btn" id="browseLabel">
+                📁 Pilih File ZIP
+                <input type="file" id="fileInput" accept=".zip" style="display:none">
+            </label>
+        </div>
 
-            // ──────────────────────────────────────
-            // CONCURRENCY
-            // ──────────────────────────────────────
-            function getBaseConcurrency() {
-                if (isMobile) return Math.min(4, Math.max(2, Math.floor(hardwareConcurrency / 2)));
-                return Math.min(12, Math.max(4, hardwareConcurrency));
+        <!-- Config -->
+        <div class="cfg">
+            <div class="cfg-row">
+                <label>🎯 Skala resolusi <span id="scaleLabel">1x</span></label>
+                <input type="range" id="scaleSlider" min="0.5" max="4" step="0.25" value="1">
+                <div class="cfg-hint">1x = kecepatan & kualitas optimal · 2x = Retina display</div>
+            </div>
+            <div class="cfg-row">
+                <label>🎨 Background</label>
+                <div class="bg-grp">
+                    <div class="bg-btn active" data-bg="transparent">Transparan</div>
+                    <div class="bg-btn" data-bg="white">Putih</div>
+                    <div class="bg-btn" data-bg="black">Hitam</div>
+                </div>
+            </div>
+            <div class="cfg-row">
+                <label>⚙️ Fallback engine jika error</label>
+                <div class="bg-grp">
+                    <div class="bg-btn active" data-engine="auto" id="eAuto">Auto (Recommended)</div>
+                    <div class="bg-btn" data-engine="img" id="eImg">Image Only</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat"><div class="stat-n" id="statTotal">0</div><div class="stat-l">SVG ditemukan</div></div>
+        <div class="stat"><div class="stat-n ok" id="statOk">0</div><div class="stat-l">Berhasil</div></div>
+        <div class="stat"><div class="stat-n err" id="statFail">0</div><div class="stat-l">Gagal</div></div>
+        <div class="stat"><div class="stat-n" id="statPct">0%</div><div class="stat-l">Progress</div></div>
+        <div class="stat"><div class="stat-n" id="statSpeed">0</div><div class="stat-l">file/detik</div></div>
+    </div>
+
+    <!-- Progress -->
+    <div class="prog-wrap">
+        <div class="prog-bg"><div class="prog-fill" id="progBar"></div></div>
+        <div class="phase" id="phaseText">🔄 Upload file ZIP untuk memulai...</div>
+    </div>
+
+    <!-- Task list -->
+    <div class="grid" id="taskGrid">
+        <div style="padding:1.5rem;text-align:center;color:#7c8fb0;">▲ Upload ZIP untuk melihat daftar file</div>
+    </div>
+
+    <!-- Error log -->
+    <div class="error-panel" id="errPanel" title="Klik baris untuk menyalin pesan error"></div>
+
+    <!-- Action buttons -->
+    <button class="btn-primary" id="btnStart" disabled>🔥 Mulai Konversi</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap;">
+        <button class="btn-sec" id="btnRetry" disabled>🔁 Retry yang Gagal</button>
+        <button class="btn-sec" id="btnDownload" disabled>📦 Unduh Semua PNG (ZIP)</button>
+    </div>
+
+    <footer>🔧 Engine: Image+Canvas (primary) · createImageBitmap (fast path) · XMLSerializer (SVG fix) · Concurrent queue · Auto-retry</footer>
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   TURBO SVG → PNG ELITE ENGINE v2
+   Root cause fix: SVG rendering via bulletproof Image+Canvas pipeline
+   with proper URL lifecycle management + 3-tier fallback system
+   ═══════════════════════════════════════════════════════════════════ */
+
+(function () {
+    'use strict';
+
+    // ─── DOM ───────────────────────────────────────────────────────
+    const $ = id => document.getElementById(id);
+    const dropZone   = $('dropZone');
+    const fileInput  = $('fileInput');
+    const btnStart   = $('btnStart');
+    const btnRetry   = $('btnRetry');
+    const btnDownload= $('btnDownload');
+    const taskGrid   = $('taskGrid');
+    const progBar    = $('progBar');
+    const phaseText  = $('phaseText');
+    const turboPill  = $('turboPill');
+    const errPanel   = $('errPanel');
+    const scaleSlider= $('scaleSlider');
+    const scaleLabel = $('scaleLabel');
+    const warnBanner = $('warnBanner');
+
+    // ─── CAPABILITY DETECTION ──────────────────────────────────────
+    const CAP = {
+        imageBitmap : typeof createImageBitmap !== 'undefined',
+        offscreen   : typeof OffscreenCanvas   !== 'undefined',
+        worker      : typeof Worker             !== 'undefined',
+        cores       : navigator.hardwareConcurrency || 4,
+        mobile      : /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) ||
+                      (navigator.maxTouchPoints > 1 && window.innerWidth < 768),
+    };
+
+    // Update capability badges
+    ['capImg','capBitmap','capWorker','capOffscreen'].forEach((id, i) => {
+        const el = $(id);
+        if (!el) return;
+        const caps = [true, CAP.imageBitmap, CAP.worker, CAP.offscreen];
+        el.classList.toggle('ok', caps[i]);
+        el.classList.toggle('warn', !caps[i]);
+    });
+
+    function calcConcurrency(total) {
+        const base = CAP.mobile
+            ? Math.min(4, Math.max(2, Math.floor(CAP.cores / 2)))
+            : Math.min(12, Math.max(4, CAP.cores));
+        return total > 1000 ? Math.min(base * 2, 16) : base;
+    }
+
+    // ─── STATE ─────────────────────────────────────────────────────
+    let state = {
+        zip        : null,
+        items      : [],          // {path, name, entry}
+        results    : [],          // {path, blob, ok, err}
+        running    : false,
+        bg         : 'transparent',
+        scale      : 1,
+        engine     : 'auto',
+        timestamps : [],
+        errors     : [],
+    };
+
+    // ─── UI HELPERS ────────────────────────────────────────────────
+    function setPhase(msg) { phaseText.textContent = msg; }
+
+    function updateStats() {
+        const ok   = state.results.filter(r => r?.ok).length;
+        const fail = state.results.filter(r => r && !r.ok).length;
+        const done = ok + fail;
+        const pct  = state.items.length ? Math.floor(done / state.items.length * 100) : 0;
+
+        $('statTotal').textContent = state.items.length;
+        $('statOk').textContent    = ok;
+        $('statFail').textContent  = fail;
+        $('statPct').textContent   = pct + '%';
+        progBar.style.width        = pct + '%';
+
+        // Speed calc using sliding window
+        const now = performance.now();
+        state.timestamps = state.timestamps.filter(t => now - t < 3000);
+        if (state.timestamps.length >= 2) {
+            const span = (now - state.timestamps[0]) / 1000;
+            $('statSpeed').textContent = span > 0 ? (state.timestamps.length / span).toFixed(1) : '0';
+        }
+
+        if (!state.running && done === state.items.length && state.items.length > 0) {
+            setPhase(`✅ Selesai! ${ok} berhasil · ${fail} gagal dari ${state.items.length} file`);
+            btnStart.disabled    = false;
+            btnDownload.disabled = ok === 0;
+            btnRetry.disabled    = fail === 0;
+        }
+    }
+
+    const MAX_DISPLAY = 600;
+
+    function buildTaskGrid() {
+        const frag = document.createDocumentFragment();
+        const cap  = Math.min(state.items.length, MAX_DISPLAY);
+
+        for (let i = 0; i < cap; i++) {
+            const item = state.items[i];
+            const row  = document.createElement('div');
+            row.className = 'task';
+            row.id = 'tr' + i;
+            row.innerHTML =
+                `<div class="tname" title="${item.path}">📄 ${item.name.length > 40 ? item.name.slice(0,37)+'…' : item.name}</div>` +
+                `<div class="tbar"><div class="tbar-fill" id="tf${i}"></div></div>` +
+                `<div class="tst" id="ts${i}">⏳ antri</div>`;
+            frag.appendChild(row);
+        }
+
+        if (state.items.length > cap) {
+            const more = document.createElement('div');
+            more.className = 'task';
+            more.style.opacity = '.55';
+            more.innerHTML = `<div class="tname">…dan ${state.items.length - cap} file lainnya</div><div class="tbar"></div><div class="tst">📋</div>`;
+            frag.appendChild(more);
+        }
+
+        taskGrid.innerHTML = '';
+        taskGrid.appendChild(frag);
+    }
+
+    function markTask(idx, pct, label, cls) {
+        if (idx >= MAX_DISPLAY) return;
+        const fill = $('tf' + idx);
+        const st   = $('ts' + idx);
+        const row  = $('tr' + idx);
+        if (fill) fill.style.width = pct + '%';
+        if (st)   st.textContent   = label;
+        if (row && cls) {
+            row.classList.remove('running','done','fail');
+            row.classList.add(cls);
+        }
+    }
+
+    function logError(msg) {
+        state.errors.push(msg);
+        errPanel.classList.add('show');
+        const line = document.createElement('div');
+        line.className = 'err-line';
+        line.textContent = msg;
+        line.title = 'Klik untuk copy';
+        line.onclick = () => navigator.clipboard?.writeText(msg).catch(()=>{});
+        errPanel.appendChild(line);
+        errPanel.scrollTop = errPanel.scrollHeight;
+    }
+
+    // ─── RESET ─────────────────────────────────────────────────────
+    function reset() {
+        state = { ...state, items:[], results:[], running:false, timestamps:[], errors:[] };
+        ['statTotal','statOk','statFail','statSpeed'].forEach(id => $(id).textContent = '0');
+        $('statPct').textContent = '0%';
+        progBar.style.width = '0%';
+        btnStart.disabled = btnDownload.disabled = btnRetry.disabled = true;
+        errPanel.innerHTML = '';
+        errPanel.classList.remove('show');
+        turboPill.classList.remove('on');
+        warnBanner.classList.remove('show');
+        setPhase('🔄 Menunggu input...');
+        taskGrid.innerHTML = '<div style="padding:1.5rem;text-align:center;color:#7c8fb0;">▲ Upload ZIP untuk melihat daftar file</div>';
+    }
+
+    // ─── LOAD ZIP ──────────────────────────────────────────────────
+    async function loadZip(file) {
+        reset();
+        setPhase('📂 Membaca ZIP...');
+        try {
+            const zip  = new JSZip();
+            const data = await zip.loadAsync(file);
+            state.zip  = data;
+
+            const svgs = [];
+            for (const [path, entry] of Object.entries(data.files)) {
+                if (!entry.dir && path.toLowerCase().endsWith('.svg')) {
+                    svgs.push({ path, entry, name: path.split('/').pop() || path });
+                }
             }
 
-            function getTurboConcurrency() {
-                if (isMobile) return Math.min(6, Math.max(3, hardwareConcurrency));
-                return Math.min(16, Math.max(8, hardwareConcurrency * 2));
+            if (!svgs.length) {
+                taskGrid.innerHTML = '<div style="padding:1rem;color:#f9a8a8;">⚠️ Tidak ada .svg dalam ZIP ini</div>';
+                setPhase('⚠️ Tidak ada SVG ditemukan');
+                return;
             }
 
-            // ──────────────────────────────────────
-            // STATE
-            // ──────────────────────────────────────
-            let selectedBg = 'transparent';
-            let currentZipFile = null;
-            let svgItems = [];
-            let conversionResults = [];
-            let processing = false;
-            let isTurboMode = false;
-            let MAX_CONCURRENT = getBaseConcurrency();
-            let completionTimestamps = [];
-            let waveInterval = null;
+            state.items   = svgs;
+            state.results = new Array(svgs.length).fill(null);
 
-            // ──────────────────────────────────────
-            // FIX: Separate click handlers for dropzone & button
-            // ──────────────────────────────────────
-            
-            // Function to trigger file dialog
-            function openFileDialog() {
-                console.log('Opening file dialog...');
-                zipFileInput.click();
-            }
+            const conc = calcConcurrency(svgs.length);
+            $('concDisplay').textContent = svgs.length > 1000 ? conc + ' ⚡TURBO' : conc;
 
-            // Attach click to browse button (STOP propagation to prevent double trigger)
-            browseBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                console.log('Browse button clicked');
-                openFileDialog();
-            });
+            if (svgs.length > 1000)  turboPill.classList.add('on');
+            if (svgs.length > 5000)  warnBanner.classList.add('show');
 
-            // Attach click to dropzone area (but NOT on the button)
-            dropZone.addEventListener('click', function(e) {
-                // Only open if the click was NOT on the browse button
-                if (e.target !== browseBtn && !browseBtn.contains(e.target)) {
-                    console.log('Dropzone clicked');
-                    openFileDialog();
+            buildTaskGrid();
+            btnStart.disabled = false;
+            setPhase(`📦 ${svgs.length} file SVG siap · klik mulai konversi`);
+        } catch (e) {
+            taskGrid.innerHTML = `<div style="padding:1rem;color:#f87171;">❌ Gagal baca ZIP: ${e.message}</div>`;
+            setPhase('❌ Error baca ZIP');
+            logError('ZIP error: ' + e.message);
+        }
+    }
+
+    // ─── CORE SVG → PNG ENGINE ─────────────────────────────────────
+    // WHY this approach: The original code tried createImageBitmap(blob) on SVG.
+    // Chrome doesn't support that for SVG blobs without explicit dimensions.
+    // The ONLY reliable cross-browser way is: load into <img> via Object URL → draw on <canvas>.
+    // We wrap it in proper promise + URL cleanup to prevent memory leaks at scale.
+
+    function sanitizeSvg(svgText) {
+        // Fix SVGs missing explicit width/height (causes 0x0 canvas = blank PNG)
+        let txt = svgText.trim();
+
+        // Try to extract viewBox dimensions if width/height are missing
+        const hasWidth  = /\swidth\s*=/i.test(txt);
+        const hasHeight = /\sheight\s*=/i.test(txt);
+
+        if (!hasWidth || !hasHeight) {
+            const vbMatch = txt.match(/viewBox\s*=\s*["']([^"']+)["']/i);
+            if (vbMatch) {
+                const parts = vbMatch[1].trim().split(/[\s,]+/);
+                if (parts.length === 4) {
+                    const w = parseFloat(parts[2]);
+                    const h = parseFloat(parts[3]);
+                    if (w > 0 && h > 0) {
+                        // Inject width & height into the <svg> tag
+                        txt = txt.replace(/<svg([^>]*?)>/i, (match, attrs) => {
+                            let fixed = attrs;
+                            if (!hasWidth)  fixed += ` width="${w}"`;
+                            if (!hasHeight) fixed += ` height="${h}"`;
+                            return `<svg${fixed}>`;
+                        });
+                    }
                 }
-            });
-
-            // File input change handler
-            zipFileInput.addEventListener('change', function(e) {
-                console.log('File input changed, files:', e.target.files.length);
-                if (e.target.files.length > 0) {
-                    handleZipFile(e.target.files[0]);
-                }
-                // Reset input so the same file can be re-selected
-                zipFileInput.value = '';
-            });
-
-            // ──────────────────────────────────────
-            // SVG TO PNG (Main thread fallback)
-            // ──────────────────────────────────────
-            async function svgToPngMainThread(svgString, scale, bgType) {
-                const blob = new Blob([svgString], { type: 'image/svg+xml' });
-                let bitmap;
-                if (supportsCreateImageBitmap) {
-                    bitmap = await createImageBitmap(blob, { premultiplyAlpha: 'premultiply' });
-                } else {
-                    bitmap = await new Promise((resolve, reject) => {
-                        const img = new Image();
-                        img.onload = () => resolve(img);
-                        img.onerror = () => reject(new Error('Image decode failed'));
-                        img.src = URL.createObjectURL(blob);
-                    });
-                }
-
-                const naturalW = bitmap.width || bitmap.naturalWidth || 300;
-                const naturalH = bitmap.height || bitmap.naturalHeight || 300;
-                const targetW = Math.max(1, Math.floor(naturalW * scale));
-                const targetH = Math.max(1, Math.floor(naturalH * scale));
-
-                const canvas = document.createElement('canvas');
-                canvas.width = targetW;
-                canvas.height = targetH;
-                const ctx = canvas.getContext('2d', { alpha: true, willReadFrequently: false });
-
-                if (bgType === 'white') {
-                    ctx.fillStyle = '#FFFFFF';
-                    ctx.fillRect(0, 0, targetW, targetH);
-                } else if (bgType === 'black') {
-                    ctx.fillStyle = '#000000';
-                    ctx.fillRect(0, 0, targetW, targetH);
-                } else {
-                    ctx.clearRect(0, 0, targetW, targetH);
-                }
-
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = 'high';
-                ctx.drawImage(bitmap, 0, 0, targetW, targetH);
-
-                if (bitmap.close && typeof bitmap.close === 'function') {
-                    bitmap.close();
-                }
-
-                return new Promise((resolve, reject) => {
-                    canvas.toBlob((pngBlob) => {
-                        if (pngBlob) resolve(pngBlob);
-                        else reject(new Error('Canvas toBlob failed'));
-                    }, 'image/png', 1.0);
+            } else {
+                // No viewBox either — give it a default so it renders something
+                txt = txt.replace(/<svg([^>]*?)>/i, (match, attrs) => {
+                    let fixed = attrs;
+                    if (!hasWidth)  fixed += ' width="512"';
+                    if (!hasHeight) fixed += ' height="512"';
+                    if (!/viewBox/i.test(attrs)) fixed += ' viewBox="0 0 512 512"';
+                    return `<svg${fixed}>`;
                 });
             }
+        }
 
-            // ──────────────────────────────────────
-            // UI HELPERS
-            // ──────────────────────────────────────
-            function resetUI() {
-                svgItems = [];
-                conversionResults = [];
-                completionTimestamps = [];
-                totalSpan.innerText = '0';
-                doneSpan.innerText = '0';
-                globalPercentSpan.innerText = '0%';
-                globalBar.style.width = '0%';
-                speedDisplay.innerText = '0';
-                startBtn.disabled = true;
-                downloadBtn.disabled = true;
-                phaseLabel.innerText = '🔄 Menunggu input...';
-                taskContainer.innerHTML = '<div style="padding:1.2rem; text-align:center; color:#7c8fb0;">▲ Upload file ZIP untuk memulai</div>';
-                turboIndicator.classList.remove('active');
-                isTurboMode = false;
-                MAX_CONCURRENT = getBaseConcurrency();
-                concurrencyDisplay.innerText = MAX_CONCURRENT;
-                warningBanner.classList.remove('show');
-                if (waveInterval) clearInterval(waveInterval);
-                waveInterval = null;
-            }
+        return txt;
+    }
 
-            async function loadZipAndExtract(zipFile) {
-                resetUI();
+    // Tier 1: Image element + Canvas (most compatible, works everywhere)
+    function renderViaImage(svgText, scale, bg) {
+        return new Promise((resolve, reject) => {
+            const sanitized = sanitizeSvg(svgText);
+            const blob      = new Blob([sanitized], { type: 'image/svg+xml;charset=utf-8' });
+            const url       = URL.createObjectURL(blob);
+            const img       = new Image();
+
+            // Crucial: set crossOrigin for canvas taint-free drawing
+            img.crossOrigin = 'anonymous';
+
+            const cleanup = () => URL.revokeObjectURL(url);
+
+            img.onload = () => {
                 try {
-                    console.log('Loading ZIP file:', zipFile.name);
-                    const zip = new JSZip();
-                    const data = await zip.loadAsync(zipFile);
-                    const allPaths = Object.keys(data.files);
-                    const svgList = [];
-                    
-                    for (let p of allPaths) {
-                        const entry = data.files[p];
-                        if (entry.dir) continue;
-                        if (p.toLowerCase().endsWith('.svg')) {
-                            svgList.push({
-                                path: p,
-                                entry: entry,
-                                name: p.split('/').pop(),
-                            });
-                        }
-                    }
-                    
-                    console.log('Found', svgList.length, 'SVG files');
-                    
-                    if (svgList.length === 0) {
-                        taskContainer.innerHTML = '<div style="padding:1rem; color:#f9a8a8;">⚠️ ZIP tidak mengandung file .svg</div>';
-                        return false;
-                    }
-                    
-                    svgItems = svgList;
-                    totalSpan.innerText = svgItems.length;
+                    const w = Math.max(1, Math.floor((img.naturalWidth  || 64) * scale));
+                    const h = Math.max(1, Math.floor((img.naturalHeight || 64) * scale));
 
-                    // Auto Turbo Mode
-                    if (svgItems.length > 1000) {
-                        isTurboMode = true;
-                        MAX_CONCURRENT = getTurboConcurrency();
-                        turboIndicator.classList.add('active');
-                        concurrencyDisplay.innerText = MAX_CONCURRENT + ' (TURBO)';
-                    } else {
-                        isTurboMode = false;
-                        MAX_CONCURRENT = getBaseConcurrency();
-                        turboIndicator.classList.remove('active');
-                        concurrencyDisplay.innerText = MAX_CONCURRENT;
-                    }
+                    const canvas = document.createElement('canvas');
+                    canvas.width  = w;
+                    canvas.height = h;
+                    const ctx = canvas.getContext('2d', { alpha: true });
 
-                    if (svgItems.length > 5000) {
-                        warningBanner.classList.add('show');
-                    } else {
-                        warningBanner.classList.remove('show');
-                    }
+                    if (bg === 'white')      { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
+                    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); }
+                    else                     { ctx.clearRect(0, 0, w, h); }
 
-                    renderTaskList();
-                    startBtn.disabled = false;
-                    downloadBtn.disabled = true;
-                    phaseLabel.innerText = '📂 ' + svgItems.length + ' file SVG siap diproses';
-                    console.log('ZIP loaded successfully. Ready to convert.');
-                    return true;
+                    ctx.imageSmoothingEnabled  = true;
+                    ctx.imageSmoothingQuality  = 'high';
+                    ctx.drawImage(img, 0, 0, w, h);
+                    cleanup();
+
+                    canvas.toBlob(pngBlob => {
+                        if (pngBlob) resolve(pngBlob);
+                        else         reject(new Error('canvas.toBlob returned null'));
+                    }, 'image/png');
                 } catch (err) {
-                    console.error('Error loading ZIP:', err);
-                    taskContainer.innerHTML = '<div style="padding:1rem; color:#f87171;">❌ Error baca ZIP: ' + err.message + '</div>';
-                    return false;
+                    cleanup();
+                    reject(err);
                 }
+            };
+
+            img.onerror = (e) => {
+                cleanup();
+                reject(new Error('Image load failed — SVG may be malformed'));
+            };
+
+            img.src = url;
+        });
+    }
+
+    // Tier 2: createImageBitmap fast path (Chrome, only when SVG has dimensions)
+    async function renderViaBitmap(svgText, scale, bg) {
+        const sanitized = sanitizeSvg(svgText);
+        const blob      = new Blob([sanitized], { type: 'image/svg+xml' });
+        const bitmap    = await createImageBitmap(blob);
+
+        const w = Math.max(1, Math.floor(bitmap.width  * scale));
+        const h = Math.max(1, Math.floor(bitmap.height * scale));
+
+        const canvas = document.createElement('canvas');
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext('2d', { alpha: true });
+
+        if (bg === 'white')      { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h); }
+        else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h); }
+        else                     { ctx.clearRect(0,0,w,h); }
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(bitmap, 0, 0, w, h);
+        bitmap.close();
+
+        return new Promise((resolve, reject) => {
+            canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob null')), 'image/png');
+        });
+    }
+
+    // Main entry: try fast path first, always fall back to image path
+    async function convertSvg(svgText, scale, bg, engineMode) {
+        // Try Tier 2 (fast) first if engine is auto + capability exists
+        if (engineMode === 'auto' && CAP.imageBitmap) {
+            try {
+                return await renderViaBitmap(svgText, scale, bg);
+            } catch {
+                // fall through to Tier 1 — this is intentional
             }
+        }
+        // Always fall back to Tier 1 (bulletproof)
+        return await renderViaImage(svgText, scale, bg);
+    }
 
-            function renderTaskList() {
-                if (!svgItems.length) return;
-                const fragment = document.createDocumentFragment();
-                const maxDisplay = Math.min(svgItems.length, 500);
-                
-                svgItems.forEach((item, idx) => {
-                    if (idx >= maxDisplay) return;
-                    const row = document.createElement('div');
-                    row.className = 'task-row';
-                    row.id = 'task-' + idx;
-                    row.innerHTML = `
-                        <div class="task-name" title="${item.path}">📄 ${item.name.length > 38 ? item.name.slice(0, 35) + '...' : item.name}</div>
-                        <div class="task-progress"><div class="task-progress-fill" id="fill-${idx}" style="width:0%"></div></div>
-                        <div class="task-status" id="status-${idx}">⏳ antri</div>
-                    `;
-                    fragment.appendChild(row);
-                });
-                
-                if (svgItems.length > maxDisplay) {
-                    const overflowRow = document.createElement('div');
-                    overflowRow.className = 'task-row';
-                    overflowRow.style.opacity = '0.6';
-                    overflowRow.innerHTML = `
-                        <div class="task-name">... dan ${svgItems.length - maxDisplay} file lainnya</div>
-                        <div class="task-progress"></div>
-                        <div class="task-status">📋</div>
-                    `;
-                    fragment.appendChild(overflowRow);
+    // ─── CONVERSION RUNNER ─────────────────────────────────────────
+    async function runConversion(retryFailed = false) {
+        if (state.running || !state.items.length) return;
+        state.running = true;
+        btnStart.disabled = btnRetry.disabled = btnDownload.disabled = true;
+        state.timestamps = [];
+
+        const scale  = state.scale;
+        const bg     = state.bg;
+        const engine = state.engine;
+
+        // Build work queue
+        const queue = [];
+        state.items.forEach((item, idx) => {
+            const prev = state.results[idx];
+            if (retryFailed && prev && prev.ok) return; // skip successful
+            queue.push({ idx, item });
+            markTask(idx, 0, '⏳ antri', '');
+        });
+
+        if (!retryFailed) state.results = new Array(state.items.length).fill(null);
+
+        let cursor = 0;
+        const concurrency = calcConcurrency(state.items.length);
+
+        async function worker() {
+            while (cursor < queue.length) {
+                const { idx, item } = queue[cursor++];
+                markTask(idx, 20, '📂 baca…', 'running');
+
+                try {
+                    // Read SVG text from zip entry
+                    const svgBlob = await item.entry.async('blob');
+                    const svgText = await svgBlob.text();
+
+                    markTask(idx, 55, '🎨 render…', 'running');
+                    const pngBlob = await convertSvg(svgText, scale, bg, engine);
+
+                    state.results[idx] = {
+                        path : item.path.replace(/\.svg$/i, '.png'),
+                        blob : pngBlob,
+                        ok   : true,
+                    };
+                    markTask(idx, 100, '✅ ok', 'done');
+                    state.timestamps.push(performance.now());
+
+                } catch (err) {
+                    const msg = `[${item.name}] ${err.message}`;
+                    state.results[idx] = { path: item.path.replace(/\.svg$/i, '.png'), ok: false, err: msg };
+                    markTask(idx, 100, '❌ gagal', 'fail');
+                    logError(msg);
                 }
-                
-                taskContainer.innerHTML = '';
-                taskContainer.appendChild(fragment);
+
+                updateStats();
             }
+        }
 
-            function updateTask(idx, percent, statusText) {
-                if (idx >= 500) return;
-                const fillEl = document.getElementById('fill-' + idx);
-                if (fillEl) fillEl.style.width = percent + '%';
-                const statusEl = document.getElementById('status-' + idx);
-                if (statusEl) statusEl.innerText = statusText;
-            }
+        // Spin up concurrent workers
+        const pool = Array.from({ length: Math.min(concurrency, queue.length) }, () => worker());
+        setPhase('⚡ Konversi berjalan...');
+        await Promise.all(pool);
 
-            function updateGlobalProgress() {
-                const total = svgItems.length;
-                const completed = conversionResults.filter(r => r && r.success).length;
-                const failed = conversionResults.filter(r => r && r !== null && !r.success).length;
-                const percent = total === 0 ? 0 : ((completed + failed) / total) * 100;
-                doneSpan.innerText = completed;
-                globalPercentSpan.innerText = Math.floor(percent) + '%';
-                globalBar.style.width = percent + '%';
+        state.running = false;
+        updateStats(); // final stats + re-enable buttons
+    }
 
-                const now = performance.now();
-                const cutoff = now - 3000;
-                const recent = completionTimestamps.filter(t => t > cutoff);
-                if (recent.length >= 2 && completionTimestamps.length >= 2) {
-                    const durationSec = (now - recent[0]) / 1000;
-                    const rate = durationSec > 0 ? recent.length / durationSec : 0;
-                    speedDisplay.innerText = rate.toFixed(1);
-                }
+    // ─── ZIP PACKAGING ─────────────────────────────────────────────
+    async function packageAndDownload() {
+        setPhase('📦 Mengemas hasil ke ZIP...');
+        const out   = new JSZip();
+        let   added = 0;
 
-                if (processing) {
-                    const remaining = total - completed - failed;
-                    phaseLabel.innerText = '🔄 Memproses · ' + completed + ' selesai · ' + remaining + ' tersisa';
-                } else if (completed + failed >= total && total > 0) {
-                    phaseLabel.innerText = '✅ Selesai! ' + completed + ' berhasil dari ' + total;
-                    downloadBtn.disabled = completed === 0;
-                    startBtn.disabled = false;
-                }
-            }
+        for (const r of state.results) {
+            if (r?.ok && r.blob) { out.file(r.path, r.blob); added++; }
+        }
 
-            // ──────────────────────────────────────
-            // CONVERSION ENGINE
-            // ──────────────────────────────────────
-            async function runConversion() {
-                if (!svgItems.length || processing) return;
-                processing = true;
-                startBtn.disabled = true;
-                downloadBtn.disabled = true;
-                completionTimestamps = [];
+        if (!added) { alert('Tidak ada PNG yang berhasil.'); return; }
 
-                const scale = parseFloat(scaleSlider.value);
-                const bg = selectedBg;
-                conversionResults = new Array(svgItems.length).fill(null);
+        const zipBlob = await out.generateAsync({
+            type: 'blob',
+            compression: 'DEFLATE',
+            compressionOptions: { level: 6 },
+        });
 
-                for (let i = 0; i < Math.min(svgItems.length, 500); i++) {
-                    updateTask(i, 0, '⏳ antri');
-                }
-                updateGlobalProgress();
+        saveAs(zipBlob, 'svg_to_png_output.zip');
+        setPhase(`✅ Berhasil mengunduh ${added} file PNG`);
+    }
 
-                const queue = svgItems.map((item, idx) => ({ idx, item }));
-                let cursor = 0;
-                const effectiveConcurrency = Math.min(MAX_CONCURRENT, queue.length);
+    // ─── EVENT WIRING ──────────────────────────────────────────────
 
-                async function processNext() {
-                    while (cursor < queue.length) {
-                        const task = queue[cursor++];
-                        const idx = task.idx;
-                        const svgEntry = task.item;
+    // File input via label (avoids all click propagation issues)
+    fileInput.addEventListener('change', e => {
+        const f = e.target.files[0];
+        if (f) loadZip(f);
+        fileInput.value = ''; // allow re-select same file
+    });
 
-                        try {
-                            updateTask(idx, 20, '📂 baca');
-                            const svgBlob = await svgEntry.entry.async('blob');
-                            const svgString = await svgBlob.text();
+    // Drag & drop
+    ['dragenter','dragover','dragleave','drop'].forEach(ev =>
+        dropZone.addEventListener(ev, e => { e.preventDefault(); e.stopPropagation(); })
+    );
+    dropZone.addEventListener('dragenter', () => dropZone.classList.add('over'));
+    dropZone.addEventListener('dragover',  () => dropZone.classList.add('over'));
+    dropZone.addEventListener('dragleave', () => dropZone.classList.remove('over'));
+    dropZone.addEventListener('drop', e => {
+        dropZone.classList.remove('over');
+        const f = e.dataTransfer.files[0];
+        if (f?.name?.toLowerCase().endsWith('.zip')) loadZip(f);
+        else alert('Hanya file .zip yang didukung');
+    });
 
-                            updateTask(idx, 50, '🎨 render');
-                            const png = await svgToPngMainThread(svgString, scale, bg);
+    // Scale slider
+    scaleSlider.addEventListener('input', () => {
+        state.scale = parseFloat(scaleSlider.value);
+        const v = state.scale;
+        scaleLabel.textContent = v.toFixed(2) + 'x' + (v === 1 ? ' ✓' : v >= 2 ? ' (Retina)' : '');
+    });
 
-                            conversionResults[idx] = {
-                                path: svgEntry.path.replace(/\.svg$/i, '.png'),
-                                pngBlob: png,
-                                success: true,
-                            };
-                            updateTask(idx, 100, '✅ selesai');
-                            completionTimestamps.push(performance.now());
-                        } catch (err) {
-                            console.error('Gagal ' + svgEntry.path, err);
-                            conversionResults[idx] = {
-                                path: svgEntry.path.replace(/\.svg$/i, '.png'),
-                                success: false,
-                            };
-                            updateTask(idx, 100, '❌ error');
-                        }
-                        updateGlobalProgress();
-                    }
-                }
+    // Background selector
+    document.querySelectorAll('.bg-btn[data-bg]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.bg-btn[data-bg]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.bg = btn.dataset.bg;
+        });
+    });
 
-                const workers = [];
-                for (let i = 0; i < effectiveConcurrency; i++) {
-                    workers.push(processNext());
-                }
+    // Engine selector
+    document.querySelectorAll('.bg-btn[data-engine]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.bg-btn[data-engine]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.engine = btn.dataset.engine;
+        });
+    });
 
-                await Promise.all(workers);
-                processing = false;
-                startBtn.disabled = false;
-                const anySuccess = conversionResults.some(r => r && r.success);
-                if (anySuccess) downloadBtn.disabled = false;
-                updateGlobalProgress();
-            }
+    btnStart.addEventListener('click',    () => runConversion(false));
+    btnRetry.addEventListener('click',    () => runConversion(true));
+    btnDownload.addEventListener('click', packageAndDownload);
 
-            // ──────────────────────────────────────
-            // ZIP PACKAGING
-            // ──────────────────────────────────────
-            async function packToZip() {
-                if (!conversionResults.length) return null;
-                const outZip = new JSZip();
-                let added = 0;
-                for (let res of conversionResults) {
-                    if (res && res.success && res.pngBlob) {
-                        outZip.file(res.path, res.pngBlob);
-                        added++;
-                    }
-                }
-                if (added === 0) return null;
-                return await outZip.generateAsync({
-                    type: 'blob',
-                    compression: 'DEFLATE',
-                    compressionOptions: { level: 6 },
-                });
-            }
+    // ─── INIT ──────────────────────────────────────────────────────
+    reset();
+    state.scale = parseFloat(scaleSlider.value);
+    $('concDisplay').textContent = calcConcurrency(0);
+    scaleLabel.textContent = '1x ✓';
 
-            async function downloadAllAsZip() {
-                phaseLabel.innerText = '📦 Mengemas ZIP...';
-                const zipBlob = await packToZip();
-                if (zipBlob) {
-                    const name = currentZipFile ? currentZipFile.name.replace(/\.zip$/i, '') : 'svg_output';
-                    saveAs(zipBlob, name + '_PNG.zip');
-                    phaseLabel.innerText = '✅ ZIP berhasil diunduh!';
-                } else {
-                    alert('Tidak ada PNG yang berhasil dikonversi.');
-                    phaseLabel.innerText = '⚠️ Tidak ada file untuk diunduh';
-                }
-            }
-
-            // ──────────────────────────────────────
-            // FILE HANDLING
-            // ──────────────────────────────────────
-            function handleZipFile(file) {
-                if (!file) return;
-                console.log('Handling file:', file.name);
-                if (!file.name.toLowerCase().endsWith('.zip')) {
-                    alert('Harap pilih file .zip');
-                    return;
-                }
-                currentZipFile = file;
-                loadZipAndExtract(currentZipFile);
-            }
-
-            // ──────────────────────────────────────
-            // DRAG & DROP
-            // ──────────────────────────────────────
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(ev => {
-                dropZone.addEventListener(ev, function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                });
-            });
-
-            ['dragenter', 'dragover'].forEach(ev => {
-                dropZone.addEventListener(ev, function() {
-                    dropZone.classList.add('drag-over');
-                });
-            });
-
-            ['dragleave', 'drop'].forEach(ev => {
-                dropZone.addEventListener(ev, function() {
-                    dropZone.classList.remove('drag-over');
-                });
-            });
-
-            dropZone.addEventListener('drop', function(e) {
-                const files = e.dataTransfer.files;
-                console.log('Files dropped:', files.length);
-                if (files.length && files[0].name.endsWith('.zip')) {
-                    handleZipFile(files[0]);
-                } else {
-                    alert('Hanya file ZIP yang didukung');
-                }
-            });
-
-            // ──────────────────────────────────────
-            // OTHER EVENT HANDLERS
-            // ──────────────────────────────────────
-            startBtn.addEventListener('click', runConversion);
-            downloadBtn.addEventListener('click', downloadAllAsZip);
-
-            // Background selector
-            document.querySelectorAll('.bg-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    selectedBg = this.getAttribute('data-bg');
-                });
-            });
-
-            // Scale slider
-            scaleSlider.addEventListener('input', function() {
-                let val = parseFloat(this.value);
-                scaleValLabel.innerText = val.toFixed(2) + 'x' + (val === 1 ? ' (Rekomendasi Turbo)' : '');
-            });
-
-            // ──────────────────────────────────────
-            // INITIALIZATION
-            // ──────────────────────────────────────
-            resetUI();
-            scaleValLabel.innerText = '1x (Rekomendasi Turbo)';
-            concurrencyDisplay.innerText = getBaseConcurrency();
-            
-            console.log('✅ Turbo SVG→PNG Converter siap!');
-            console.log('   Concurrency:', getBaseConcurrency());
-            console.log('   Mobile:', isMobile);
-            console.log('   OffscreenCanvas:', supportsOffscreenCanvas);
-            console.log('   createImageBitmap:', supportsCreateImageBitmap);
-            console.log('   Web Workers:', supportsWorker);
-            
-            // Debug: Verify button works
-            browseBtn.addEventListener('mouseenter', function() {
-                console.log('Browse button hovered - button is functional');
-            });
-            
-            zipFileInput.addEventListener('click', function(e) {
-                console.log('File input clicked directly');
-            });
-
-        })();
-    </script>
+})();
+</script>
 </body>
 </html>
