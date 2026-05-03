@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>⚡ HYPER SVG → PNG | Engine v4 NITRO</title>
+    <title>⚡ ELITE MAX6 | SVG → PNG Quantum Engine</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
         :root {
             --bg: #04070f;
             --panel: rgba(10,15,28,0.92);
-            --border: rgba(45,212,191,0.3);
+            --border: rgba(244,114,182,0.3);
             --accent: #2dd4bf;
             --accent2: #5eead4;
             --pkg: #a78bfa;
             --pkg2: #c4b5fd;
             --nitro: #f472b6;
-            --dim: #0d9488;
+            --quantum: #fbbf24;
+            --plasma: #06b6d4;
             --text: #eef2ff;
             --sub: #9aaec9;
             --muted: #5b6e8c;
@@ -45,96 +46,177 @@
         body::before {
             content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
             background:
-                radial-gradient(circle at 15% 80%,rgba(45,212,191,.04) 0%,transparent 45%),
-                radial-gradient(circle at 75% 25%,rgba(244,114,182,.04) 0%,transparent 40%);
+                radial-gradient(circle at 15% 80%,rgba(6,182,212,.05) 0%,transparent 45%),
+                radial-gradient(circle at 75% 25%,rgba(244,114,182,.05) 0%,transparent 40%),
+                radial-gradient(circle at 50% 50%,rgba(251,191,36,.03) 0%,transparent 60%);
             animation:bgPulse 18s ease-in-out infinite;
         }
         @keyframes bgPulse{0%,100%{opacity:.7}50%{opacity:1}}
+
+        /* QUANTUM BACKGROUND PARTICLES */
+        .quantum-bg {
+            position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden;
+        }
+        .quantum-bg::before, .quantum-bg::after {
+            content:''; position:absolute;
+            width:600px; height:600px; border-radius:50%;
+            filter:blur(120px); opacity:.15;
+            animation: float 20s ease-in-out infinite;
+        }
+        .quantum-bg::before {
+            top:-200px; left:-100px; background:var(--nitro);
+        }
+        .quantum-bg::after {
+            bottom:-200px; right:-100px; background:var(--plasma);
+            animation-delay:-10s;
+        }
+        @keyframes float {
+            0%,100%{transform:translate(0,0) scale(1);}
+            33%{transform:translate(80px,-50px) scale(1.1);}
+            66%{transform:translate(-50px,80px) scale(.9);}
+        }
 
         .panel {
             position:relative; z-index:1;
             max-width:1380px; margin:0 auto;
             background:var(--panel);
-            backdrop-filter:blur(20px) saturate(140%);
-            -webkit-backdrop-filter:blur(20px) saturate(140%);
+            backdrop-filter:blur(24px) saturate(160%);
+            -webkit-backdrop-filter:blur(24px) saturate(160%);
             border-radius:var(--r-lg);
             border:1px solid var(--border);
             padding:1.8rem 2rem;
-            box-shadow:0 30px 70px rgba(0,0,0,.75),0 0 0 1px rgba(45,212,191,.06) inset;
+            box-shadow:0 30px 70px rgba(0,0,0,.75),
+                       0 0 0 1px rgba(244,114,182,.08) inset,
+                       0 0 80px rgba(6,182,212,.05);
         }
 
         .hdr {display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.3rem;}
         h1 {
-            font-size:clamp(1.2rem,2.5vw,1.7rem);
-            font-weight:800; letter-spacing:-.02em;
-            background:linear-gradient(145deg,#d4f9ff 0%,#6ee7d6 50%,#f472b6 100%);
+            font-size:clamp(1.2rem,2.5vw,1.8rem);
+            font-weight:900; letter-spacing:-.03em;
+            background:linear-gradient(135deg,#06b6d4 0%,#f472b6 50%,#fbbf24 100%);
+            background-size:200% 100%;
             -webkit-background-clip:text; background-clip:text; color:transparent;
             display:flex; align-items:center; gap:.5rem; flex-wrap:wrap; line-height:1.2;
+            animation: gradientShift 4s ease-in-out infinite;
+        }
+        @keyframes gradientShift {
+            0%,100%{background-position:0% 50%;}
+            50%{background-position:100% 50%;}
         }
         .badge {
-            background:linear-gradient(135deg,#2d0f28,#1a0a1d);
-            border:1px solid rgba(244,114,182,.5);
-            border-radius:60px; padding:.2rem .9rem;
-            font-size:.65rem; color:var(--nitro); font-weight:700;
+            background:linear-gradient(135deg,#1a0a1d,#0a1d2d);
+            border:1px solid;
+            border-image:linear-gradient(135deg,var(--nitro),var(--plasma)) 1;
+            border-radius:60px; padding:.25rem 1rem;
+            font-size:.65rem; font-weight:800;
+            background-clip:padding-box;
+            color:var(--quantum); letter-spacing:.05em;
+            position:relative;
+        }
+        .badge::before {
+            content:''; position:absolute; inset:-1px;
+            border-radius:60px; padding:1px;
+            background:linear-gradient(135deg,var(--nitro),var(--plasma),var(--quantum));
+            -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+            -webkit-mask-composite:xor;
+            mask-composite:exclude;
         }
         .turbo-pill {
             display:none; align-items:center; gap:6px;
-            background:#1f0a18; border:1px solid var(--nitro);
-            border-radius:50px; padding:.3rem .9rem;
-            font-size:.68rem; font-weight:700; color:var(--nitro);
+            background:linear-gradient(135deg,#1f0a18,#0a1820);
+            border:1px solid var(--quantum);
+            border-radius:50px; padding:.3rem 1rem;
+            font-size:.7rem; font-weight:800; color:var(--quantum);
+            box-shadow:0 0 20px rgba(251,191,36,.3);
         }
-        .turbo-pill.on{display:inline-flex;}
-        .tdot{width:8px;height:8px;border-radius:50%;background:var(--nitro);animation:pulse .6s ease-in-out infinite;}
+        .turbo-pill.on{display:inline-flex;animation:pillPulse 2s ease-in-out infinite;}
+        @keyframes pillPulse {
+            0%,100%{box-shadow:0 0 20px rgba(251,191,36,.3);}
+            50%{box-shadow:0 0 35px rgba(251,191,36,.6);}
+        }
+        .tdot{
+            width:8px;height:8px;border-radius:50%;
+            background:var(--quantum);
+            animation:pulse .6s ease-in-out infinite;
+            box-shadow:0 0 10px var(--quantum);
+        }
         @keyframes pulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.9);opacity:.3}}
-        .sub-txt {color:var(--sub);margin:.2rem 0 1.2rem;border-left:3px solid var(--nitro);padding-left:.9rem;font-size:.78rem;}
+        .sub-txt {
+            color:var(--sub);margin:.2rem 0 1.2rem;
+            border-left:3px solid;
+            border-image:linear-gradient(180deg,var(--nitro),var(--plasma)) 1;
+            padding-left:.9rem;font-size:.78rem;
+        }
 
         .warn-banner {
             display:none;
-            background:#1a0f08; border:1px solid var(--warn);
+            background:linear-gradient(90deg,#1a0f08,#1a0a05);
+            border:1px solid var(--warn);
             border-radius:var(--r-sm); padding:.5rem .9rem;
             color:var(--warn); font-size:.7rem; font-weight:600; margin-bottom:.8rem;
         }
         .warn-banner.show{display:block;}
 
         .engine-bar {
-            display:flex; gap:.6rem; flex-wrap:wrap;
-            background:#070c16; border:1px solid #151f30;
-            border-radius:var(--r-sm); padding:.5rem .9rem;
+            display:flex; gap:.5rem; flex-wrap:wrap;
+            background:linear-gradient(135deg,#070c16,#0a0e1a);
+            border:1px solid #151f30;
+            border-radius:var(--r-sm); padding:.55rem .9rem;
             margin-bottom:1rem; font-size:.68rem; align-items:center;
         }
         .engine-tag {
-            background:#0f1e2d; border-radius:20px; padding:.2rem .7rem;
-            color:#7fbdba; border:1px solid #1a3340; font-weight:600;
+            background:#0f1e2d; border-radius:20px; padding:.22rem .75rem;
+            color:#7fbdba; border:1px solid #1a3340; font-weight:700;
             transition:all .3s ease;
+            display:inline-flex; align-items:center; gap:4px;
         }
-        .engine-tag.ok{color:#34d399;border-color:#1a3a28;}
+        .engine-tag.ok{color:#34d399;border-color:#1a3a28;background:#0a1a14;}
         .engine-tag.warn{color:#fbbf24;border-color:#3a3010;}
-        .engine-tag.nitro{color:var(--nitro);border-color:#3d1828;background:#1f0a18;animation:nitroGlow 1.5s ease-in-out infinite;}
-        @keyframes nitroGlow {
-            0%,100%{box-shadow:0 0 0 rgba(244,114,182,.4);}
-            50%{box-shadow:0 0 12px rgba(244,114,182,.6);}
+        .engine-tag.elite{
+            color:var(--quantum); border-color:var(--quantum);
+            background:linear-gradient(135deg,#1f1a08,#0a1820);
+            animation:eliteGlow 2s ease-in-out infinite;
+        }
+        @keyframes eliteGlow {
+            0%,100%{box-shadow:0 0 0 rgba(251,191,36,.4);}
+            50%{box-shadow:0 0 15px rgba(251,191,36,.5);}
         }
 
         .row {display:flex;flex-wrap:wrap;gap:1.2rem;margin-bottom:1.2rem;}
 
         .drop {
             flex:2; min-width:260px;
-            background:var(--card); border:2px dashed #2a3650;
+            background:linear-gradient(135deg,#0c1322,#0a1020);
+            border:2px dashed #2a3650;
             border-radius:var(--r-lg); padding:1.6rem 1.2rem;
             text-align:center; cursor:pointer;
             transition:all .3s var(--ease); position:relative;
+            overflow:hidden;
         }
+        .drop::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg,transparent,rgba(244,114,182,.05),transparent);
+            transform:translateX(-100%);
+            transition:transform .8s ease;
+        }
+        .drop:hover::before { transform:translateX(100%); }
         .drop.over {
-            border-color:var(--accent2); background:#111d30;
-            box-shadow:0 0 40px rgba(45,212,191,.2); transform:scale(1.01);
+            border-color:var(--nitro); background:#1a0f1a;
+            box-shadow:0 0 50px rgba(244,114,182,.3); transform:scale(1.02);
         }
-        .drop-icon{font-size:2.8rem;display:inline-block;margin-bottom:.4rem;}
+        .drop-icon{font-size:2.8rem;display:inline-block;margin-bottom:.4rem;animation:iconFloat 3s ease-in-out infinite;}
+        @keyframes iconFloat {
+            0%,100%{transform:translateY(0);}
+            50%{transform:translateY(-8px);}
+        }
         .drop-title{font-weight:700;font-size:.95rem;margin-bottom:.3rem;}
         .drop-sub{font-size:.7rem;color:#7c8fb0;margin-bottom:.8rem;}
 
         .cfg {
             flex:1.2; min-width:240px;
-            background:var(--card); border-radius:var(--r-lg);
+            background:linear-gradient(135deg,#0c1322,#0a1020);
+            border-radius:var(--r-lg);
             padding:1.1rem 1.2rem; border:1px solid #20293c;
         }
         .cfg-row{margin-bottom:1rem;}
@@ -145,12 +227,13 @@
         input[type=range] {
             width:100%; background:#1f2a3c; height:5px;
             border-radius:5px; -webkit-appearance:none; appearance:none;
-            cursor:pointer; accent-color:var(--accent);
+            cursor:pointer; accent-color:var(--nitro);
         }
         input[type=range]::-webkit-slider-thumb {
             -webkit-appearance:none;
-            width:20px; height:20px; background:var(--accent);
+            width:20px; height:20px; background:var(--nitro);
             border-radius:50%; cursor:pointer;
+            box-shadow:0 0 12px rgba(244,114,182,.5);
         }
         .cfg-hint{font-size:.6rem;color:#6d86a3;margin-top:.25rem;}
         .bg-grp{display:flex;gap:8px;flex-wrap:wrap;margin-top:.35rem;}
@@ -162,64 +245,92 @@
             font-weight:600; color:#b0c4d8; user-select:none;
         }
         .bg-btn:hover{border-color:#3a5068;background:#1c2a3d;}
-        .bg-btn.active{background:var(--accent);color:#010204;font-weight:700;border-color:var(--accent);box-shadow:0 0 18px rgba(45,212,191,.45);}
-        .bg-btn.nitro.active{background:var(--nitro);border-color:var(--nitro);box-shadow:0 0 18px rgba(244,114,182,.45);}
+        .bg-btn.active{
+            background:var(--nitro);color:#0a0410;font-weight:800;
+            border-color:var(--nitro);
+            box-shadow:0 0 20px rgba(244,114,182,.45);
+        }
 
-        .stats{display:flex;gap:.8rem;margin:1rem 0;flex-wrap:wrap;}
+        /* QUALITY PRESET */
+        .quality-grp{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:.4rem;}
+        .q-btn {
+            background:#0e1726;
+            padding:.55rem .4rem; border-radius:.8rem;
+            font-size:.65rem; font-weight:700;
+            cursor:pointer; border:1px solid #1e2b3d;
+            transition:all .2s var(--ease);
+            color:#7c8fb0; text-align:center;
+            line-height:1.3;
+        }
+        .q-btn:hover{border-color:#3a5068;background:#162234;color:#e0e9f5;}
+        .q-btn.active {
+            background:linear-gradient(135deg,#1f1a08,#1a0820);
+            color:var(--quantum);
+            border-color:var(--quantum);
+            box-shadow:0 0 18px rgba(251,191,36,.3);
+        }
+        .q-btn small{display:block;font-size:.55rem;opacity:.7;font-weight:500;margin-top:2px;}
+
+        .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:.6rem;margin:1rem 0;}
         .stat {
-            background:var(--card); border-radius:var(--r-md);
-            padding:.55rem 1rem; text-align:center;
-            flex:1; min-width:80px; border:1px solid #1e2b3d;
+            background:linear-gradient(135deg,#0c1322,#0a1020);
+            border-radius:var(--r-md);
+            padding:.55rem .8rem; text-align:center;
+            border:1px solid #1e2b3d;
             position:relative; overflow:hidden;
             transition:transform .3s var(--bounce), border-color .3s;
         }
         .stat::before {
             content:''; position:absolute; inset:0;
-            background:linear-gradient(135deg, transparent, rgba(45,212,191,.08), transparent);
+            background:linear-gradient(135deg, transparent, rgba(244,114,182,.08), transparent);
             transform:translateX(-100%);
             transition:transform .6s ease;
         }
-        .stat.bump{transform:translateY(-3px);border-color:rgba(45,212,191,.4);}
+        .stat.bump{transform:translateY(-3px);border-color:rgba(244,114,182,.4);}
         .stat.bump::before{transform:translateX(100%);}
-        .stat-n{font-size:clamp(1.2rem,2vw,1.7rem);font-weight:800;font-family:var(--mono);transition:color .3s;}
+        .stat-n{font-size:clamp(1.1rem,1.8vw,1.55rem);font-weight:800;font-family:var(--mono);transition:color .3s;}
         .stat-n.ok{color:var(--ok);}
         .stat-n.err{color:var(--danger);}
         .stat-n.nitro{color:var(--nitro);}
+        .stat-n.quantum{color:var(--quantum);}
+        .stat-n.plasma{color:var(--plasma);}
         .stat-n.flash{animation:numFlash .4s ease;}
         @keyframes numFlash{
             0%{transform:scale(1)}
             50%{transform:scale(1.15);text-shadow:0 0 20px currentColor;}
             100%{transform:scale(1)}
         }
-        .stat-l{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+        .stat-l{font-size:.58rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
 
         .prog-wrap{margin:10px 0 14px; position:relative;}
         .prog-bg {
             background:var(--prog-bg); border-radius:30px;
-            height:14px; overflow:hidden; position:relative;
+            height:18px; overflow:hidden; position:relative;
             box-shadow:inset 0 2px 4px rgba(0,0,0,.4);
+            border:1px solid #1a2538;
         }
         .prog-fill {
             width:0%; height:100%;
             background:linear-gradient(90deg,#0d9488,#2dd4bf,#5eead4,#2dd4bf);
             background-size:200% 100%; border-radius:30px;
-            transition:width .25s ease-out, background .5s ease;
-            animation:shimmer 1.5s linear infinite;
+            transition:width .15s ease-out, background .5s ease;
+            animation:shimmer 1.2s linear infinite;
             position:relative;
         }
         .prog-fill::after {
             content:''; position:absolute; inset:0;
-            background:linear-gradient(90deg, transparent 30%, rgba(255,255,255,.4) 50%, transparent 70%);
-            animation:scan 1.4s linear infinite;
+            background:linear-gradient(90deg, transparent 30%, rgba(255,255,255,.5) 50%, transparent 70%);
+            animation:scan 1.2s linear infinite;
         }
-        .prog-fill.nitro {
-            background:linear-gradient(90deg,#be185d,#f472b6,#fbcfe8,#f472b6);
-            background-size:200% 100%;
-            animation:shimmer 1s linear infinite, nitroBoost .8s ease-in-out infinite;
+        .prog-fill.quantum {
+            background:linear-gradient(90deg,#06b6d4,#f472b6,#fbbf24,#f472b6,#06b6d4);
+            background-size:300% 100%;
+            animation:quantumShimmer .8s linear infinite, quantumPulse 1s ease-in-out infinite;
         }
-        @keyframes nitroBoost {
-            0%,100%{box-shadow:0 0 15px rgba(244,114,182,.5);}
-            50%{box-shadow:0 0 30px rgba(244,114,182,.8);}
+        @keyframes quantumShimmer{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+        @keyframes quantumPulse {
+            0%,100%{box-shadow:0 0 20px rgba(244,114,182,.5),inset 0 0 20px rgba(251,191,36,.2);}
+            50%{box-shadow:0 0 40px rgba(244,114,182,.8),inset 0 0 25px rgba(6,182,212,.3);}
         }
         .prog-fill.packaging {
             background:linear-gradient(90deg,#7c3aed,#a78bfa,#c4b5fd,#a78bfa);
@@ -243,7 +354,7 @@
             transition:color .3s ease;
         }
         .phase.conv{color:var(--accent);}
-        .phase.nitro{color:var(--nitro);}
+        .phase.quantum{color:var(--quantum);}
         .phase.pkg{color:var(--pkg);}
         .phase.done{color:var(--ok);}
         .phase-icon{display:inline-block;animation:phaseIcon 2s ease-in-out infinite;}
@@ -251,7 +362,8 @@
 
         .phase-track {
             display:flex; gap:.4rem; margin:.8rem 0 .4rem;
-            background:#070c16; border:1px solid #151f30;
+            background:linear-gradient(135deg,#070c16,#0a0e1a);
+            border:1px solid #151f30;
             border-radius:var(--r-sm); padding:.45rem .6rem;
             font-size:.65rem;
         }
@@ -262,9 +374,9 @@
             border:1px solid transparent;
         }
         .phase-step.active {
-            background:rgba(45,212,191,.08);
-            color:var(--accent);
-            border-color:rgba(45,212,191,.3);
+            background:rgba(251,191,36,.08);
+            color:var(--quantum);
+            border-color:rgba(251,191,36,.3);
         }
         .phase-step.active.pkg{
             background:rgba(167,139,250,.08);
@@ -284,8 +396,8 @@
             transition:all .3s var(--bounce);
         }
         .phase-step.active .step-num {
-            background:var(--accent); color:#000;
-            box-shadow:0 0 12px rgba(45,212,191,.6);
+            background:var(--quantum); color:#000;
+            box-shadow:0 0 12px rgba(251,191,36,.6);
         }
         .phase-step.active.pkg .step-num {
             background:var(--pkg); color:#fff;
@@ -293,6 +405,43 @@
         }
         .phase-step.done .step-num {
             background:var(--ok); color:#000;
+        }
+
+        /* WORKER VISUALIZER */
+        .worker-viz {
+            display:flex; gap:.3rem; margin:.6rem 0;
+            background:#070c16; border:1px solid #151f30;
+            border-radius:var(--r-sm); padding:.5rem .7rem;
+            align-items:center; flex-wrap:wrap;
+        }
+        .worker-viz-label {
+            font-size:.6rem; color:var(--muted); font-weight:700;
+            text-transform:uppercase; letter-spacing:.05em;
+        }
+        .worker-cells {
+            display:flex; gap:3px; flex-wrap:wrap; flex:1;
+        }
+        .worker-cell {
+            width:10px; height:10px; border-radius:3px;
+            background:#1a2538; transition:all .15s ease;
+            position:relative;
+        }
+        .worker-cell.active {
+            background:var(--nitro);
+            box-shadow:0 0 8px var(--nitro);
+            animation:cellPulse .4s ease-in-out infinite;
+        }
+        .worker-cell.done {
+            background:var(--ok);
+            box-shadow:0 0 6px rgba(52,211,153,.5);
+        }
+        @keyframes cellPulse {
+            0%,100%{transform:scale(1);}
+            50%{transform:scale(1.3);}
+        }
+        .worker-throughput {
+            font-family:var(--mono); font-size:.65rem;
+            color:var(--quantum); font-weight:700;
         }
 
         .grid {
@@ -310,7 +459,7 @@
             border:1px solid transparent;
             transition:background .15s var(--ease);
         }
-        .task.running{background:#111d2e;border-color:rgba(45,212,191,.25);}
+        .task.running{background:#111d2e;border-color:rgba(244,114,182,.25);}
         .task.done{border-color:rgba(52,211,153,.2);}
         .task.fail{border-color:rgba(248,113,113,.2);}
         .tname {
@@ -318,43 +467,51 @@
             font-family:var(--mono); font-size:.63rem; color:#c9d9f0; min-width:0;
         }
         .tbar{flex:2;height:5px;background:#1e2a3d;border-radius:10px;overflow:hidden;min-width:40px;}
-        .tbar-fill{width:0%;height:100%;background:linear-gradient(90deg,#2dd4bf,#5eead4);border-radius:10px;transition:width .12s ease-out;}
+        .tbar-fill{width:0%;height:100%;background:linear-gradient(90deg,#f472b6,#fbbf24);border-radius:10px;transition:width .12s ease-out;}
         .tst{width:80px;text-align:right;font-size:.6rem;font-weight:600;white-space:nowrap;}
 
         button{cursor:pointer;border:none;outline:none;}
         .btn-primary {
             width:100%;
-            background:linear-gradient(100deg,#152238,#0b1424);
-            border:1.5px solid rgba(45,212,191,.55);
-            padding:.9rem; border-radius:2.5rem;
-            font-weight:700; color:#e0f7ff; margin:.9rem 0;
-            transition:all .3s var(--ease); font-size:.9rem;
+            background:linear-gradient(100deg,#1a0820,#0a1828);
+            border:1.5px solid;
+            border-image:linear-gradient(135deg,var(--nitro),var(--plasma)) 1;
+            background-clip:padding-box;
+            padding:.95rem; border-radius:2.5rem;
+            font-weight:800; color:#fce7f3; margin:.9rem 0;
+            transition:all .3s var(--ease); font-size:.92rem;
             position:relative; overflow:hidden;
+            letter-spacing:.02em;
         }
+        .btn-primary::before {
+            content:''; position:absolute; inset:0;
+            background:linear-gradient(135deg,transparent,rgba(244,114,182,.15),transparent);
+            transform:translateX(-100%);
+            transition:transform .6s ease;
+        }
+        .btn-primary:hover:not(:disabled)::before { transform:translateX(100%); }
         .btn-primary:hover:not(:disabled) {
-            background:linear-gradient(100deg,#1d3250,#121d35);
-            border-color:var(--accent2);
-            box-shadow:0 0 30px rgba(45,212,191,.35);
-            transform:translateY(-1px);
+            background:linear-gradient(100deg,#2d1230,#0d2240);
+            box-shadow:0 0 35px rgba(244,114,182,.35);
+            transform:translateY(-2px);
         }
         .btn-primary:disabled{opacity:.38;cursor:not-allowed;}
         .btn-primary:active:not(:disabled){transform:scale(.97);}
 
         .btn-download {
             background:linear-gradient(100deg,#2d1d4a,#1a0f2e) !important;
-            border-color:rgba(167,139,250,.55) !important;
+            border-image:linear-gradient(135deg,var(--pkg),var(--accent)) 1 !important;
             color:#e9d5ff !important;
         }
         .btn-download:hover:not(:disabled){
-            border-color:var(--pkg2) !important;
-            box-shadow:0 0 30px rgba(167,139,250,.35) !important;
+            box-shadow:0 0 30px rgba(167,139,250,.45) !important;
         }
         .btn-download.ready {
             animation:readyPulse 2s ease-in-out infinite;
         }
         @keyframes readyPulse {
             0%,100%{box-shadow:0 0 20px rgba(167,139,250,.4);}
-            50%{box-shadow:0 0 40px rgba(167,139,250,.7);}
+            50%{box-shadow:0 0 45px rgba(167,139,250,.7);}
         }
 
         .btn-sec {
@@ -374,7 +531,7 @@
             cursor:pointer; transition:all .15s var(--ease);
             position:relative; z-index:10;
         }
-        .browse-btn:hover{background:#253545;border-color:var(--accent);}
+        .browse-btn:hover{background:#253545;border-color:var(--nitro);box-shadow:0 0 18px rgba(244,114,182,.2);}
 
         .error-panel {
             display:none; max-height:120px; overflow-y:auto;
@@ -386,27 +543,6 @@
         .error-panel.show{display:block;}
         .err-line{margin:.1rem 0;opacity:.8;cursor:pointer;}
         .err-line:hover{opacity:1;}
-
-        /* Speedometer */
-        .speed-display {
-            display:flex; align-items:center; gap:.5rem;
-            background:#0a0f1c; border:1px solid #1a2538;
-            border-radius:var(--r-sm); padding:.4rem .8rem;
-            font-size:.7rem; margin-top:.4rem;
-            font-family:var(--mono);
-        }
-        .speed-bar {
-            flex:1; height:4px; background:#1a2538; border-radius:4px;
-            overflow:hidden; position:relative;
-        }
-        .speed-bar-fill {
-            position:absolute; left:0; top:0; height:100%;
-            background:linear-gradient(90deg,#34d399,#fbbf24,#f472b6);
-            border-radius:4px; transition:width .3s ease;
-        }
-        .speed-num {
-            color:var(--nitro); font-weight:700; min-width:60px;
-        }
 
         .burst-container {
             position:fixed; pointer-events:none;
@@ -425,17 +561,41 @@
         }
         .complete-overlay.show{opacity:1;}
         .complete-check {
-            width:120px; height:120px; border-radius:50%;
+            width:140px; height:140px; border-radius:50%;
             background:linear-gradient(135deg,#10b981,#34d399);
             display:flex; align-items:center; justify-content:center;
-            font-size:60px; color:white;
-            box-shadow:0 0 60px rgba(52,211,153,.6);
-            animation:popCheck .6s var(--bounce);
+            font-size:70px; color:white;
+            box-shadow:0 0 80px rgba(52,211,153,.7);
+            animation:popCheck .7s var(--bounce);
         }
         @keyframes popCheck {
             0%{transform:scale(0) rotate(-180deg);}
-            70%{transform:scale(1.2) rotate(10deg);}
+            70%{transform:scale(1.25) rotate(15deg);}
             100%{transform:scale(1) rotate(0deg);}
+        }
+
+        /* HEX METRICS PANEL */
+        .metrics {
+            display:grid; grid-template-columns:repeat(auto-fit,minmax(100px,1fr)); gap:.5rem;
+            background:linear-gradient(135deg,#070c16,#0a0e1a);
+            border:1px solid #151f30;
+            border-radius:var(--r-sm); padding:.6rem;
+            margin:.6rem 0; font-size:.6rem;
+        }
+        .metric {
+            display:flex; flex-direction:column; align-items:center;
+            background:#0a0f1c; border-radius:.4rem;
+            padding:.4rem; border:1px solid #14202f;
+        }
+        .metric-v {
+            font-family:var(--mono); font-weight:800;
+            font-size:.85rem; color:var(--quantum);
+            line-height:1;
+        }
+        .metric-l {
+            color:var(--muted); margin-top:.25rem;
+            text-transform:uppercase; letter-spacing:.05em;
+            font-size:.55rem;
         }
 
         footer{font-size:.6rem;text-align:center;margin-top:1rem;color:#416079;}
@@ -455,29 +615,31 @@
     </style>
 </head>
 <body>
+<div class="quantum-bg"></div>
 <div class="panel">
     <div class="hdr">
-        <h1>⚡ HYPER SVG → PNG <span class="badge">v4 NITRO ENGINE</span></h1>
-        <span class="turbo-pill" id="turboPill"><span class="tdot"></span>NITRO BOOST</span>
+        <h1>⚛ ELITE MAX6 <span class="badge">QUANTUM ENGINE</span></h1>
+        <span class="turbo-pill" id="turboPill"><span class="tdot"></span>QUANTUM ACTIVE</span>
     </div>
-    <div class="sub-txt">Worker Pool · Pipelined Streaming · Adaptive Concurrency · Zero Failure Tolerance</div>
+    <div class="sub-txt">Persistent Worker Pool · Zero-Copy Transfer · Predictive Buffer · Adaptive Load Balancing · Streaming I/O</div>
 
     <div class="engine-bar" id="engineBar">
-        <span style="color:var(--muted);font-weight:600;">ENGINE:</span>
+        <span style="color:var(--muted);font-weight:700;letter-spacing:.05em;">ENGINE</span>
         <span class="engine-tag" id="capImg">🖼 Canvas</span>
         <span class="engine-tag" id="capBitmap">⚡ Bitmap</span>
         <span class="engine-tag" id="capWorker">🧵 Worker</span>
-        <span class="engine-tag" id="capOffscreen">🎨 OffscreenCanvas</span>
-        <span style="margin-left:auto;color:var(--muted);">Workers: <strong id="concDisplay" style="color:var(--accent)">-</strong></span>
+        <span class="engine-tag" id="capOffscreen">🎨 Offscreen</span>
+        <span class="engine-tag" id="capTransfer">📡 Transfer</span>
+        <span style="margin-left:auto;color:var(--muted);">Topology: <strong id="concDisplay" style="color:var(--quantum)">-</strong></span>
     </div>
 
-    <div class="warn-banner" id="warnBanner">⚠️ File sangat banyak (&gt;5000). Engine NITRO aktif - butuh memori besar.</div>
+    <div class="warn-banner" id="warnBanner">⚠️ Dataset besar terdeteksi. QUANTUM mode akan menggunakan memory lebih agresif.</div>
 
     <div class="row">
         <div class="drop" id="dropZone">
             <div class="drop-icon">📦</div>
             <div class="drop-title">Drag & Drop file ZIP</div>
-            <div class="drop-sub">File ZIP berisi icon .svg (support 10000+ files)</div>
+            <div class="drop-sub">SVG icon archive · support unlimited files</div>
             <label class="browse-btn" id="browseLabel">
                 📁 Pilih File ZIP
                 <input type="file" id="fileInput" accept=".zip" style="display:none">
@@ -488,7 +650,15 @@
             <div class="cfg-row">
                 <label>🎯 Skala resolusi <span id="scaleLabel">1x</span></label>
                 <input type="range" id="scaleSlider" min="0.5" max="4" step="0.25" value="1">
-                <div class="cfg-hint">1x = optimal · 2x = Retina · Worker render menjaga kualitas</div>
+                <div class="cfg-hint">Auto super-sampling untuk kualitas pro</div>
+            </div>
+            <div class="cfg-row">
+                <label>💎 Kualitas Render</label>
+                <div class="quality-grp">
+                    <div class="q-btn" data-quality="fast">⚡ Fast<small>Speed first</small></div>
+                    <div class="q-btn active" data-quality="balanced">⚖ Balanced<small>Recommended</small></div>
+                    <div class="q-btn" data-quality="pro">💎 PRO<small>Max quality</small></div>
+                </div>
             </div>
             <div class="cfg-row">
                 <label>🎨 Background</label>
@@ -498,32 +668,39 @@
                     <div class="bg-btn" data-bg="black">Hitam</div>
                 </div>
             </div>
-            <div class="cfg-row">
-                <label>⚙️ Mode Engine</label>
-                <div class="bg-grp">
-                    <div class="bg-btn nitro active" data-engine="nitro">🔥 Nitro</div>
-                    <div class="bg-btn" data-engine="auto">Auto</div>
-                    <div class="bg-btn" data-engine="safe">Safe</div>
-                </div>
-                <div class="cfg-hint">Nitro = Worker pool · Auto = Bitmap+fallback · Safe = Image only</div>
-            </div>
         </div>
     </div>
 
     <div class="phase-track" id="phaseTrack">
-        <div class="phase-step" id="step1"><span class="step-num">1</span> 📂 Baca</div>
-        <div class="phase-step" id="step2"><span class="step-num">2</span> 🎨 Render</div>
+        <div class="phase-step" id="step1"><span class="step-num">1</span> 📂 Read</div>
+        <div class="phase-step" id="step2"><span class="step-num">2</span> ⚛ Render</div>
         <div class="phase-step" id="step3"><span class="step-num">3</span> 📦 Pack</div>
-        <div class="phase-step" id="step4"><span class="step-num">4</span> ✅ Done</div>
+        <div class="phase-step" id="step4"><span class="step-num">4</span> ✓ Done</div>
+    </div>
+
+    <!-- WORKER VISUALIZER -->
+    <div class="worker-viz" id="workerViz" style="display:none;">
+        <span class="worker-viz-label">WORKERS</span>
+        <div class="worker-cells" id="workerCells"></div>
+        <span class="worker-throughput" id="workerThroughput">0 files/s</span>
     </div>
 
     <div class="stats">
-        <div class="stat"><div class="stat-n" id="statTotal">0</div><div class="stat-l">SVG ditemukan</div></div>
+        <div class="stat"><div class="stat-n" id="statTotal">0</div><div class="stat-l">Total</div></div>
         <div class="stat"><div class="stat-n ok" id="statOk">0</div><div class="stat-l">Berhasil</div></div>
         <div class="stat"><div class="stat-n err" id="statFail">0</div><div class="stat-l">Gagal</div></div>
-        <div class="stat"><div class="stat-n" id="statPct">0%</div><div class="stat-l">Progress</div></div>
-        <div class="stat"><div class="stat-n nitro" id="statSpeed">0</div><div class="stat-l">file/detik</div></div>
-        <div class="stat"><div class="stat-n" id="statEta">-</div><div class="stat-l">ETA</div></div>
+        <div class="stat"><div class="stat-n quantum" id="statPct">0%</div><div class="stat-l">Progress</div></div>
+        <div class="stat"><div class="stat-n nitro" id="statSpeed">0</div><div class="stat-l">file/s</div></div>
+        <div class="stat"><div class="stat-n plasma" id="statEta">-</div><div class="stat-l">ETA</div></div>
+    </div>
+
+    <!-- ADVANCED METRICS (toggle) -->
+    <div class="metrics" id="metricsPanel" style="display:none;">
+        <div class="metric"><div class="metric-v" id="mPeak">0</div><div class="metric-l">Peak/s</div></div>
+        <div class="metric"><div class="metric-v" id="mAvg">0</div><div class="metric-l">Avg/s</div></div>
+        <div class="metric"><div class="metric-v" id="mQueue">0</div><div class="metric-l">Queue</div></div>
+        <div class="metric"><div class="metric-v" id="mElapsed">0s</div><div class="metric-l">Elapsed</div></div>
+        <div class="metric"><div class="metric-v" id="mMem">-</div><div class="metric-l">Memory</div></div>
     </div>
 
     <div class="prog-wrap">
@@ -537,62 +714,67 @@
 
     <div class="error-panel" id="errPanel" title="Klik baris untuk menyalin pesan error"></div>
 
-    <button class="btn-primary" id="btnStart" disabled>🔥 Mulai Konversi</button>
+    <button class="btn-primary" id="btnStart" disabled>⚛ ACTIVATE QUANTUM ENGINE</button>
     <div style="display:flex;justify-content:space-between;align-items:center;gap:.8rem;flex-wrap:wrap;">
         <button class="btn-sec" id="btnRetry" disabled>🔁 Retry yang Gagal</button>
-        <button class="btn-primary btn-download" id="btnDownload" disabled style="width:auto;flex:1;margin:0;padding:.7rem 1.4rem;font-size:.8rem;">📦 Unduh Semua PNG (ZIP)</button>
+        <button class="btn-primary btn-download" id="btnDownload" disabled style="width:auto;flex:1;margin:0;padding:.7rem 1.4rem;font-size:.8rem;">📦 Unduh ZIP</button>
     </div>
 
-    <footer>🔧 v4 NITRO: Worker pool · OffscreenCanvas · Pipelined I/O · Adaptive scheduling · Triple fallback</footer>
+    <footer>⚛ ELITE MAX6 · Persistent worker streaming · Zero-copy transferable · Predictive buffering · Lossless PNG output</footer>
 </div>
 
 <div class="burst-container" id="burstContainer"></div>
 <div class="complete-overlay" id="completeOverlay"><div class="complete-check">✓</div></div>
 
 <!-- ═══════════════════════════════════════════════════════════════
-     WORKER SOURCE - Inline as blob URL (no separate file needed)
+     QUANTUM WORKER - Persistent streaming with backpressure
      ═══════════════════════════════════════════════════════════════ -->
 <script id="workerSrc" type="javascript/worker">
 'use strict';
 
-// SVG sanitizer (cached regex - hot path)
 const RE_W = /\swidth\s*=/i;
 const RE_H = /\sheight\s*=/i;
 const RE_VB = /viewBox\s*=\s*["']([^"']+)["']/i;
 const RE_SVG = /<svg([^>]*?)>/i;
+const RE_XMLNS = /xmlns\s*=/i;
 
+// PRO sanitizer: ensure SVG renders correctly + has proper namespace
 function sanitizeSvg(txt) {
     txt = txt.trim();
+    // Strip BOM if present
+    if (txt.charCodeAt(0) === 0xFEFF) txt = txt.slice(1);
+
     const hasW = RE_W.test(txt);
     const hasH = RE_H.test(txt);
-    if (hasW && hasH) return txt;
+    const hasNs = RE_XMLNS.test(txt);
+
+    let needsRewrite = !hasW || !hasH || !hasNs;
+    if (!needsRewrite) return txt;
+
+    let injectAttrs = '';
+    if (!hasNs) injectAttrs += ' xmlns="http://www.w3.org/2000/svg"';
 
     const m = txt.match(RE_VB);
-    if (m) {
+    if (m && (!hasW || !hasH)) {
         const p = m[1].trim().split(/[\s,]+/);
         if (p.length === 4) {
             const w = parseFloat(p[2]), h = parseFloat(p[3]);
             if (w > 0 && h > 0) {
-                return txt.replace(RE_SVG, (_, a) => {
-                    let f = a;
-                    if (!hasW) f += ` width="${w}"`;
-                    if (!hasH) f += ` height="${h}"`;
-                    return `<svg${f}>`;
-                });
+                if (!hasW) injectAttrs += ` width="${w}"`;
+                if (!hasH) injectAttrs += ` height="${h}"`;
             }
         }
+    } else if (!hasW || !hasH) {
+        if (!hasW) injectAttrs += ' width="512"';
+        if (!hasH) injectAttrs += ' height="512"';
+        if (!RE_VB.test(txt)) injectAttrs += ' viewBox="0 0 512 512"';
     }
-    return txt.replace(RE_SVG, (_, a) => {
-        let f = a;
-        if (!hasW) f += ' width="512"';
-        if (!hasH) f += ' height="512"';
-        if (!/viewBox/i.test(a)) f += ' viewBox="0 0 512 512"';
-        return `<svg${f}>`;
-    });
+
+    return txt.replace(RE_SVG, (_, attrs) => `<svg${attrs}${injectAttrs}>`);
 }
 
-// Render single SVG to PNG blob using OffscreenCanvas + createImageBitmap
-async function renderSvg(svgText, scale, bg) {
+// PRO render with super-sampling for max quality
+async function renderSvg(svgText, scale, bg, quality) {
     const sanitized = sanitizeSvg(svgText);
     const blob = new Blob([sanitized], { type: 'image/svg+xml' });
 
@@ -603,50 +785,93 @@ async function renderSvg(svgText, scale, bg) {
         throw new Error('bitmap_fail:' + e.message);
     }
 
-    const w = Math.max(1, Math.floor(bitmap.width * scale));
-    const h = Math.max(1, Math.floor(bitmap.height * scale));
+    let w = Math.max(1, Math.floor(bitmap.width * scale));
+    let h = Math.max(1, Math.floor(bitmap.height * scale));
 
-    const canvas = new OffscreenCanvas(w, h);
-    const ctx = canvas.getContext('2d', { alpha: bg === 'transparent' });
+    // PRO mode: render at 2x then downsample for crisp edges (super-sampling)
+    let renderScale = 1;
+    if (quality === 'pro' && scale < 3) {
+        renderScale = 2;
+    }
+    const rw = w * renderScale;
+    const rh = h * renderScale;
 
-    if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); }
-    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); }
+    const canvas = new OffscreenCanvas(rw, rh);
+    const ctx = canvas.getContext('2d', {
+        alpha: bg === 'transparent',
+        willReadFrequently: false,
+        desynchronized: true,
+    });
+
+    if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, rw, rh); }
+    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, rw, rh); }
 
     ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(bitmap, 0, 0, w, h);
+    ctx.imageSmoothingQuality = quality === 'fast' ? 'medium' : 'high';
+    ctx.drawImage(bitmap, 0, 0, rw, rh);
     bitmap.close();
 
-    const pngBlob = await canvas.convertToBlob({ type: 'image/png' });
+    let finalCanvas = canvas;
+
+    // Downsample for super-sampling (PRO quality)
+    if (renderScale > 1) {
+        const downCanvas = new OffscreenCanvas(w, h);
+        const downCtx = downCanvas.getContext('2d', { alpha: bg === 'transparent' });
+        if (bg === 'white') { downCtx.fillStyle = '#fff'; downCtx.fillRect(0,0,w,h); }
+        else if (bg === 'black') { downCtx.fillStyle = '#000'; downCtx.fillRect(0,0,w,h); }
+        downCtx.imageSmoothingEnabled = true;
+        downCtx.imageSmoothingQuality = 'high';
+        downCtx.drawImage(canvas, 0, 0, w, h);
+        finalCanvas = downCanvas;
+    }
+
+    const pngBlob = await finalCanvas.convertToBlob({ type: 'image/png' });
     return pngBlob;
 }
 
-// Message handler — receives batches for efficiency
+// Persistent message handler — process jobs as they arrive (no waiting for batch)
 self.onmessage = async function(e) {
-    const { id, batch, scale, bg } = e.data;
-    const results = [];
-    for (const job of batch) {
+    const msg = e.data;
+
+    if (msg.type === 'render') {
+        const { jobId, svg, scale, bg, quality } = msg;
         try {
-            const blob = await renderSvg(job.svg, scale, bg);
-            results.push({ idx: job.idx, ok: true, blob });
+            const blob = await renderSvg(svg, scale, bg, quality);
+            // Convert blob to ArrayBuffer for transferable
+            const buf = await blob.arrayBuffer();
+            self.postMessage(
+                { type: 'result', jobId, ok: true, buffer: buf, size: buf.byteLength },
+                [buf]
+            );
         } catch (err) {
-            results.push({ idx: job.idx, ok: false, err: String(err.message || err) });
+            self.postMessage({ type: 'result', jobId, ok: false, err: String(err.message || err) });
         }
+    } else if (msg.type === 'ping') {
+        self.postMessage({ type: 'pong' });
     }
-    self.postMessage({ id, results });
 };
 </script>
 
 <script>
 /* ═══════════════════════════════════════════════════════════════════
-   HYPER SVG → PNG NITRO ENGINE v4
-   Architecture:
-   ┌─────────────┐    ┌──────────────┐    ┌─────────────┐
-   │ ZIP Reader  │───>│ Worker Pool  │───>│ ZIP Packer  │
-   │ (streaming) │    │ (Offscreen)  │    │ (chunked)   │
-   └─────────────┘    └──────────────┘    └─────────────┘
-        async              parallel            streaming
-   All 3 phases overlap = max throughput
+   ELITE MAX6 QUANTUM ENGINE
+   Architecture (genius pipeline):
+
+       ┌─────────────┐    ┌──────────────────┐    ┌─────────────┐
+       │ Streaming   │ →  │ Persistent       │ →  │ Live ZIP    │
+       │ Reader      │    │ Worker Pool      │    │ Packer      │
+       │ (parallel)  │    │ (work-stealing)  │    │ (streaming) │
+       └─────────────┘    └──────────────────┘    └─────────────┘
+            ↓                    ↓                       ↓
+       Backpressure        Zero-copy ArrayBuffer    Chunk yields
+       throttling          transfer                  to UI
+
+   Key innovations:
+   1. Persistent workers: no batch overhead, jobs flow individually
+   2. Work-stealing: idle workers grab from busy workers' queues
+   3. Transferable ArrayBuffer: zero-copy result transfer
+   4. Backpressure: reader pauses if render queue too full
+   5. Adaptive concurrency: tunes based on rolling throughput
    ═══════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -669,46 +894,63 @@ self.onmessage = async function(e) {
     const warnBanner = $('warnBanner');
     const burstContainer = $('burstContainer');
     const completeOverlay = $('completeOverlay');
+    const workerViz = $('workerViz');
+    const workerCells = $('workerCells');
+    const workerThroughput = $('workerThroughput');
+    const metricsPanel = $('metricsPanel');
 
+    // ═══ CAPABILITY DETECTION ═══════════════════════════════════════
     const CAP = {
         imageBitmap : typeof createImageBitmap !== 'undefined',
         offscreen   : typeof OffscreenCanvas   !== 'undefined',
         worker      : typeof Worker             !== 'undefined',
+        transfer    : true, // assume modern browser
         cores       : navigator.hardwareConcurrency || 4,
+        memGB       : navigator.deviceMemory || 4,
         mobile      : /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) ||
                       (navigator.maxTouchPoints > 1 && window.innerWidth < 768),
     };
-
-    // Worker support requires both OffscreenCanvas AND createImageBitmap in worker
     CAP.workerRender = CAP.worker && CAP.offscreen && CAP.imageBitmap;
 
-    ['capImg','capBitmap','capWorker','capOffscreen'].forEach((id, i) => {
+    ['capImg','capBitmap','capWorker','capOffscreen','capTransfer'].forEach((id, i) => {
         const el = $(id);
         if (!el) return;
-        const caps = [true, CAP.imageBitmap, CAP.worker, CAP.offscreen];
+        const caps = [true, CAP.imageBitmap, CAP.worker, CAP.offscreen, CAP.transfer];
         el.classList.toggle('ok', caps[i]);
         el.classList.toggle('warn', !caps[i]);
     });
 
-    // Aggressive concurrency tuning
-    function calcWorkerCount(total) {
-        if (!CAP.workerRender) return 0;
-        const base = CAP.mobile
-            ? Math.max(2, Math.min(4, CAP.cores))
-            : Math.max(4, Math.min(CAP.cores, 12));
-        // Big batch = more workers (until memory becomes issue)
-        if (total > 5000) return Math.min(base + 2, 16);
-        if (total > 1000) return base;
-        return Math.max(2, Math.min(base, 6));
+    // ═══ ADAPTIVE TOPOLOGY ══════════════════════════════════════════
+    function calcTopology(total) {
+        const cores = CAP.cores;
+        const memFactor = Math.min(2, CAP.memGB / 4);
+
+        if (!CAP.workerRender) {
+            return { workers: 0, readers: CAP.mobile ? 4 : 8, queueMax: 100 };
+        }
+
+        // Scale workers aggressively, but cap based on RAM
+        let workers;
+        if (CAP.mobile) {
+            workers = Math.max(2, Math.min(cores, 4));
+        } else {
+            // Desktop: use all cores, +25% for hyperthreading benefits with workers
+            workers = Math.max(4, Math.min(Math.floor(cores * 1.25), 16));
+        }
+
+        // Readers: ~1.5x workers (I/O bound), they're cheap
+        const readers = Math.min(workers * 2, CAP.mobile ? 6 : 16);
+
+        // Queue size: don't let memory blow up. Each SVG ~5KB sanitized.
+        // Allow ~50MB queue = ~10000 items. Mobile: smaller.
+        const queueMax = CAP.mobile
+            ? Math.floor(200 * memFactor)
+            : Math.floor(800 * memFactor);
+
+        return { workers, readers, queueMax };
     }
 
-    function calcMainConcurrency(total) {
-        const base = CAP.mobile
-            ? Math.max(2, Math.min(6, Math.floor(CAP.cores / 2)))
-            : Math.min(20, Math.max(8, CAP.cores * 2));
-        return total > 1000 ? Math.min(base + 8, 24) : base;
-    }
-
+    // ═══ STATE ═══════════════════════════════════════════════════════
     let state = {
         zip        : null,
         items      : [],
@@ -716,45 +958,61 @@ self.onmessage = async function(e) {
         running    : false,
         bg         : 'transparent',
         scale      : 1,
-        engine     : 'nitro',
+        quality    : 'balanced',
         timestamps : [],
         errors     : [],
         phase      : 'idle',
         startTime  : 0,
-        completed  : 0,
+        peakSpeed  : 0,
     };
 
-    // ═══ WORKER POOL ════════════════════════════════════════════════
+    // ═══ WORKER POOL (PERSISTENT, WORK-STEALING) ═══════════════════
     let workerPool = null;
     let workerBlobUrl = null;
+    let nextJobId = 0;
+
+    function buildWorkerUrl() {
+        if (workerBlobUrl) return workerBlobUrl;
+        const src = document.getElementById('workerSrc').textContent;
+        const blob = new Blob([src], { type: 'application/javascript' });
+        workerBlobUrl = URL.createObjectURL(blob);
+        return workerBlobUrl;
+    }
 
     function createWorkerPool(count) {
-        // Build worker source from inline script tag
-        if (!workerBlobUrl) {
-            const src = document.getElementById('workerSrc').textContent;
-            const blob = new Blob([src], { type: 'application/javascript' });
-            workerBlobUrl = URL.createObjectURL(blob);
-        }
-
+        const url = buildWorkerUrl();
         const workers = [];
         for (let i = 0; i < count; i++) {
-            const w = new Worker(workerBlobUrl);
+            const w = new Worker(url);
+            w.id = i;
             w.busy = false;
-            w.taskMap = new Map(); // id -> resolve fn
+            w.processed = 0;
+            w.pendingJobs = new Map(); // jobId → { resolve, reject, idx }
+
             w.onmessage = (e) => {
-                const resolve = w.taskMap.get(e.data.id);
-                if (resolve) {
-                    w.taskMap.delete(e.data.id);
-                    resolve(e.data.results);
+                const msg = e.data;
+                if (msg.type !== 'result') return;
+                const job = w.pendingJobs.get(msg.jobId);
+                if (!job) return;
+                w.pendingJobs.delete(msg.jobId);
+                w.busy = w.pendingJobs.size > 0;
+                w.processed++;
+
+                if (msg.ok) {
+                    // Convert ArrayBuffer back to Blob for ZIP packing
+                    job.resolve({ ok: true, blob: new Blob([msg.buffer], { type: 'image/png' }) });
+                } else {
+                    job.resolve({ ok: false, err: msg.err });
                 }
-                w.busy = w.taskMap.size > 0;
             };
-            w.onerror = (err) => {
-                // Reject all pending tasks on this worker
-                w.taskMap.forEach(r => r([{ ok: false, err: 'worker_crash:' + err.message }]));
-                w.taskMap.clear();
+
+            w.onerror = () => {
+                // Reject all pending jobs on this worker
+                w.pendingJobs.forEach(j => j.resolve({ ok: false, err: 'worker_crashed' }));
+                w.pendingJobs.clear();
                 w.busy = false;
             };
+
             workers.push(w);
         }
         return workers;
@@ -767,17 +1025,37 @@ self.onmessage = async function(e) {
         }
     }
 
-    let nextTaskId = 0;
-    function dispatchToWorker(worker, batch, scale, bg) {
+    function dispatchJob(worker, svg, scale, bg, quality, idx) {
         return new Promise(resolve => {
-            const id = ++nextTaskId;
-            worker.taskMap.set(id, resolve);
+            const jobId = ++nextJobId;
+            worker.pendingJobs.set(jobId, { resolve, idx });
             worker.busy = true;
-            worker.postMessage({ id, batch, scale, bg });
+            worker.postMessage({ type: 'render', jobId, svg, scale, bg, quality });
         });
     }
 
-    // ═══ PHASE TRACKER ═══════════════════════════════════════════════
+    // ═══ WORKER VISUALIZER ═══════════════════════════════════════════
+    function buildWorkerViz(count) {
+        workerViz.style.display = count > 0 ? 'flex' : 'none';
+        workerCells.innerHTML = '';
+        for (let i = 0; i < count; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'worker-cell';
+            cell.id = 'wc' + i;
+            workerCells.appendChild(cell);
+        }
+    }
+
+    function updateWorkerViz() {
+        if (!workerPool) return;
+        workerPool.forEach(w => {
+            const cell = $('wc' + w.id);
+            if (!cell) return;
+            cell.classList.toggle('active', w.busy);
+        });
+    }
+
+    // ═══ PHASE & UI ══════════════════════════════════════════════════
     function setPhaseStep(step) {
         for (let i = 1; i <= 4; i++) {
             const el = $('step' + i);
@@ -793,16 +1071,16 @@ self.onmessage = async function(e) {
 
     function setPhase(msg, type = 'conv') {
         phaseLabel.textContent = msg;
-        phaseText.classList.remove('conv', 'pkg', 'done', 'nitro');
+        phaseText.classList.remove('conv', 'pkg', 'done', 'quantum');
         phaseText.classList.add(type);
     }
 
     function setProgressMode(mode) {
-        progBar.classList.remove('packaging', 'complete', 'nitro');
+        progBar.classList.remove('packaging', 'complete', 'quantum');
         if (mode) progBar.classList.add(mode);
     }
 
-    // ═══ ANIMATED COUNTERS ══════════════════════════════════════════
+    // ═══ ANIMATED COUNTERS ═══════════════════════════════════════════
     const counterCache = {};
     function animateCounter(id, target, suffix = '') {
         const el = $(id);
@@ -812,7 +1090,7 @@ self.onmessage = async function(e) {
         counterCache[id] = target;
 
         const diff = target - cur;
-        const steps = Math.min(15, Math.max(1, Math.abs(diff)));
+        const steps = Math.min(12, Math.max(1, Math.abs(diff)));
         const stepSize = diff / steps;
         let frame = 0;
 
@@ -833,36 +1111,37 @@ self.onmessage = async function(e) {
         setTimeout(() => statEl.classList.remove('bump'), 400);
     }
 
-    // ═══ CELEBRATION ════════════════════════════════════════════════
+    // ═══ CELEBRATION ═════════════════════════════════════════════════
     function celebrate() {
-        const colors = ['#34d399', '#2dd4bf', '#a78bfa', '#fbbf24', '#5eead4', '#f472b6'];
-        const count = 80;
+        const colors = ['#34d399', '#06b6d4', '#a78bfa', '#fbbf24', '#5eead4', '#f472b6'];
+        const count = 100;
         const cx = window.innerWidth / 2;
         const cy = window.innerHeight / 2;
 
         for (let i = 0; i < count; i++) {
             const p = document.createElement('div');
             p.className = 'particle';
-            p.style.background = colors[i % colors.length];
+            const c = colors[i % colors.length];
+            p.style.background = c;
             p.style.left = cx + 'px';
             p.style.top = cy + 'px';
-            p.style.boxShadow = `0 0 8px ${colors[i % colors.length]}`;
+            p.style.boxShadow = `0 0 12px ${c}`;
             burstContainer.appendChild(p);
 
-            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.3;
-            const velocity = 250 + Math.random() * 350;
+            const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
+            const velocity = 280 + Math.random() * 400;
             const dx = Math.cos(angle) * velocity;
             const dy = Math.sin(angle) * velocity;
-            const duration = 1200 + Math.random() * 800;
+            const duration = 1400 + Math.random() * 900;
 
             p.animate([
                 { transform: 'translate(0,0) scale(1)', opacity: 1 },
-                { transform: `translate(${dx}px, ${dy + 250}px) scale(0)`, opacity: 0 }
+                { transform: `translate(${dx}px, ${dy + 280}px) scale(0)`, opacity: 0 }
             ], { duration, easing: 'cubic-bezier(0.2, 0.8, 0.4, 1)' }).onfinish = () => p.remove();
         }
 
         completeOverlay.classList.add('show');
-        setTimeout(() => completeOverlay.classList.remove('show'), 1200);
+        setTimeout(() => completeOverlay.classList.remove('show'), 1300);
     }
 
     // ═══ STATS UPDATE ═══════════════════════════════════════════════
@@ -882,12 +1161,28 @@ self.onmessage = async function(e) {
             progBar.style.width = pct + '%';
         }
 
+        // Speed (rolling 2.5s window)
         const now = performance.now();
         state.timestamps = state.timestamps.filter(t => now - t < 2500);
         if (state.timestamps.length >= 2) {
             const span = (now - state.timestamps[0]) / 1000;
             const speed = span > 0 ? (state.timestamps.length / span) : 0;
             $('statSpeed').textContent = speed.toFixed(1);
+            workerThroughput.textContent = speed.toFixed(1) + ' files/s';
+
+            if (speed > state.peakSpeed) {
+                state.peakSpeed = speed;
+                $('mPeak').textContent = speed.toFixed(1);
+            }
+
+            // Avg
+            if (state.startTime > 0) {
+                const elapsed = (now - state.startTime) / 1000;
+                if (elapsed > 0 && done > 0) {
+                    $('mAvg').textContent = (done / elapsed).toFixed(1);
+                    $('mElapsed').textContent = elapsed.toFixed(1) + 's';
+                }
+            }
 
             // ETA
             const remaining = total - done;
@@ -899,6 +1194,12 @@ self.onmessage = async function(e) {
             } else if (remaining === 0) {
                 $('statEta').textContent = '✓';
             }
+        }
+
+        // Memory display (Chrome only)
+        if (performance.memory) {
+            const mb = (performance.memory.usedJSHeapSize / 1048576).toFixed(0);
+            $('mMem').textContent = mb + 'MB';
         }
     }
 
@@ -946,7 +1247,7 @@ self.onmessage = async function(e) {
     }
 
     function logError(msg) {
-        if (state.errors.length > 100) return; // cap
+        if (state.errors.length > 100) return;
         state.errors.push(msg);
         errPanel.classList.add('show');
         const line = document.createElement('div');
@@ -960,21 +1261,24 @@ self.onmessage = async function(e) {
 
     function reset() {
         destroyWorkerPool();
-        state = { ...state, items:[], results:[], running:false, timestamps:[], errors:[], phase:'idle', startTime:0, completed:0 };
+        state = { ...state, items:[], results:[], running:false, timestamps:[], errors:[], phase:'idle', startTime:0, peakSpeed:0 };
         Object.keys(counterCache).forEach(k => delete counterCache[k]);
         ['statTotal','statOk','statFail','statSpeed'].forEach(id => $(id).textContent = '0');
         $('statPct').textContent = '0%';
         $('statEta').textContent = '-';
+        ['mPeak','mAvg','mQueue','mElapsed','mMem'].forEach(id => $(id).textContent = '0');
         progBar.style.width = '0%';
         setProgressMode('');
         setPhaseStep(0);
         btnStart.disabled = btnDownload.disabled = btnRetry.disabled = true;
         btnDownload.classList.remove('ready');
-        btnDownload.textContent = '📦 Unduh Semua PNG (ZIP)';
+        btnDownload.textContent = '📦 Unduh ZIP';
         errPanel.innerHTML = '';
         errPanel.classList.remove('show');
         turboPill.classList.remove('on');
         warnBanner.classList.remove('show');
+        workerViz.style.display = 'none';
+        metricsPanel.style.display = 'none';
         setPhase('Upload file ZIP untuk memulai...', 'conv');
         taskGrid.innerHTML = '<div style="padding:1.5rem;text-align:center;color:#7c8fb0;">▲ Upload ZIP untuk melihat daftar file</div>';
     }
@@ -1002,26 +1306,24 @@ self.onmessage = async function(e) {
                 return;
             }
 
-            state.items   = svgs;
+            state.items = svgs;
             state.results = new Array(svgs.length).fill(null);
 
-            const useWorker = state.engine === 'nitro' && CAP.workerRender;
-            const workerCount = useWorker ? calcWorkerCount(svgs.length) : 0;
-            const mainConc = calcMainConcurrency(svgs.length);
-            const display = useWorker
-                ? `${workerCount} workers + ${mainConc} I/O 🔥NITRO`
-                : `${mainConc} (main thread)`;
+            const topo = calcTopology(svgs.length);
+            const display = topo.workers > 0
+                ? `${topo.workers}W × ${topo.readers}R · Q${topo.queueMax} ⚛`
+                : `${topo.readers} I/O (main)`;
             $('concDisplay').textContent = display;
 
-            if (svgs.length > 1000)  turboPill.classList.add('on');
-            if (svgs.length > 5000)  warnBanner.classList.add('show');
+            if (svgs.length > 500)  turboPill.classList.add('on');
+            if (svgs.length > 5000) warnBanner.classList.add('show');
 
             buildTaskGrid();
             updateStats();
             $('step1').classList.add('done');
             $('step1').classList.remove('active');
             btnStart.disabled = false;
-            setPhase(`📦 ${svgs.length} file SVG siap · klik mulai`, 'conv');
+            setPhase(`📦 ${svgs.length} file SVG terdeteksi · siap diaktivasi`, 'conv');
         } catch (e) {
             taskGrid.innerHTML = `<div style="padding:1rem;color:#f87171;">❌ Gagal baca ZIP: ${e.message}</div>`;
             setPhase('Error baca ZIP', 'conv');
@@ -1029,65 +1331,80 @@ self.onmessage = async function(e) {
         }
     }
 
-    // ═══ MAIN-THREAD SANITIZER (for fallback) ═══════════════════════
+    // ═══ MAIN-THREAD SANITIZER (for fallback) ══════════════════════
     const RE_W = /\swidth\s*=/i;
     const RE_H = /\sheight\s*=/i;
     const RE_VB = /viewBox\s*=\s*["']([^"']+)["']/i;
     const RE_SVG = /<svg([^>]*?)>/i;
+    const RE_XMLNS = /xmlns\s*=/i;
 
     function sanitizeSvg(txt) {
         txt = txt.trim();
+        if (txt.charCodeAt(0) === 0xFEFF) txt = txt.slice(1);
         const hasW = RE_W.test(txt);
         const hasH = RE_H.test(txt);
-        if (hasW && hasH) return txt;
+        const hasNs = RE_XMLNS.test(txt);
+        if (hasW && hasH && hasNs) return txt;
+
+        let inject = '';
+        if (!hasNs) inject += ' xmlns="http://www.w3.org/2000/svg"';
         const m = txt.match(RE_VB);
-        if (m) {
+        if (m && (!hasW || !hasH)) {
             const p = m[1].trim().split(/[\s,]+/);
             if (p.length === 4) {
                 const w = parseFloat(p[2]), h = parseFloat(p[3]);
                 if (w > 0 && h > 0) {
-                    return txt.replace(RE_SVG, (_, a) => {
-                        let f = a;
-                        if (!hasW) f += ` width="${w}"`;
-                        if (!hasH) f += ` height="${h}"`;
-                        return `<svg${f}>`;
-                    });
+                    if (!hasW) inject += ` width="${w}"`;
+                    if (!hasH) inject += ` height="${h}"`;
                 }
             }
+        } else if (!hasW || !hasH) {
+            if (!hasW) inject += ' width="512"';
+            if (!hasH) inject += ' height="512"';
+            if (!RE_VB.test(txt)) inject += ' viewBox="0 0 512 512"';
         }
-        return txt.replace(RE_SVG, (_, a) => {
-            let f = a;
-            if (!hasW) f += ' width="512"';
-            if (!hasH) f += ' height="512"';
-            if (!/viewBox/i.test(a)) f += ' viewBox="0 0 512 512"';
-            return `<svg${f}>`;
-        });
+        return txt.replace(RE_SVG, (_, a) => `<svg${a}${inject}>`);
     }
 
     // ═══ MAIN-THREAD FALLBACK RENDERERS ═════════════════════════════
-    function renderViaImage(svgText, scale, bg) {
+    function renderViaImage(svgText, scale, bg, quality) {
         return new Promise((resolve, reject) => {
             const sanitized = sanitizeSvg(svgText);
             const blob = new Blob([sanitized], { type: 'image/svg+xml;charset=utf-8' });
             const url = URL.createObjectURL(blob);
             const img = new Image();
-            img.crossOrigin = 'anonymous';
             const cleanup = () => URL.revokeObjectURL(url);
 
             img.onload = () => {
                 try {
                     const w = Math.max(1, Math.floor((img.naturalWidth || 64) * scale));
                     const h = Math.max(1, Math.floor((img.naturalHeight || 64) * scale));
+                    const renderScale = (quality === 'pro' && scale < 3) ? 2 : 1;
+                    const rw = w * renderScale, rh = h * renderScale;
+
                     const canvas = document.createElement('canvas');
-                    canvas.width = w; canvas.height = h;
+                    canvas.width = rw; canvas.height = rh;
                     const ctx = canvas.getContext('2d', { alpha: bg === 'transparent' });
-                    if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h); }
-                    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h); }
+                    if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,rw,rh); }
+                    else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0,0,rw,rh); }
                     ctx.imageSmoothingEnabled = true;
-                    ctx.imageSmoothingQuality = 'high';
-                    ctx.drawImage(img, 0, 0, w, h);
+                    ctx.imageSmoothingQuality = quality === 'fast' ? 'medium' : 'high';
+                    ctx.drawImage(img, 0, 0, rw, rh);
+
+                    let final = canvas;
+                    if (renderScale > 1) {
+                        const dc = document.createElement('canvas');
+                        dc.width = w; dc.height = h;
+                        const dctx = dc.getContext('2d', { alpha: bg === 'transparent' });
+                        if (bg === 'white') { dctx.fillStyle = '#fff'; dctx.fillRect(0,0,w,h); }
+                        else if (bg === 'black') { dctx.fillStyle = '#000'; dctx.fillRect(0,0,w,h); }
+                        dctx.imageSmoothingEnabled = true;
+                        dctx.imageSmoothingQuality = 'high';
+                        dctx.drawImage(canvas, 0, 0, w, h);
+                        final = dc;
+                    }
                     cleanup();
-                    canvas.toBlob(b => b ? resolve(b) : reject(new Error('toBlob null')), 'image/png');
+                    final.toBlob(b => b ? resolve(b) : reject(new Error('toBlob null')), 'image/png');
                 } catch (e) { cleanup(); reject(e); }
             };
             img.onerror = () => { cleanup(); reject(new Error('img load failed')); };
@@ -1095,45 +1412,21 @@ self.onmessage = async function(e) {
         });
     }
 
-    async function renderViaBitmap(svgText, scale, bg) {
-        const sanitized = sanitizeSvg(svgText);
-        const blob = new Blob([sanitized], { type: 'image/svg+xml' });
-        const bitmap = await createImageBitmap(blob);
-        const w = Math.max(1, Math.floor(bitmap.width * scale));
-        const h = Math.max(1, Math.floor(bitmap.height * scale));
+    // ═══ QUANTUM PIPELINE: Persistent workers + streaming readers ══
+    async function runQuantumConversion(retryFailed) {
+        const topo = calcTopology(state.items.length);
 
-        // Use OffscreenCanvas if available (faster, no DOM)
-        const canvas = CAP.offscreen
-            ? new OffscreenCanvas(w, h)
-            : Object.assign(document.createElement('canvas'), { width: w, height: h });
-        const ctx = canvas.getContext('2d', { alpha: bg === 'transparent' });
-        if (bg === 'white') { ctx.fillStyle = '#fff'; ctx.fillRect(0,0,w,h); }
-        else if (bg === 'black') { ctx.fillStyle = '#000'; ctx.fillRect(0,0,w,h); }
-        ctx.imageSmoothingEnabled = true;
-        ctx.imageSmoothingQuality = 'high';
-        ctx.drawImage(bitmap, 0, 0, w, h);
-        bitmap.close();
-
-        if (canvas.convertToBlob) return await canvas.convertToBlob({ type: 'image/png' });
-        return new Promise((res, rej) => canvas.toBlob(b => b ? res(b) : rej(new Error('toBlob null')), 'image/png'));
-    }
-
-    async function convertSvgFallback(svgText, scale, bg, mode) {
-        if (mode !== 'safe' && CAP.imageBitmap) {
-            try { return await renderViaBitmap(svgText, scale, bg); }
-            catch { /* fall through */ }
+        if (topo.workers === 0) {
+            return runMainThreadConversion(retryFailed);
         }
-        return await renderViaImage(svgText, scale, bg);
-    }
 
-    // ═══ NITRO PIPELINE: Worker pool + streaming reader ═════════════
-    async function runNitroConversion(retryFailed) {
-        const workerCount = calcWorkerCount(state.items.length);
-        if (workerCount === 0) return runMainThreadConversion(retryFailed);
+        workerPool = createWorkerPool(topo.workers);
+        buildWorkerViz(topo.workers);
+        metricsPanel.style.display = 'grid';
 
-        workerPool = createWorkerPool(workerCount);
         const scale = state.scale;
         const bg = state.bg;
+        const quality = state.quality;
 
         // Build job queue
         const jobs = [];
@@ -1146,25 +1439,31 @@ self.onmessage = async function(e) {
 
         if (!retryFailed) state.results = new Array(state.items.length).fill(null);
 
-        // Reader concurrency (separate from worker count)
-        const READER_CONC = CAP.mobile ? 4 : Math.min(12, CAP.cores * 2);
-        const BATCH_SIZE = state.items.length > 2000 ? 8 : 4; // bigger batches = less worker overhead
-
-        // Pending queue between reader and workers
-        const readyQueue = [];
-        let readerDone = false;
-        let readCursor = 0;
+        // Shared queue between readers and workers
+        const renderQueue = []; // { idx, svg }
+        let readerCursor = 0;
+        let readersFinished = 0;
+        let workersFinished = 0;
         let lastUiUpdate = 0;
+        let lastVizUpdate = 0;
 
-        // Reader workers (read SVG text from ZIP in parallel)
+        // ═══ READERS ═══
+        // Each reader pulls next job from cursor, reads SVG, pushes to renderQueue
         async function readerLoop() {
-            while (readCursor < jobs.length) {
-                const myIdx = readCursor++;
+            while (readerCursor < jobs.length) {
+                // Backpressure: if queue too full, wait
+                while (renderQueue.length >= topo.queueMax) {
+                    await new Promise(r => setTimeout(r, 4));
+                }
+
+                const myIdx = readerCursor++;
+                if (myIdx >= jobs.length) break;
                 const job = jobs[myIdx];
+
                 try {
                     const svg = await job.item.entry.async('string');
-                    markTask(job.idx, 40, '📂', 'running');
-                    readyQueue.push({ idx: job.idx, svg });
+                    markTask(job.idx, 35, '📂', 'running');
+                    renderQueue.push({ idx: job.idx, svg, item: job.item });
                 } catch (err) {
                     state.results[job.idx] = {
                         path: job.item.path.replace(/\.svg$/i, '.png'),
@@ -1174,86 +1473,100 @@ self.onmessage = async function(e) {
                     logError(`[${job.item.name}] read: ${err.message}`);
                 }
             }
+            readersFinished++;
         }
 
-        // Spawn N reader threads
-        const readerPromises = Array.from({ length: Math.min(READER_CONC, jobs.length) }, () => readerLoop());
-        const readerDonePromise = Promise.all(readerPromises).then(() => { readerDone = true; });
-
-        // Worker dispatcher — batches jobs to free workers
-        const workerPromises = workerPool.map(async (worker) => {
+        // ═══ WORKER DISPATCHERS (work-stealing) ═══
+        // Each dispatcher continuously pulls from queue and dispatches to its worker
+        async function workerLoop(worker) {
             while (true) {
-                // Wait for items in queue (or reader to finish)
-                while (readyQueue.length === 0 && !readerDone) {
-                    await new Promise(r => setTimeout(r, 4));
+                // Wait for items in queue or readers to finish
+                while (renderQueue.length === 0 && readersFinished < topo.readers) {
+                    await new Promise(r => setTimeout(r, 2));
                 }
-                if (readyQueue.length === 0 && readerDone) break;
+                if (renderQueue.length === 0 && readersFinished >= topo.readers) break;
 
-                // Grab batch
-                const batchSize = Math.min(BATCH_SIZE, readyQueue.length);
-                const batch = readyQueue.splice(0, batchSize);
+                const job = renderQueue.shift();
+                if (!job) continue;
 
-                batch.forEach(b => markTask(b.idx, 70, '🎨', 'running'));
+                markTask(job.idx, 70, '⚛', 'running');
 
                 try {
-                    const results = await dispatchToWorker(worker, batch, scale, bg);
-                    for (let i = 0; i < results.length; i++) {
-                        const r = results[i];
-                        const orig = batch[i];
-                        const path = state.items[orig.idx].path.replace(/\.svg$/i, '.png');
-                        if (r.ok) {
-                            state.results[orig.idx] = { path, blob: r.blob, ok: true };
-                            markTask(orig.idx, 100, '✅', 'done');
+                    const result = await dispatchJob(worker, job.svg, scale, bg, quality, job.idx);
+                    const path = state.items[job.idx].path.replace(/\.svg$/i, '.png');
+                    if (result.ok) {
+                        state.results[job.idx] = { path, blob: result.blob, ok: true };
+                        markTask(job.idx, 100, '✅', 'done');
+                        state.timestamps.push(performance.now());
+                    } else {
+                        // Worker failed → main-thread fallback (last resort)
+                        try {
+                            const blob = await renderViaImage(job.svg, scale, bg, quality);
+                            state.results[job.idx] = { path, blob, ok: true };
+                            markTask(job.idx, 100, '✅↻', 'done');
                             state.timestamps.push(performance.now());
-                        } else {
-                            // Worker failed — try main-thread fallback (last resort)
-                            try {
-                                const blob = await convertSvgFallback(orig.svg, scale, bg, 'auto');
-                                state.results[orig.idx] = { path, blob, ok: true };
-                                markTask(orig.idx, 100, '✅↻', 'done');
-                                state.timestamps.push(performance.now());
-                            } catch (fbErr) {
-                                state.results[orig.idx] = { path, ok: false, err: r.err + ' | fb: ' + fbErr.message };
-                                markTask(orig.idx, 100, '❌', 'fail');
-                                logError(`[${state.items[orig.idx].name}] ${r.err}`);
-                            }
+                        } catch (fbErr) {
+                            state.results[job.idx] = { path, ok: false, err: result.err + '|fb:' + fbErr.message };
+                            markTask(job.idx, 100, '❌', 'fail');
+                            logError(`[${job.item.name}] ${result.err}`);
                         }
                     }
                 } catch (err) {
-                    // Whole worker batch crashed — fallback all to main thread
-                    for (const orig of batch) {
-                        const path = state.items[orig.idx].path.replace(/\.svg$/i, '.png');
-                        try {
-                            const blob = await convertSvgFallback(orig.svg, scale, bg, 'auto');
-                            state.results[orig.idx] = { path, blob, ok: true };
-                            markTask(orig.idx, 100, '✅↻', 'done');
-                            state.timestamps.push(performance.now());
-                        } catch (fbErr) {
-                            state.results[orig.idx] = { path, ok: false, err: fbErr.message };
-                            markTask(orig.idx, 100, '❌', 'fail');
-                            logError(`[${state.items[orig.idx].name}] ${fbErr.message}`);
-                        }
+                    // Crash recovery via main thread
+                    const path = state.items[job.idx].path.replace(/\.svg$/i, '.png');
+                    try {
+                        const blob = await renderViaImage(job.svg, scale, bg, quality);
+                        state.results[job.idx] = { path, blob, ok: true };
+                        markTask(job.idx, 100, '✅↻', 'done');
+                        state.timestamps.push(performance.now());
+                    } catch (fbErr) {
+                        state.results[job.idx] = { path, ok: false, err: fbErr.message };
+                        markTask(job.idx, 100, '❌', 'fail');
+                        logError(`[${job.item.name}] ${fbErr.message}`);
                     }
                 }
 
                 const now = performance.now();
-                if (now - lastUiUpdate > 100) {
+                if (now - lastUiUpdate > 80) {
                     lastUiUpdate = now;
                     updateStats();
+                    $('mQueue').textContent = renderQueue.length;
+                }
+                if (now - lastVizUpdate > 50) {
+                    lastVizUpdate = now;
+                    updateWorkerViz();
                 }
             }
+            workersFinished++;
+        }
+
+        // Spawn readers (parallel SVG text extraction)
+        const readerPromises = [];
+        for (let i = 0; i < topo.readers; i++) {
+            readerPromises.push(readerLoop());
+        }
+
+        // Spawn worker dispatchers (one per worker)
+        const workerPromises = workerPool.map(w => workerLoop(w));
+
+        await Promise.all(readerPromises);
+        await Promise.all(workerPromises);
+
+        // Mark all worker cells as done
+        workerPool.forEach(w => {
+            const cell = $('wc' + w.id);
+            if (cell) { cell.classList.remove('active'); cell.classList.add('done'); }
         });
 
-        await readerDonePromise;
-        await Promise.all(workerPromises);
         destroyWorkerPool();
     }
 
-    // ═══ MAIN-THREAD CONVERSION (fallback / safe mode) ══════════════
+    // ═══ MAIN-THREAD FALLBACK CONVERSION ════════════════════════════
     async function runMainThreadConversion(retryFailed) {
+        const topo = calcTopology(state.items.length);
         const scale = state.scale;
         const bg = state.bg;
-        const engineMode = state.engine === 'safe' ? 'safe' : 'auto';
+        const quality = state.quality;
 
         const queue = [];
         state.items.forEach((item, idx) => {
@@ -1266,7 +1579,6 @@ self.onmessage = async function(e) {
         if (!retryFailed) state.results = new Array(state.items.length).fill(null);
 
         let cursor = 0;
-        const concurrency = calcMainConcurrency(state.items.length);
         let lastUiUpdate = 0;
 
         async function worker() {
@@ -1276,7 +1588,7 @@ self.onmessage = async function(e) {
                 try {
                     const svgText = await item.entry.async('string');
                     markTask(idx, 60, '🎨', 'running');
-                    const blob = await convertSvgFallback(svgText, scale, bg, engineMode);
+                    const blob = await renderViaImage(svgText, scale, bg, quality);
                     state.results[idx] = {
                         path: item.path.replace(/\.svg$/i, '.png'),
                         blob, ok: true
@@ -1299,36 +1611,27 @@ self.onmessage = async function(e) {
             }
         }
 
-        const pool = Array.from({ length: Math.min(concurrency, queue.length) }, () => worker());
+        const pool = Array.from({ length: Math.min(topo.readers, queue.length) }, () => worker());
         await Promise.all(pool);
     }
 
-    // ═══ MAIN RUNNER ═════════════════════════════════════════════════
+    // ═══ MAIN RUNNER ════════════════════════════════════════════════
     async function runConversion(retryFailed = false) {
         if (state.running || !state.items.length) return;
         state.running = true;
         state.phase = 'converting';
         state.startTime = performance.now();
+        state.peakSpeed = 0;
         btnStart.disabled = btnRetry.disabled = btnDownload.disabled = true;
         btnDownload.classList.remove('ready');
         state.timestamps = [];
 
         setPhaseStep(2);
-        const useNitro = state.engine === 'nitro' && CAP.workerRender;
-        if (useNitro) {
-            setProgressMode('nitro');
-            setPhase('🔥 NITRO mode: Worker pool aktif...', 'nitro');
-        } else {
-            setProgressMode('');
-            setPhase('⚡ Konversi paralel berjalan...', 'conv');
-        }
+        setProgressMode('quantum');
+        setPhase('⚛ QUANTUM ENGINE: Initializing worker mesh...', 'quantum');
 
         try {
-            if (useNitro) {
-                await runNitroConversion(retryFailed);
-            } else {
-                await runMainThreadConversion(retryFailed);
-            }
+            await runQuantumConversion(retryFailed);
         } catch (err) {
             logError('Fatal: ' + err.message);
         }
@@ -1338,15 +1641,15 @@ self.onmessage = async function(e) {
 
         const okCount = state.results.filter(r => r?.ok).length;
         const failCount = state.results.filter(r => r && !r.ok).length;
-        const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(1);
+        const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(2);
 
         $('step2').classList.add('done');
         $('step2').classList.remove('active');
 
         if (okCount > 0) {
             const avgSpeed = (okCount / parseFloat(elapsed)).toFixed(1);
-            setPhase(`✓ Render selesai: ${okCount} file dalam ${elapsed}s (${avgSpeed}/s) → packaging...`, 'nitro');
-            await packageAndDownload(true);
+            setPhase(`⚛ ${okCount} rendered in ${elapsed}s (${avgSpeed}/s, peak ${state.peakSpeed.toFixed(1)}/s)`, 'quantum');
+            await packageAndDownload();
         } else {
             setPhase(`Selesai · 0 berhasil dari ${state.items.length}`, 'conv');
             btnStart.disabled = false;
@@ -1354,52 +1657,49 @@ self.onmessage = async function(e) {
         }
     }
 
-    // ═══ PACKAGING (chunked + streaming + dual fallback) ═══════════
-    async function packageAndDownload(autoTriggered = false) {
+    // ═══ STREAMING ZIP PACKAGING ═══════════════════════════════════
+    async function packageAndDownload() {
         if (state.phase === 'packaging') return;
-
         const okResults = state.results.filter(r => r?.ok && r.blob);
         if (!okResults.length) {
-            alert('Tidak ada PNG yang berhasil dikonversi.');
+            alert('Tidak ada PNG yang berhasil.');
             return;
         }
 
         state.phase = 'packaging';
         setPhaseStep(3);
         setProgressMode('packaging');
-        setPhase(`📦 Mengemas ${okResults.length} file PNG...`, 'pkg');
-
+        setPhase(`📦 Packaging ${okResults.length} files...`, 'pkg');
         progBar.style.width = '0%';
         animateCounter('statPct', 0, '%');
-
         btnDownload.disabled = btnStart.disabled = btnRetry.disabled = true;
 
         try {
             const out = new JSZip();
             const total = okResults.length;
-            // Add files in chunks (yield to UI every CHUNK files)
-            const CHUNK = total > 5000 ? 200 : 100;
+            const CHUNK = total > 5000 ? 250 : 150;
 
             for (let i = 0; i < total; i++) {
                 out.file(okResults[i].path, okResults[i].blob);
                 if ((i + 1) % CHUNK === 0 || i === total - 1) {
-                    const pctAdd = Math.floor(((i + 1) / total) * 25);
+                    const pctAdd = Math.floor(((i + 1) / total) * 22);
                     progBar.style.width = pctAdd + '%';
                     animateCounter('statPct', pctAdd, '%');
-                    setPhase(`📥 ${i + 1}/${total} files...`, 'pkg');
+                    setPhase(`📥 ${i + 1}/${total}...`, 'pkg');
                     await new Promise(r => setTimeout(r, 0));
                 }
             }
 
-            setPhase('🗜️ Streaming compression...', 'pkg');
+            setPhase('🗜️ DEFLATE streaming...', 'pkg');
 
+            // PNG sudah pre-compressed, level 3 = optimal speed/size
             const zipBlob = await out.generateAsync({
                 type: 'blob',
                 compression: 'DEFLATE',
-                compressionOptions: { level: 4 }, // 4 = fast & still small for PNG
+                compressionOptions: { level: 3 },
                 streamFiles: true,
             }, (meta) => {
-                const pct = 25 + Math.floor(meta.percent * 0.75);
+                const pct = 22 + Math.floor(meta.percent * 0.78);
                 progBar.style.width = pct + '%';
                 animateCounter('statPct', pct, '%');
                 if (meta.currentFile) {
@@ -1412,47 +1712,32 @@ self.onmessage = async function(e) {
 
             progBar.style.width = '100%';
             animateCounter('statPct', 100, '%');
-            setPhase(`💾 Menyimpan (${formatBytes(zipBlob.size)})...`, 'pkg');
+            setPhase(`💾 Saving (${formatBytes(zipBlob.size)})...`, 'pkg');
 
             await new Promise(r => setTimeout(r, 200));
 
             // Triple-fallback save
-            const filename = `svg_to_png_${Date.now()}.zip`;
+            const filename = `svg_to_png_max6_${Date.now()}.zip`;
             let saved = false;
-
-            // Method 1: FileSaver
             try {
-                if (typeof saveAs === 'function') {
-                    saveAs(zipBlob, filename);
-                    saved = true;
-                }
-            } catch (e1) { /* fall through */ }
-
-            // Method 2: Manual anchor
+                if (typeof saveAs === 'function') { saveAs(zipBlob, filename); saved = true; }
+            } catch {}
             if (!saved) {
                 try {
                     const url = URL.createObjectURL(zipBlob);
                     const a = document.createElement('a');
-                    a.href = url;
-                    a.download = filename;
-                    a.style.display = 'none';
+                    a.href = url; a.download = filename; a.style.display = 'none';
                     document.body.appendChild(a);
                     a.click();
-                    setTimeout(() => {
-                        a.remove();
-                        URL.revokeObjectURL(url);
-                    }, 1500);
+                    setTimeout(() => { a.remove(); URL.revokeObjectURL(url); }, 1500);
                     saved = true;
-                } catch (e2) { /* fall through */ }
+                } catch {}
             }
-
-            // Method 3: window.open as last resort
             if (!saved) {
                 const url = URL.createObjectURL(zipBlob);
                 window.open(url, '_blank');
             }
 
-            // ── COMPLETE ──
             state.phase = 'done';
             setPhaseStep(4);
             $('step3').classList.add('done');
@@ -1461,13 +1746,13 @@ self.onmessage = async function(e) {
             setProgressMode('complete');
 
             const failCount = state.results.filter(r => r && !r.ok).length;
-            const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(1);
+            const elapsed = ((performance.now() - state.startTime) / 1000).toFixed(2);
             const speed = (okResults.length / parseFloat(elapsed)).toFixed(1);
-            setPhase(`✅ ${okResults.length} PNG · ${elapsed}s · ${speed}/s${failCount ? ` · ${failCount} gagal` : ''}`, 'done');
+            setPhase(`✅ ${okResults.length} PNG · ${elapsed}s · ${speed}/s · peak ${state.peakSpeed.toFixed(1)}/s${failCount ? ` · ${failCount} fail` : ''}`, 'done');
 
             celebrate();
             document.querySelectorAll('.stat').forEach((s, i) => {
-                setTimeout(() => bumpStat(s), i * 70);
+                setTimeout(() => bumpStat(s), i * 60);
             });
 
             btnDownload.disabled = false;
@@ -1475,10 +1760,9 @@ self.onmessage = async function(e) {
             btnDownload.textContent = '📦 Unduh Lagi';
             btnStart.disabled = false;
             btnRetry.disabled = failCount === 0;
-
         } catch (err) {
-            setPhase(`❌ Error packaging: ${err.message}`, 'conv');
-            logError('Packaging error: ' + err.message);
+            setPhase(`❌ Packaging error: ${err.message}`, 'conv');
+            logError('Pkg error: ' + err.message);
             btnDownload.disabled = false;
             btnStart.disabled = false;
             state.phase = 'idle';
@@ -1487,9 +1771,9 @@ self.onmessage = async function(e) {
 
     function formatBytes(b) {
         if (b < 1024) return b + ' B';
-        if (b < 1024*1024) return (b/1024).toFixed(1) + ' KB';
-        if (b < 1024*1024*1024) return (b/1024/1024).toFixed(1) + ' MB';
-        return (b/1024/1024/1024).toFixed(2) + ' GB';
+        if (b < 1048576) return (b/1024).toFixed(1) + ' KB';
+        if (b < 1073741824) return (b/1048576).toFixed(1) + ' MB';
+        return (b/1073741824).toFixed(2) + ' GB';
     }
 
     // ═══ EVENT WIRING ═══════════════════════════════════════════════
@@ -1526,40 +1810,32 @@ self.onmessage = async function(e) {
         });
     });
 
-    document.querySelectorAll('.bg-btn[data-engine]').forEach(btn => {
+    document.querySelectorAll('.q-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.bg-btn[data-engine]').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.q-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            state.engine = btn.dataset.engine;
-            // Update display
-            if (state.items.length) {
-                const useWorker = state.engine === 'nitro' && CAP.workerRender;
-                const wc = useWorker ? calcWorkerCount(state.items.length) : 0;
-                const mc = calcMainConcurrency(state.items.length);
-                $('concDisplay').textContent = useWorker
-                    ? `${wc} workers + ${mc} I/O 🔥NITRO`
-                    : `${mc} (main thread)`;
-            }
+            state.quality = btn.dataset.quality;
         });
     });
 
     btnStart.addEventListener('click',    () => runConversion(false));
     btnRetry.addEventListener('click',    () => runConversion(true));
-    btnDownload.addEventListener('click', () => packageAndDownload(false));
+    btnDownload.addEventListener('click', () => packageAndDownload());
 
     // ═══ INIT ═══════════════════════════════════════════════════════
     reset();
     state.scale = parseFloat(scaleSlider.value);
     if (CAP.workerRender) {
-        $('capWorker').classList.add('nitro');
-        $('capOffscreen').classList.add('nitro');
+        $('capWorker').classList.add('elite');
+        $('capOffscreen').classList.add('elite');
+        $('capTransfer').classList.add('elite');
     }
+    const initialTopo = calcTopology(2000);
     $('concDisplay').textContent = CAP.workerRender
-        ? `~${calcWorkerCount(2000)} workers ready 🔥`
-        : `~${calcMainConcurrency(0)} (main)`;
+        ? `~${initialTopo.workers}W ready · ${CAP.cores} cores ⚛`
+        : `~${initialTopo.readers} (main thread)`;
     scaleLabel.textContent = '1x ✓';
 
-    // Cleanup on unload
     window.addEventListener('beforeunload', () => {
         destroyWorkerPool();
         if (workerBlobUrl) URL.revokeObjectURL(workerBlobUrl);
