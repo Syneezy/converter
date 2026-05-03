@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>SVG Filter Tool | Extract & Repack Zip</title>
+  <!-- JSZip library from CDN (official) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <!-- FileSaver.js for easy download triggering (optional but robust) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 30%, #0a0c12, #030507);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Glassmorphic card */
+    .container {
+      max-width: 720px;
+      width: 100%;
+      background: rgba(18, 22, 32, 0.85);
+      backdrop-filter: blur(14px);
+      border-radius: 2rem;
+      box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(72, 187, 255, 0.15);
+      padding: 2rem 2rem 2.2rem;
+      transition: all 0.2s ease;
+    }
+
+    h1 {
+      font-size: 1.9rem;
+      font-weight: 600;
+      background: linear-gradient(135deg, #E0F2FE, #A5F3FC);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      margin-bottom: 0.35rem;
+    }
+
+    .sub {
+      color: #8d9bb0;
+      font-size: 0.9rem;
+      border-left: 3px solid #2dd4bf;
+      padding-left: 0.75rem;
+      margin-bottom: 1.8rem;
+      font-weight: 400;
+    }
+
+    /* drag & drop zone */
+    .drop-zone {
+      background: #0f111a;
+      border: 2px dashed #3b4259;
+      border-radius: 1.6rem;
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      margin-bottom: 1.5rem;
+    }
+
+    .drop-zone.drag-over {
+      border-color: #2dd4bf;
+      background: #10141f;
+      box-shadow: 0 0 0 4px rgba(45, 212, 191, 0.15);
+    }
+
+    .drop-zone .icon {
+      font-size: 3rem;
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+    }
+
+    .drop-zone p {
+      color: #cbd5e6;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .drop-zone .small-note {
+      font-size: 0.75rem;
+      color: #6c7a91;
+    }
+
+    .btn-upload {
+      background: #1e293b;
+      border: none;
+      color: #e2e8f0;
+      padding: 0.5rem 1.1rem;
+      border-radius: 2rem;
+      font-weight: 500;
+      margin-top: 0.8rem;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 0.8rem;
+    }
+
+    .btn-upload:hover {
+      background: #2d3a4e;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* stats panel */
+    .stats-panel {
+      background: #0b0e16cc;
+      border-radius: 1.3rem;
+      padding: 1rem 1.3rem;
+      margin: 1.2rem 0 1.2rem 0;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+      backdrop-filter: blur(4px);
+      border: 1px solid #2a2f3e;
+    }
+
+    .stat-card {
+      flex: 1;
+      text-align: center;
+      background: #11151f;
+      border-radius: 1rem;
+      padding: 0.6rem;
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #7f8ea3;
+    }
+
+    .stat-number {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #eef2ff;
+      line-height: 1.2;
+    }
+
+    .stat-number small {
+      font-size: 0.8rem;
+      font-weight: 400;
+    }
+
+    .svg-list {
+      background: #0c0f17a0;
+      border-radius: 1.2rem;
+      padding: 0.9rem;
+      margin-top: 1rem;
+      max-height: 220px;
+      overflow-y: auto;
+      border: 1px solid #232838;
+      font-size: 0.8rem;
+    }
+
+    .svg-list-title {
+      display: flex;
+      justify-content: space-between;
+      color: #b9c7dd;
+      font-weight: 500;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #252c3c;
+      margin-bottom: 8px;
+    }
+
+    .svg-filenames {
+      list-style: none;
+      padding-left: 0.2rem;
+    }
+
+    .svg-filenames li {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 0.75rem;
+      color: #b7e1e0;
+      padding: 4px 0;
+      border-bottom: 1px dashed #1e2538;
+      white-space: nowrap;
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .empty-list {
+      color: #5a657c;
+      font-style: italic;
+      padding: 0.5rem;
+      text-align: center;
+    }
+
+    /* loading overlay */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 4, 12, 0.85);
+      backdrop-filter: blur(12px);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.2s ease;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .loading-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border: 5px solid #2c3a5e;
+      border-top: 5px solid #2dd4bf;
+      border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+
+    .loading-text {
+      color: white;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    button.action-btn {
+      background: #1e2a3a;
+      border: none;
+      width: 100%;
+      padding: 0.9rem;
+      font-weight: 600;
+      font-size: 1rem;
+      border-radius: 2rem;
+      color: #f0f9ff;
+      margin-top: 1rem;
+      cursor: pointer;
+      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: linear-gradient(95deg, #1e2b3c, #0f172a);
+      border: 1px solid #2a3b55;
+    }
+
+    button.action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      filter: grayscale(0.1);
+    }
+
+    button.action-btn:not(:disabled):hover {
+      background: linear-gradient(95deg, #2a3e54, #162133);
+      border-color: #2dd4bf;
+      box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+    }
+
+    footer {
+      font-size: 0.7rem;
+      text-align: center;
+      color: #4d5a72;
+      margin-top: 1.6rem;
+    }
+
+    /* scrollbar */
+    .svg-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .svg-list::-webkit-scrollbar-track {
+      background: #131826;
+      border-radius: 10px;
+    }
+
+    .svg-list::-webkit-scrollbar-thumb {
+      background: #2dd4bf;
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🖌️ SVG Filter</h1>
+  <div class="sub">Strip away everything except .svg · Preserve folders</div>
+
+  <!-- Drop zone + click area -->
+  <div class="drop-zone" id="dropZone">
+    <div class="icon">📁➡️🧹</div>
+    <p>Drag & drop a .ZIP file here</p>
+    <div class="small-note">or click to browse</div>
+    <button class="btn-upload" id="browseBtn">Choose ZIP file</button>
+    <input type="file" id="fileInput" accept=".zip" />
+  </div>
+
+  <!-- statistics panel BEFORE/AFTER -->
+  <div class="stats-panel">
+    <div class="stat-card">
+      <div class="stat-label">📦 Original files</div>
+      <div class="stat-number" id="originalCount">—</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">✨ SVG files kept</div>
+      <div class="stat-number" id="svgCount">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">🗑️ Removed (JSON/others)</div>
+      <div class="stat-number" id="removedCount">—</div>
+    </div>
+  </div>
+
+  <!-- SVG file list preview (extracted names with folder structure) -->
+  <div class="svg-list">
+    <div class="svg-list-title">
+      <span>📄 Extracted SVG files (folder structure)</span>
+      <span id="svgListBadge">0 items</span>
+    </div>
+    <ul class="svg-filenames" id="svgFileList">
+      <li class="empty-list">No SVG files yet — upload a zip</li>
+    </ul>
+  </div>
+
+  <!-- main action button -->
+  <button class="action-btn" id="processBtn" disabled>
+    <span>⚡</span> Filter & repack to SVG‑only.zip
+  </button>
+  <footer>🔁 Pure browser · JSZip · Only .svg files preserved · original hierarchy</footer>
+</div>
+
+<!-- Loading overlay -->
+<div id="loadingOverlay" class="loading-overlay">
+  <div class="spinner"></div>
+  <div class="loading-text">Processing archive... filtering SVGs</div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const browseBtn = document.getElementById('browseBtn');
+    const processBtn = document.getElementById('processBtn');
+    const originalCountSpan = document.getElementById('originalCount');
+    const svgCountSpan = document.getElementById('svgCount');
+    const removedCountSpan = document.getElementById('removedCount');
+    const svgFileListUl = document.getElementById('svgFileList');
+    const svgListBadge = document.getElementById('svgListBadge');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+
+    // Current state: store the loaded zip data as an object (original ZIP file reference + extracted data)
+    let currentZipFile = null;          // original File object
+    let currentExtractedSVGs = [];       // array of { path, blob, name }
+    let originalTotalFiles = 0;
+    let removedFilesCount = 0;
+    let isProcessing = false;
+
+    // Helper: show loading
+    function showLoading(show, customText = 'Processing archive... filtering SVGs') {
+      if (show) {
+        const textEl = loadingOverlay.querySelector('.loading-text');
+        if (textEl) textEl.innerText = customText;
+        loadingOverlay.classList.add('active');
+      } else {
+        loadingOverlay.classList.remove('active');
+      }
+    }
+
+    // Helper: reset UI state after new upload
+    function resetUIAfterUpload() {
+      originalCountSpan.textContent = '—';
+      svgCountSpan.textContent = '0';
+      removedCountSpan.textContent = '—';
+      svgFileListUl.innerHTML = '<li class="empty-list">No SVG files yet — upload a zip</li>';
+      svgListBadge.innerText = '0 items';
+      processBtn.disabled = true;
+      currentExtractedSVGs = [];
+      originalTotalFiles = 0;
+      removedFilesCount = 0;
+    }
+
+    // Function to process zip asynchronously: read & filter (no repack yet, just extract metadata)
+    async function analyzeAndFilterZip(zipFile) {
+      showLoading(true, 'Reading ZIP & scanning for SVG files...');
+      try {
+        const jszip = new JSZip();
+        const zipData = await jszip.loadAsync(zipFile);
+        let allFilesPaths = Object.keys(zipData.files);
+        let totalCount = allFilesPaths.length;
+        let svgEntries = [];
+        
+        // filter files that are not directories & end with .svg (case-insensitive? .svg and .SVG but typical .svg)
+        for (let relativePath of allFilesPaths) {
+          const zipEntry = zipData.files[relativePath];
+          // ignore directories (ends with '/') and empty dir placeholders
+          if (zipEntry.dir) continue;
+          const lowerPath = relativePath.toLowerCase();
+          if (lowerPath.endsWith('.svg')) {
+            // we will later extract blob for repack, but now we need to get content blob?
+            // actually we can store the zipEntry and later generate blob async wise; but for performance we can extract the blob when repacking.
+            // but to keep original folder structure, we keep reference to the entry and path.
+            // To avoid duplicate work, store a promise or function
+            svgEntries.push({
+              path: relativePath,
+              entry: zipEntry,
+              name: relativePath.split('/').pop()
+            });
+          }
+        }
+        
+        const keptCount = svgEntries.length;
+        const removed = totalCount - keptCount;
+        
+        // update global state
+        currentExtractedSVGs = svgEntries;   // store entries for repacking
+        originalTotalFiles = totalCount;
+        removedFilesCount = removed;
+        
+        // update stats UI
+        originalCountSpan.textContent = totalCount;
+        svgCountSpan.textContent = keptCount;
+        removedCountSpan.textContent = removed;
+        
+        // populate SVG list with pretty folder tree style
+        if (keptCount === 0) {
+          svgFileListUl.innerHTML = '<li class="empty-list">✨ No SVG files found inside ZIP (only JSON or others will be dropped)</li>';
+          svgListBadge.innerText = '0 items';
+        } else {
+          const fragment = document.createDocumentFragment();
+          svgEntries.forEach(item => {
+            const li = document.createElement('li');
+            // display relative path (maintain folder)
+            li.textContent = item.path;
+            li.title = item.path;
+            fragment.appendChild(li);
+          });
+          svgFileListUl.innerHTML = '';
+          svgFileListUl.appendChild(fragment);
+          svgListBadge.innerText = `${keptCount} file${keptCount !== 1 ? 's' : ''}`;
+        }
+        
+        // enable process button if at least one svg exists
+        processBtn.disabled = (keptCount === 0);
+        showLoading(false);
+        return true;
+      } catch (err) {
+        console.error(err);
+        showLoading(false);
+        alert('Error reading ZIP file. Ensure it is a valid .zip archive. Error: ' + err.message);
+        resetUIAfterUpload();
+        return false;
+      }
+    }
+
+    // Repack filtered svg files into a new zip (preserve folder structure)
+    async function repackSVGOnlyZip() {
+      if (!currentExtractedSVGs.length) {
+        alert('No SVG files to repack. Please upload another zip with .svg files.');
+        return false;
+      }
+      showLoading(true, 'Repacking SVG files into new archive...');
+      try {
+        const newZip = new JSZip();
+        // iterate through stored entries and add each SVG file preserving path
+        for (let svgItem of currentExtractedSVGs) {
+          // extract blob from the original entry (async)
+          const blob = await svgItem.entry.async('blob');
+          // add file to new zip with the exact same relative path
+          newZip.file(svgItem.path, blob);
+        }
+        // generate final zip blob
+        const content = await newZip.generateAsync({ 
+          type: 'blob',
+          compression: "DEFLATE",
+          compressionOptions: { level: 6 }
+        });
+        // trigger download using FileSaver (or fallback)
+        const outputFileName = "svg-only.zip";
+        if (typeof saveAs !== 'undefined') {
+          saveAs(content, outputFileName);
+        } else {
+          // fallback
+          const link = document.createElement('a');
+          const url = URL.createObjectURL(content);
+          link.href = url;
+          link.download = outputFileName;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+        }
+        showLoading(false);
+        return true;
+      } catch (err) {
+        console.error('Repack error:', err);
+        showLoading(false);
+        alert('Error while creating filtered ZIP: ' + err.message);
+        return false;
+      }
+    }
+
+    // main handler when user provides a zip file (File object)
+    async function handleZipFile(zipFile) {
+      if (!zipFile || !zipFile.name.toLowerCase().endsWith('.zip')) {
+        alert('Please select a valid .zip file.');
+        return;
+      }
+      // Reset current state & UI
+      resetUIAfterUpload();
+      currentZipFile = zipFile;
+      const success = await analyzeAndFilterZip(zipFile);
+      if (!success) {
+        currentZipFile = null;
+      }
+    }
+
+    // Event listeners for drag & drop
+    function setupDragAndDrop() {
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+      });
+      
+      function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+      });
+      
+      function highlight() {
+        dropZone.classList.add('drag-over');
+      }
+      function unhighlight() {
+        dropZone.classList.remove('drag-over');
+      }
+      
+      dropZone.addEventListener('drop', handleDrop, false);
+      
+      function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files.length) {
+          const file = files[0];
+          if (file.name.toLowerCase().endsWith('.zip')) {
+            handleZipFile(file);
+          } else {
+            alert('Only ZIP files are accepted.');
+          }
+        }
+      }
+    }
+    
+    // Click / Browse
+    browseBtn.addEventListener('click', () => {
+      fileInput.click();
+    });
+    fileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files.length > 0) {
+        const selectedFile = e.target.files[0];
+        handleZipFile(selectedFile);
+      }
+      fileInput.value = ''; // allow re-upload same file
+    });
+    
+    // Process (repack & download)
+    processBtn.addEventListener('click', async () => {
+      if (processBtn.disabled) return;
+      if (!currentExtractedSVGs.length) {
+        alert('No SVG data to process. Please upload a zip containing .svg files.');
+        return;
+      }
+      // disable button during repack to avoid double
+      processBtn.disabled = true;
+      await repackSVGOnlyZip();
+      // Keep uploaded data, re-enable process button (can repack again with same filtered set)
+      if (currentExtractedSVGs.length > 0) {
+        processBtn.disabled = false;
+      } else {
+        processBtn.disabled = true;
+      }
+    });
+    
+    // Initialize drag drop
+    setupDragAndDrop();
+    
+    // optional: reset if user tries to drag invalid
+    window.addEventListener('dragover', (e) => {
+      e.preventDefault();
+    });
+    window.addEventListener('drop', (e) => {
+      e.preventDefault();
+    });
+    
+    // small demo for safety. On page load, reset UI
+    resetUIAfterUpload();
+  })();
+</script>
+</body>
+</html>
